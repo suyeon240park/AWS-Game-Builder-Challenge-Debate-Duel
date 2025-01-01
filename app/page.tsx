@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button"
+import Link from 'next/link'
 
 export default function Home() {
   return (
@@ -9,9 +10,11 @@ export default function Home() {
           <p className="text-xl text-gray-600 italic">Engage in epic battles of wit!</p>
         </div>
 
-        <Button className="w-full text-lg py-6" size="lg">
-          Play Now
-        </Button>
+        <Link href="/match-room" className="w-full">
+          <Button className="w-full text-lg py-6" size="lg">
+            Play Now
+          </Button>
+        </Link>
 
         <div className="space-y-4">
           <h2 className="text-2xl font-serif font-semibold text-gray-800 text-center">How to Play</h2>
@@ -19,6 +22,7 @@ export default function Home() {
             <li>Two players compete in turn-based debates</li>
             <li>Submit your most persuasive arguments each round</li>
             <li>Scores are displayed after each round</li>
+            <li>The loser of each round gets visually 'hit'</li>
             <li>Win the game by having the highest score after 3 rounds</li>
           </ul>
         </div>
