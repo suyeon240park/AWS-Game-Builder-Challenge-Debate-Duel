@@ -1,0 +1,22 @@
+type Match @model @auth(rules: [{ allow: public }]) {
+  id: ID!
+  player1Id: String!
+  player2Id: String
+  player1Ready: Boolean!
+  player2Ready: Boolean!
+  matchStatus: MatchStatus!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+enum MatchStatus {
+  WAITING
+  MATCHED
+  READY
+  FINISHED
+}
+
+type Subscription {
+  onMatchUpdate(matchId: String!): Match
+    @aws_subscribe(mutations: ["updateMatch"])
+}
