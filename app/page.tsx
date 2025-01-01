@@ -21,9 +21,6 @@ export default function Home() {
           <ul className="list-disc pl-6 space-y-2 text-gray-700">
             <li>Two players compete in turn-based debates</li>
             <li>Submit your most persuasive arguments each round</li>
-            <li>Scores are displayed after each round</li>
-            <li>The loser of each round gets visually 'hit'</li>
-            <li>Win the game by having the highest score after 3 rounds</li>
           </ul>
         </div>
 
