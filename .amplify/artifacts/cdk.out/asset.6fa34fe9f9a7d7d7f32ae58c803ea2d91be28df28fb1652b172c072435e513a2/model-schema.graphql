@@ -1,0 +1,17 @@
+type Player @model @auth(rules: [{allow: public, provider: apiKey}])
+{
+  playerId: String
+  player2Id: String
+  player1Ready: Boolean @default(value: "false")
+  player2Ready: Boolean @default(value: "false")
+  matchStatus: PlayerMatchStatus
+  createdAt: AWSDateTime
+  updatedAt: AWSDateTime
+}
+
+enum PlayerMatchStatus {
+  WAITING
+  MATCHED
+  READY
+  FINISHED
+}

@@ -1,0 +1,265 @@
+type Player @aws_iam @aws_api_key {
+  playerId: String
+  player2Id: String
+  player1Ready: Boolean
+  player2Ready: Boolean
+  matchStatus: PlayerMatchStatus
+  createdAt: AWSDateTime
+  updatedAt: AWSDateTime
+  id: ID!
+}
+
+enum PlayerMatchStatus {
+  WAITING
+  MATCHED
+  READY
+  FINISHED
+}
+
+input AmplifyAIConversationTurnErrorInput {
+  errorType: String!
+  message: String!
+}
+
+input ModelStringInput {
+  ne: String
+  eq: String
+  le: String
+  lt: String
+  ge: String
+  gt: String
+  contains: String
+  notContains: String
+  between: [String]
+  beginsWith: String
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+  size: ModelSizeInput
+}
+
+input ModelIntInput {
+  ne: Int
+  eq: Int
+  le: Int
+  lt: Int
+  ge: Int
+  gt: Int
+  between: [Int]
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+}
+
+input ModelFloatInput {
+  ne: Float
+  eq: Float
+  le: Float
+  lt: Float
+  ge: Float
+  gt: Float
+  between: [Float]
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+}
+
+input ModelBooleanInput {
+  ne: Boolean
+  eq: Boolean
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+}
+
+input ModelIDInput {
+  ne: ID
+  eq: ID
+  le: ID
+  lt: ID
+  ge: ID
+  gt: ID
+  contains: ID
+  notContains: ID
+  between: [ID]
+  beginsWith: ID
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+  size: ModelSizeInput
+}
+
+input ModelSubscriptionStringInput {
+  ne: String
+  eq: String
+  le: String
+  lt: String
+  ge: String
+  gt: String
+  contains: String
+  notContains: String
+  between: [String]
+  beginsWith: String
+  in: [String]
+  notIn: [String]
+}
+
+input ModelSubscriptionIntInput {
+  ne: Int
+  eq: Int
+  le: Int
+  lt: Int
+  ge: Int
+  gt: Int
+  between: [Int]
+  in: [Int]
+  notIn: [Int]
+}
+
+input ModelSubscriptionFloatInput {
+  ne: Float
+  eq: Float
+  le: Float
+  lt: Float
+  ge: Float
+  gt: Float
+  between: [Float]
+  in: [Float]
+  notIn: [Float]
+}
+
+input ModelSubscriptionBooleanInput {
+  ne: Boolean
+  eq: Boolean
+}
+
+input ModelSubscriptionIDInput {
+  ne: ID
+  eq: ID
+  le: ID
+  lt: ID
+  ge: ID
+  gt: ID
+  contains: ID
+  notContains: ID
+  between: [ID]
+  beginsWith: ID
+  in: [ID]
+  notIn: [ID]
+}
+
+enum ModelAttributeTypes {
+  binary
+  binarySet
+  bool
+  list
+  map
+  number
+  numberSet
+  string
+  stringSet
+  _null
+}
+
+input ModelSizeInput {
+  ne: Int
+  eq: Int
+  le: Int
+  lt: Int
+  ge: Int
+  gt: Int
+  between: [Int]
+}
+
+enum ModelSortDirection {
+  ASC
+  DESC
+}
+
+type ModelPlayerConnection @aws_api_key @aws_iam {
+  items: [Player]!
+  nextToken: String
+}
+
+input ModelPlayerMatchStatusInput {
+  eq: PlayerMatchStatus
+  ne: PlayerMatchStatus
+}
+
+input ModelPlayerFilterInput {
+  playerId: ModelStringInput
+  player2Id: ModelStringInput
+  player1Ready: ModelBooleanInput
+  player2Ready: ModelBooleanInput
+  matchStatus: ModelPlayerMatchStatusInput
+  createdAt: ModelStringInput
+  updatedAt: ModelStringInput
+  id: ModelIDInput
+  and: [ModelPlayerFilterInput]
+  or: [ModelPlayerFilterInput]
+  not: ModelPlayerFilterInput
+}
+
+type Query {
+  getPlayer(id: ID!): Player @aws_api_key @aws_iam
+  listPlayers(filter: ModelPlayerFilterInput, limit: Int, nextToken: String): ModelPlayerConnection @aws_api_key @aws_iam
+}
+
+input ModelPlayerConditionInput {
+  playerId: ModelStringInput
+  player2Id: ModelStringInput
+  player1Ready: ModelBooleanInput
+  player2Ready: ModelBooleanInput
+  matchStatus: ModelPlayerMatchStatusInput
+  createdAt: ModelStringInput
+  updatedAt: ModelStringInput
+  and: [ModelPlayerConditionInput]
+  or: [ModelPlayerConditionInput]
+  not: ModelPlayerConditionInput
+}
+
+input CreatePlayerInput {
+  playerId: String
+  player2Id: String
+  player1Ready: Boolean
+  player2Ready: Boolean
+  matchStatus: PlayerMatchStatus
+  createdAt: AWSDateTime
+  updatedAt: AWSDateTime
+  id: ID
+}
+
+input UpdatePlayerInput {
+  playerId: String
+  player2Id: String
+  player1Ready: Boolean
+  player2Ready: Boolean
+  matchStatus: PlayerMatchStatus
+  createdAt: AWSDateTime
+  updatedAt: AWSDateTime
+  id: ID!
+}
+
+input DeletePlayerInput {
+  id: ID!
+}
+
+type Mutation {
+  createPlayer(input: CreatePlayerInput!, condition: ModelPlayerConditionInput): Player @aws_api_key @aws_iam
+  updatePlayer(input: UpdatePlayerInput!, condition: ModelPlayerConditionInput): Player @aws_api_key @aws_iam
+  deletePlayer(input: DeletePlayerInput!, condition: ModelPlayerConditionInput): Player @aws_api_key @aws_iam
+}
+
+input ModelSubscriptionPlayerFilterInput {
+  playerId: ModelSubscriptionStringInput
+  player2Id: ModelSubscriptionStringInput
+  player1Ready: ModelSubscriptionBooleanInput
+  player2Ready: ModelSubscriptionBooleanInput
+  matchStatus: ModelSubscriptionStringInput
+  createdAt: ModelSubscriptionStringInput
+  updatedAt: ModelSubscriptionStringInput
+  id: ModelSubscriptionIDInput
+  and: [ModelSubscriptionPlayerFilterInput]
+  or: [ModelSubscriptionPlayerFilterInput]
+}
+
+type Subscription {
+  onCreatePlayer(filter: ModelSubscriptionPlayerFilterInput): Player @aws_subscribe(mutations: ["createPlayer"]) @aws_api_key @aws_iam
+  onUpdatePlayer(filter: ModelSubscriptionPlayerFilterInput): Player @aws_subscribe(mutations: ["updatePlayer"]) @aws_api_key @aws_iam
+  onDeletePlayer(filter: ModelSubscriptionPlayerFilterInput): Player @aws_subscribe(mutations: ["deletePlayer"]) @aws_api_key @aws_iam
+}

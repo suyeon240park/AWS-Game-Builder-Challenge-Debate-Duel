@@ -1,0 +1,1464 @@
+{
+  "version": "38.0.1",
+  "artifacts": {
+    "amplify-debateduel-lilyl-sandbox-48173f5855.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "amplify-debateduel-lilyl-sandbox-48173f5855.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "amplify-debateduel-lilyl-sandbox-48173f5855": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://unknown-account/unknown-region",
+      "properties": {
+        "templateFile": "amplify-debateduel-lilyl-sandbox-48173f5855.template.json",
+        "terminationProtection": false,
+        "tags": {
+          "amplify:deployment-type": "sandbox",
+          "created-by": "amplify"
+        },
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-deploy-role-${AWS::AccountId}-${AWS::Region}",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-cfn-exec-role-${AWS::AccountId}-${AWS::Region}",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/e81bcbaadc1ba5785972d4e90562699f0e45e83ee3f5dfcad8237a1e148c7ee5.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "amplify-debateduel-lilyl-sandbox-48173f5855.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-lookup-role-${AWS::AccountId}-${AWS::Region}",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "amplify-debateduel-lilyl-sandbox-48173f5855.assets"
+      ],
+      "metadata": {
+        "/amplify-debateduel-lilyl-sandbox-48173f5855": [
+          {
+            "type": "aws:cdk:stack-tags",
+            "data": [
+              {
+                "Key": "amplify:deployment-type",
+                "Value": "sandbox"
+              },
+              {
+                "Key": "created-by",
+                "Value": "amplify"
+              }
+            ]
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/deploymentType": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "deploymentType"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/region": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "region"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GraphQLAPI/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "amplifyDataGraphQLAPI42A6FA33"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GraphQLAPI/TransformerSchema": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "amplifyDataGraphQLAPITransformerSchemaFF50A789"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GraphQLAPI/DefaultApiKey": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "amplifyDataGraphQLAPIDefaultApiKey1C8ED374"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GraphQLAPI/NONE_DS": [
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "NONE_DS"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GraphQLAPI/NONE_DS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "amplifyDataGraphQLAPINONEDS684BF699"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "NONE_DS"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/AmplifyTableManager/AmplifyManagedTableIsCompleteRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AmplifyManagedTableIsCompleteRoleF825222C"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/AmplifyTableManager/AmplifyManagedTableOnEventRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AmplifyManagedTableOnEventRoleB4E71DEA"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/AmplifyTableManager/AmplifyManagedTableOnEventRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AmplifyManagedTableOnEventRoleDefaultPolicyF6DABCB6"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/AmplifyTableManager/TableManagerCustomProvider/framework-onEvent/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TableManagerCustomProviderframeworkonEvent1DFC2ECC"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/AmplifyTableManager/TableManagerCustomProvider/framework-isComplete/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TableManagerCustomProviderframeworkisComplete2E51021B"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/AmplifyTableManager/AmplifyTableWaiterStateMachine/Role/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AmplifyTableWaiterStateMachineRole470BE899"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/AmplifyTableManager/AmplifyTableWaiterStateMachine/Role/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AmplifyTableWaiterStateMachineRoleDefaultPolicy89F3836A"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/AmplifyTableManager/AmplifyTableWaiterStateMachine/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AmplifyTableWaiterStateMachine060600BC"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/AmplifyTableManager/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/AmplifyTableManager/CDKMetadata/Condition": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadataAvailable"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/AmplifyTableManager/reference-to-amplifydebateduellilylsandbox48173f5855dataamplifyDataGraphQLAPI99159CCEApiId": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "referencetoamplifydebateduellilylsandbox48173f5855dataamplifyDataGraphQLAPI99159CCEApiId"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/AmplifyTableManager/amplifydebateduellilylsandbox48173f5855dataamplifyDataAmplifyTableManagerTableManagerCustomProviderframeworkonEventE14834E5Arn": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "amplifydebateduellilylsandbox48173f5855dataamplifyDataAmplifyTableManagerTableManagerCustomProviderframeworkonEventE14834E5Arn"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/AmplifyTableManager.NestedStack/AmplifyTableManager.NestedStackResource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "amplifyDataAmplifyTableManagerNestedStackAmplifyTableManagerNestedStackResource86290833"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/DynamoDBModelTableReadIOPS": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DynamoDBModelTableReadIOPS"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/DynamoDBModelTableWriteIOPS": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DynamoDBModelTableWriteIOPS"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/DynamoDBBillingMode": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DynamoDBBillingMode"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/DynamoDBEnablePointInTimeRecovery": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DynamoDBEnablePointInTimeRecovery"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/DynamoDBEnableServerSideEncryption": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DynamoDBEnableServerSideEncryption"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/HasEnvironmentParameter": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "HasEnvironmentParameter"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/ShouldUseServerSideEncryption": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ShouldUseServerSideEncryption"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/ShouldUsePayPerRequestBilling": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ShouldUsePayPerRequestBilling"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/ShouldUsePointInTimeRecovery": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ShouldUsePointInTimeRecovery"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/MatchTable": [
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "Match"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/MatchTable/Default/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MatchTable"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "Match"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/CustomTableMatchTable": [
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "Match"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/GetAttMatchTableStreamArn": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GetAttMatchTableStreamArn"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/GetAttMatchTableName": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GetAttMatchTableName"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/MatchIAMRole": [
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "MatchIAMRole"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/MatchIAMRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MatchIAMRole49B859E5"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "MatchIAMRole"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/MatchDataSource": [
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "MatchTable"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/MatchDataSource/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MatchDataSource"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "MatchTable"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/QuerygetMatchauth0Function/QuerygetMatchauth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "QuerygetMatchauth0FunctionQuerygetMatchauth0FunctionAppSyncFunction82AE3811"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "QuerygetMatchauth0Function"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/QuerygetMatchpostAuth0Function/QuerygetMatchpostAuth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "QuerygetMatchpostAuth0FunctionQuerygetMatchpostAuth0FunctionAppSyncFunction1BA4D5FB"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "QuerygetMatchpostAuth0Function"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/QueryGetMatchDataResolverFn/QueryGetMatchDataResolverFn.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "QueryGetMatchDataResolverFnQueryGetMatchDataResolverFnAppSyncFunction742547CF"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "QueryGetMatchDataResolverFn"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/queryGetMatchResolver": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GetMatchResolver"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "Query.getMatch"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/QuerylistMatchesauth0Function/QuerylistMatchesauth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "QuerylistMatchesauth0FunctionQuerylistMatchesauth0FunctionAppSyncFunction5BDE4D39"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "QuerylistMatchesauth0Function"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/QuerylistMatchespostAuth0Function/QuerylistMatchespostAuth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "QuerylistMatchespostAuth0FunctionQuerylistMatchespostAuth0FunctionAppSyncFunctionB67632F5"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "QuerylistMatchespostAuth0Function"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/QueryListMatchesDataResolverFn/QueryListMatchesDataResolverFn.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "QueryListMatchesDataResolverFnQueryListMatchesDataResolverFnAppSyncFunctionA21F36C1"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "QueryListMatchesDataResolverFn"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/queryListMatchesResolver": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ListMatchResolver"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "Query.listMatches"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/MutationcreateMatchinit0Function/MutationcreateMatchinit0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MutationcreateMatchinit0FunctionMutationcreateMatchinit0FunctionAppSyncFunction3924C5A2"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "MutationcreateMatchinit0Function"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/MutationcreateMatchauth0Function/MutationcreateMatchauth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MutationcreateMatchauth0FunctionMutationcreateMatchauth0FunctionAppSyncFunction0869976D"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "MutationcreateMatchauth0Function"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/MutationcreateMatchpostAuth0Function/MutationcreateMatchpostAuth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MutationcreateMatchpostAuth0FunctionMutationcreateMatchpostAuth0FunctionAppSyncFunction9B1D4D4E"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "MutationcreateMatchpostAuth0Function"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/MutationCreateMatchDataResolverFn/MutationCreateMatchDataResolverFn.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MutationCreateMatchDataResolverFnMutationCreateMatchDataResolverFnAppSyncFunction20643302"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "MutationCreateMatchDataResolverFn"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/mutationCreateMatchResolver": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CreateMatchResolver"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "Mutation.createMatch"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/MutationupdateMatchinit0Function/MutationupdateMatchinit0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MutationupdateMatchinit0FunctionMutationupdateMatchinit0FunctionAppSyncFunctionD1691195"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "MutationupdateMatchinit0Function"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/MutationupdateMatchauth0Function/MutationupdateMatchauth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MutationupdateMatchauth0FunctionMutationupdateMatchauth0FunctionAppSyncFunctionF61468FF"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "MutationupdateMatchauth0Function"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/MutationupdateMatchpostAuth0Function/MutationupdateMatchpostAuth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MutationupdateMatchpostAuth0FunctionMutationupdateMatchpostAuth0FunctionAppSyncFunctionF5E0BBF7"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "MutationupdateMatchpostAuth0Function"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/MutationUpdateMatchDataResolverFn/MutationUpdateMatchDataResolverFn.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MutationUpdateMatchDataResolverFnMutationUpdateMatchDataResolverFnAppSyncFunction9A9220BA"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "MutationUpdateMatchDataResolverFn"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/mutationUpdateMatchResolver": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "UpdateMatchResolver"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "Mutation.updateMatch"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/MutationdeleteMatchauth0Function/MutationdeleteMatchauth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MutationdeleteMatchauth0FunctionMutationdeleteMatchauth0FunctionAppSyncFunctionF7759B39"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "MutationdeleteMatchauth0Function"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/MutationdeleteMatchpostAuth0Function/MutationdeleteMatchpostAuth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MutationdeleteMatchpostAuth0FunctionMutationdeleteMatchpostAuth0FunctionAppSyncFunction0AF7F94D"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "MutationdeleteMatchpostAuth0Function"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/MutationDeleteMatchDataResolverFn/MutationDeleteMatchDataResolverFn.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MutationDeleteMatchDataResolverFnMutationDeleteMatchDataResolverFnAppSyncFunction7499751F"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "MutationDeleteMatchDataResolverFn"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/mutationDeleteMatchResolver": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DeleteMatchResolver"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "Mutation.deleteMatch"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/SubscriptiononCreateMatchauth0Function/SubscriptiononCreateMatchauth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SubscriptiononCreateMatchauth0FunctionSubscriptiononCreateMatchauth0FunctionAppSyncFunctionA5B352EC"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "SubscriptiononCreateMatchauth0Function"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/SubscriptiononCreateMatchpostAuth0Function/SubscriptiononCreateMatchpostAuth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SubscriptiononCreateMatchpostAuth0FunctionSubscriptiononCreateMatchpostAuth0FunctionAppSyncFunction9A09764B"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "SubscriptiononCreateMatchpostAuth0Function"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/SubscriptionOnCreateMatchDataResolverFn/SubscriptionOnCreateMatchDataResolverFn.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SubscriptionOnCreateMatchDataResolverFnSubscriptionOnCreateMatchDataResolverFnAppSyncFunctionEB924D65"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "SubscriptionOnCreateMatchDataResolverFn"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/subscriptionOnCreateMatchResolver": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SubscriptiononCreateMatchResolver"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "Subscription.onCreateMatch"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/SubscriptiononUpdateMatchauth0Function/SubscriptiononUpdateMatchauth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SubscriptiononUpdateMatchauth0FunctionSubscriptiononUpdateMatchauth0FunctionAppSyncFunctionF13493E4"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "SubscriptiononUpdateMatchauth0Function"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/SubscriptiononUpdateMatchpostAuth0Function/SubscriptiononUpdateMatchpostAuth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SubscriptiononUpdateMatchpostAuth0FunctionSubscriptiononUpdateMatchpostAuth0FunctionAppSyncFunction4909DF5A"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "SubscriptiononUpdateMatchpostAuth0Function"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/SubscriptionOnUpdateMatchDataResolverFn/SubscriptionOnUpdateMatchDataResolverFn.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SubscriptionOnUpdateMatchDataResolverFnSubscriptionOnUpdateMatchDataResolverFnAppSyncFunction43F5D6A6"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "SubscriptionOnUpdateMatchDataResolverFn"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/subscriptionOnUpdateMatchResolver": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SubscriptiononUpdateMatchResolver"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "Subscription.onUpdateMatch"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/SubscriptiononDeleteMatchauth0Function/SubscriptiononDeleteMatchauth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SubscriptiononDeleteMatchauth0FunctionSubscriptiononDeleteMatchauth0FunctionAppSyncFunctionB980EBDF"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "SubscriptiononDeleteMatchauth0Function"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/SubscriptiononDeleteMatchpostAuth0Function/SubscriptiononDeleteMatchpostAuth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SubscriptiononDeleteMatchpostAuth0FunctionSubscriptiononDeleteMatchpostAuth0FunctionAppSyncFunction5BE6041F"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "SubscriptiononDeleteMatchpostAuth0Function"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/SubscriptionOnDeleteMatchDataResolverFn/SubscriptionOnDeleteMatchDataResolverFn.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SubscriptionOnDeleteMatchDataResolverFnSubscriptionOnDeleteMatchDataResolverFnAppSyncFunctionABD99418"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "SubscriptionOnDeleteMatchDataResolverFn"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/subscriptionOnDeleteMatchResolver": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SubscriptiononDeleteMatchResolver"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "Subscription.onDeleteMatch"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/CDKMetadata/Condition": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadataAvailable"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/reference-to-amplifydebateduellilylsandbox48173f5855dataamplifyDataAmplifyTableManagerNestedStackAmplifyTableManagerNestedStackResource223A44E6Outputs.amplifydebateduellilylsandbox48173f5855dataamplifyDataAmplifyTableManagerTableManagerCustomProviderframeworkonEventE14834E5Arn": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "referencetoamplifydebateduellilylsandbox48173f5855dataamplifyDataAmplifyTableManagerNestedStackAmplifyTableManagerNestedStackResource223A44E6Outputsamplifydebateduellilylsandbox48173f5855dataamplifyDataAmplifyTableManagerTableManagerCustomP23F5E299"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/reference-to-amplifydebateduellilylsandbox48173f5855dataamplifyDataGraphQLAPI99159CCEApiId": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "referencetoamplifydebateduellilylsandbox48173f5855dataamplifyDataGraphQLAPI99159CCEApiId"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/reference-to-amplifydebateduellilylsandbox48173f5855dataamplifyDataGraphQLAPINONEDS3734F344Name": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "referencetoamplifydebateduellilylsandbox48173f5855dataamplifyDataGraphQLAPINONEDS3734F344Name"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match.NestedStack/Match.NestedStackResource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "amplifyDataMatchNestedStackMatchNestedStackResource69BE50E4"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Player/DynamoDBModelTableReadIOPS": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DynamoDBModelTableReadIOPS"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Player/DynamoDBModelTableWriteIOPS": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DynamoDBModelTableWriteIOPS"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Player/DynamoDBBillingMode": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DynamoDBBillingMode"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Player/DynamoDBEnablePointInTimeRecovery": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DynamoDBEnablePointInTimeRecovery"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Player/DynamoDBEnableServerSideEncryption": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DynamoDBEnableServerSideEncryption"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Player/HasEnvironmentParameter": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "HasEnvironmentParameter"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Player/ShouldUseServerSideEncryption": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ShouldUseServerSideEncryption"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Player/ShouldUsePayPerRequestBilling": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ShouldUsePayPerRequestBilling"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Player/ShouldUsePointInTimeRecovery": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ShouldUsePointInTimeRecovery"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Player/PlayerTable": [
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "Player"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Player/PlayerTable/Default/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PlayerTable"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "Player"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Player/CustomTablePlayerTable": [
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "Player"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Player/GetAttPlayerTableStreamArn": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GetAttPlayerTableStreamArn"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Player/GetAttPlayerTableName": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GetAttPlayerTableName"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Player/PlayerIAMRole": [
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "PlayerIAMRole"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Player/PlayerIAMRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PlayerIAMRole8C75BE38"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "PlayerIAMRole"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Player/PlayerDataSource": [
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "PlayerTable"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Player/PlayerDataSource/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PlayerDataSource"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "PlayerTable"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Player/QuerygetPlayerauth0Function/QuerygetPlayerauth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "QuerygetPlayerauth0FunctionQuerygetPlayerauth0FunctionAppSyncFunctionFF2AEE84"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "QuerygetPlayerauth0Function"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Player/QuerygetPlayerpostAuth0Function/QuerygetPlayerpostAuth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "QuerygetPlayerpostAuth0FunctionQuerygetPlayerpostAuth0FunctionAppSyncFunctionAFDED99F"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "QuerygetPlayerpostAuth0Function"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Player/QueryGetPlayerDataResolverFn/QueryGetPlayerDataResolverFn.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "QueryGetPlayerDataResolverFnQueryGetPlayerDataResolverFnAppSyncFunction6B95B04F"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "QueryGetPlayerDataResolverFn"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Player/queryGetPlayerResolver": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GetPlayerResolver"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "Query.getPlayer"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Player/QuerylistPlayersauth0Function/QuerylistPlayersauth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "QuerylistPlayersauth0FunctionQuerylistPlayersauth0FunctionAppSyncFunctionF14DA1D4"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "QuerylistPlayersauth0Function"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Player/QuerylistPlayerspostAuth0Function/QuerylistPlayerspostAuth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "QuerylistPlayerspostAuth0FunctionQuerylistPlayerspostAuth0FunctionAppSyncFunction3E7E0ABF"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "QuerylistPlayerspostAuth0Function"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Player/QueryListPlayersDataResolverFn/QueryListPlayersDataResolverFn.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "QueryListPlayersDataResolverFnQueryListPlayersDataResolverFnAppSyncFunction3530AA3C"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "QueryListPlayersDataResolverFn"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Player/queryListPlayersResolver": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ListPlayerResolver"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "Query.listPlayers"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Player/MutationcreatePlayerinit0Function/MutationcreatePlayerinit0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MutationcreatePlayerinit0FunctionMutationcreatePlayerinit0FunctionAppSyncFunction902FFE7B"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "MutationcreatePlayerinit0Function"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Player/MutationcreatePlayerauth0Function/MutationcreatePlayerauth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MutationcreatePlayerauth0FunctionMutationcreatePlayerauth0FunctionAppSyncFunction83A973C0"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "MutationcreatePlayerauth0Function"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Player/MutationcreatePlayerpostAuth0Function/MutationcreatePlayerpostAuth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MutationcreatePlayerpostAuth0FunctionMutationcreatePlayerpostAuth0FunctionAppSyncFunction441CB81F"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "MutationcreatePlayerpostAuth0Function"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Player/MutationCreatePlayerDataResolverFn/MutationCreatePlayerDataResolverFn.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MutationCreatePlayerDataResolverFnMutationCreatePlayerDataResolverFnAppSyncFunctionC4EBD216"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "MutationCreatePlayerDataResolverFn"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Player/mutationCreatePlayerResolver": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CreatePlayerResolver"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "Mutation.createPlayer"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Player/MutationupdatePlayerinit0Function/MutationupdatePlayerinit0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MutationupdatePlayerinit0FunctionMutationupdatePlayerinit0FunctionAppSyncFunctionB8211684"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "MutationupdatePlayerinit0Function"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Player/MutationupdatePlayerauth0Function/MutationupdatePlayerauth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MutationupdatePlayerauth0FunctionMutationupdatePlayerauth0FunctionAppSyncFunction66102CD9"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "MutationupdatePlayerauth0Function"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Player/MutationupdatePlayerpostAuth0Function/MutationupdatePlayerpostAuth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MutationupdatePlayerpostAuth0FunctionMutationupdatePlayerpostAuth0FunctionAppSyncFunctionB8CE27DC"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "MutationupdatePlayerpostAuth0Function"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Player/MutationUpdatePlayerDataResolverFn/MutationUpdatePlayerDataResolverFn.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MutationUpdatePlayerDataResolverFnMutationUpdatePlayerDataResolverFnAppSyncFunctionC345EE2A"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "MutationUpdatePlayerDataResolverFn"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Player/mutationUpdatePlayerResolver": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "UpdatePlayerResolver"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "Mutation.updatePlayer"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Player/MutationdeletePlayerauth0Function/MutationdeletePlayerauth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MutationdeletePlayerauth0FunctionMutationdeletePlayerauth0FunctionAppSyncFunction4CCCAA20"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "MutationdeletePlayerauth0Function"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Player/MutationdeletePlayerpostAuth0Function/MutationdeletePlayerpostAuth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MutationdeletePlayerpostAuth0FunctionMutationdeletePlayerpostAuth0FunctionAppSyncFunction52B85B3E"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "MutationdeletePlayerpostAuth0Function"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Player/MutationDeletePlayerDataResolverFn/MutationDeletePlayerDataResolverFn.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MutationDeletePlayerDataResolverFnMutationDeletePlayerDataResolverFnAppSyncFunction7D2737B3"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "MutationDeletePlayerDataResolverFn"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Player/mutationDeletePlayerResolver": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DeletePlayerResolver"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "Mutation.deletePlayer"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Player/SubscriptiononCreatePlayerauth0Function/SubscriptiononCreatePlayerauth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SubscriptiononCreatePlayerauth0FunctionSubscriptiononCreatePlayerauth0FunctionAppSyncFunction56F2CCFF"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "SubscriptiononCreatePlayerauth0Function"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Player/SubscriptiononCreatePlayerpostAuth0Function/SubscriptiononCreatePlayerpostAuth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SubscriptiononCreatePlayerpostAuth0FunctionSubscriptiononCreatePlayerpostAuth0FunctionAppSyncFunctionABBFBF4D"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "SubscriptiononCreatePlayerpostAuth0Function"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Player/SubscriptionOnCreatePlayerDataResolverFn/SubscriptionOnCreatePlayerDataResolverFn.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SubscriptionOnCreatePlayerDataResolverFnSubscriptionOnCreatePlayerDataResolverFnAppSyncFunctionA71B87F8"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "SubscriptionOnCreatePlayerDataResolverFn"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Player/subscriptionOnCreatePlayerResolver": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SubscriptiononCreatePlayerResolver"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "Subscription.onCreatePlayer"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Player/SubscriptiononUpdatePlayerauth0Function/SubscriptiononUpdatePlayerauth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SubscriptiononUpdatePlayerauth0FunctionSubscriptiononUpdatePlayerauth0FunctionAppSyncFunction245B8BBC"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "SubscriptiononUpdatePlayerauth0Function"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Player/SubscriptiononUpdatePlayerpostAuth0Function/SubscriptiononUpdatePlayerpostAuth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SubscriptiononUpdatePlayerpostAuth0FunctionSubscriptiononUpdatePlayerpostAuth0FunctionAppSyncFunction8E239C57"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "SubscriptiononUpdatePlayerpostAuth0Function"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Player/SubscriptionOnUpdatePlayerDataResolverFn/SubscriptionOnUpdatePlayerDataResolverFn.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SubscriptionOnUpdatePlayerDataResolverFnSubscriptionOnUpdatePlayerDataResolverFnAppSyncFunction7642B7F0"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "SubscriptionOnUpdatePlayerDataResolverFn"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Player/subscriptionOnUpdatePlayerResolver": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SubscriptiononUpdatePlayerResolver"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "Subscription.onUpdatePlayer"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Player/SubscriptiononDeletePlayerauth0Function/SubscriptiononDeletePlayerauth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SubscriptiononDeletePlayerauth0FunctionSubscriptiononDeletePlayerauth0FunctionAppSyncFunction203C355B"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "SubscriptiononDeletePlayerauth0Function"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Player/SubscriptiononDeletePlayerpostAuth0Function/SubscriptiononDeletePlayerpostAuth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SubscriptiononDeletePlayerpostAuth0FunctionSubscriptiononDeletePlayerpostAuth0FunctionAppSyncFunction10D7F912"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "SubscriptiononDeletePlayerpostAuth0Function"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Player/SubscriptionOnDeletePlayerDataResolverFn/SubscriptionOnDeletePlayerDataResolverFn.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SubscriptionOnDeletePlayerDataResolverFnSubscriptionOnDeletePlayerDataResolverFnAppSyncFunction7922176A"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "SubscriptionOnDeletePlayerDataResolverFn"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Player/subscriptionOnDeletePlayerResolver": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SubscriptiononDeletePlayerResolver"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "Subscription.onDeletePlayer"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Player/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Player/CDKMetadata/Condition": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadataAvailable"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Player/reference-to-amplifydebateduellilylsandbox48173f5855dataamplifyDataAmplifyTableManagerNestedStackAmplifyTableManagerNestedStackResource223A44E6Outputs.amplifydebateduellilylsandbox48173f5855dataamplifyDataAmplifyTableManagerTableManagerCustomProviderframeworkonEventE14834E5Arn": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "referencetoamplifydebateduellilylsandbox48173f5855dataamplifyDataAmplifyTableManagerNestedStackAmplifyTableManagerNestedStackResource223A44E6Outputsamplifydebateduellilylsandbox48173f5855dataamplifyDataAmplifyTableManagerTableManagerCustomP23F5E299"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Player/reference-to-amplifydebateduellilylsandbox48173f5855dataamplifyDataGraphQLAPI99159CCEApiId": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "referencetoamplifydebateduellilylsandbox48173f5855dataamplifyDataGraphQLAPI99159CCEApiId"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Player/reference-to-amplifydebateduellilylsandbox48173f5855dataamplifyDataGraphQLAPINONEDS3734F344Name": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "referencetoamplifydebateduellilylsandbox48173f5855dataamplifyDataGraphQLAPINONEDS3734F344Name"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Player.NestedStack/Player.NestedStackResource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "amplifyDataPlayerNestedStackPlayerNestedStackResource9B60BC82"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/AmplifyCodegenAssets/AmplifyCodegenAssetsBucket/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "amplifyDataAmplifyCodegenAssetsAmplifyCodegenAssetsBucket9CCB4ACA"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/AmplifyCodegenAssets/AmplifyCodegenAssetsBucket/Policy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "amplifyDataAmplifyCodegenAssetsAmplifyCodegenAssetsBucketPolicyF1C1C548"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/AmplifyCodegenAssets/AmplifyCodegenAssetsBucket/AutoDeleteObjectsCustomResource/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "amplifyDataAmplifyCodegenAssetsAmplifyCodegenAssetsBucketAutoDeleteObjectsCustomResource437F26F5"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/AmplifyCodegenAssets/AmplifyCodegenAssetsDeployment/AwsCliLayer/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "amplifyDataAmplifyCodegenAssetsAmplifyCodegenAssetsDeploymentAwsCliLayerE322F905"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/AmplifyCodegenAssets/AmplifyCodegenAssetsDeployment/CustomResource-1536MiB/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "amplifyDataAmplifyCodegenAssetsAmplifyCodegenAssetsDeploymentCustomResource1536MiB21775929"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/DynamoDBModelTableReadIOPS": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DynamoDBModelTableReadIOPS"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/DynamoDBModelTableWriteIOPS": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DynamoDBModelTableWriteIOPS"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/DynamoDBBillingMode": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DynamoDBBillingMode"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/DynamoDBEnablePointInTimeRecovery": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DynamoDBEnablePointInTimeRecovery"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/DynamoDBEnableServerSideEncryption": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DynamoDBEnableServerSideEncryption"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/LatestNodeRuntimeMap": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LatestNodeRuntimeMap"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/Custom::S3AutoDeleteObjectsCustomResourceProvider": [
+          {
+            "type": "aws:cdk:is-custom-resource-handler-customResourceProvider",
+            "data": true
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/Custom::S3AutoDeleteObjectsCustomResourceProvider/Role": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/Custom::S3AutoDeleteObjectsCustomResourceProvider/Handler": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/Custom::CDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C1536MiB": [
+          {
+            "type": "aws:cdk:is-custom-resource-handler-singleton",
+            "data": true
+          },
+          {
+            "type": "aws:cdk:is-custom-resource-handler-runtime-family",
+            "data": 2
+          },
+          {
+            "type": "aws:cdk:is-custom-resource-handler-singleton",
+            "data": true
+          },
+          {
+            "type": "aws:cdk:is-custom-resource-handler-runtime-family",
+            "data": 2
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/Custom::CDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C1536MiB/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C1536MiBServiceRoleA41FC8C2"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/Custom::CDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C1536MiB/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C1536MiBServiceRoleDefaultPolicyFF1C635B"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/Custom::CDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C1536MiB/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C1536MiBC5D8AB21"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/modelIntrospectionSchemaBucket/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "modelIntrospectionSchemaBucketF566B665"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/modelIntrospectionSchemaBucket/Policy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "modelIntrospectionSchemaBucketPolicy4DAB0D15"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/modelIntrospectionSchemaBucket/AutoDeleteObjectsCustomResource/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "modelIntrospectionSchemaBucketAutoDeleteObjectsCustomResourceFE57309F"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/modelIntrospectionSchemaBucketDeployment/AwsCliLayer/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "modelIntrospectionSchemaBucketDeploymentAwsCliLayer13C432F7"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/modelIntrospectionSchemaBucketDeployment/CustomResource-1536MiB/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "modelIntrospectionSchemaBucketDeploymentCustomResource1536MiB104B97EC"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/AMPLIFY_DATA_GRAPHQL_ENDPOINTParameter/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AMPLIFYDATAGRAPHQLENDPOINTParameter1C2CBB16"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/AMPLIFY_DATA_MODEL_INTROSPECTION_SCHEMA_BUCKET_NAMEParameter/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AMPLIFYDATAMODELINTROSPECTIONSCHEMABUCKETNAMEParameter47BF4F44"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/AMPLIFY_DATA_MODEL_INTROSPECTION_SCHEMA_KEYParameter/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AMPLIFYDATAMODELINTROSPECTIONSCHEMAKEYParameterB6AEAE8A"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/AMPLIFY_DATA_DEFAULT_NAMEParameter/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AMPLIFYDATADEFAULTNAMEParameterE7C23CC4"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/CDKMetadata/Condition": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadataAvailable"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifydebateduellilylsandbox48173f5855dataamplifyDataGraphQLAPI99159CCEApiId": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "amplifydebateduellilylsandbox48173f5855dataamplifyDataGraphQLAPI99159CCEApiId"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifydebateduellilylsandbox48173f5855dataamplifyDataGraphQLAPI99159CCEGraphQLUrl": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "amplifydebateduellilylsandbox48173f5855dataamplifyDataGraphQLAPI99159CCEGraphQLUrl"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifydebateduellilylsandbox48173f5855dataamplifyDataAmplifyCodegenAssetsAmplifyCodegenAssetsDeploymentCustomResource1536MiB26C59858DestinationBucketArn": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "amplifydebateduellilylsandbox48173f5855dataamplifyDataAmplifyCodegenAssetsAmplifyCodegenAssetsDeploymentCustomResource1536MiB26C59858DestinationBucketArn"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifydebateduellilylsandbox48173f5855dataamplifyDataGraphQLAPIDefaultApiKeyE4526556ApiKey": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "amplifydebateduellilylsandbox48173f5855dataamplifyDataGraphQLAPIDefaultApiKeyE4526556ApiKey"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data.NestedStack/data.NestedStackResource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "data7552DF31"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/awsAppsyncApiId": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "awsAppsyncApiId"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/awsAppsyncApiEndpoint": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "awsAppsyncApiEndpoint"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/awsAppsyncAuthenticationType": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "awsAppsyncAuthenticationType"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/awsAppsyncRegion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "awsAppsyncRegion"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/amplifyApiModelSchemaS3Uri": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "amplifyApiModelSchemaS3Uri"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/awsAppsyncApiKey": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "awsAppsyncApiKey"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/awsAppsyncAdditionalAuthenticationTypes": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "awsAppsyncAdditionalAuthenticationTypes"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/CDKMetadata/Condition": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadataAvailable"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "amplify-debateduel-lilyl-sandbox-48173f5855"
+    },
+    "Tree": {
+      "type": "cdk:tree",
+      "properties": {
+        "file": "tree.json"
+      }
+    }
+  }
+}
