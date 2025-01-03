@@ -1,6 +1,7 @@
 "use client"
 import { useState } from 'react'
 import { Button } from "@/components/ui/button"
+import NicknameEntry from '../components/NicknameEntry'
 
 // Configure the Amplify library with the Amplify client configuration file
 import { Amplify } from 'aws-amplify';
@@ -9,6 +10,7 @@ import outputs from '../amplify_outputs.json';
 Amplify.configure(outputs);
 
 export default function Home() {
+  const [showNicknameEntry, setShowNicknameEntry] = useState(false)
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-amber-100 to-amber-200 flex flex-col items-center justify-center p-4">
@@ -18,6 +20,13 @@ export default function Home() {
           <p className="text-xl text-gray-600 italic">Engage in epic battles of wit!</p>
         </div>
 
+        <Button 
+          className="w-full text-lg py-6" 
+          size="lg"
+          onClick={() => setShowNicknameEntry(true)}
+        >
+          Play Now
+        </Button>
 
         <div className="space-y-4">
           <h2 className="text-2xl font-serif font-semibold text-gray-800 text-center">How to Play</h2>
@@ -36,6 +45,9 @@ export default function Home() {
         </div>
       </div>
 
+      {showNicknameEntry && (
+        <NicknameEntry onClose={() => setShowNicknameEntry(false)} />
+      )}
     </div>
   )
 }
