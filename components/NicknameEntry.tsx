@@ -31,11 +31,10 @@ export default function NicknameEntry({ onClose }: NicknameEntryProps) {
         nickname: nickname.trim()
       })
 
-      localStorage.setItem('playerId', playerId)
-      localStorage.setItem('playerNickname', nickname.trim())
-
       onClose() // Call onClose after successful creation
       router.push('/match-room')
+      // Pass playerId as query parameter
+      router.push(`/match-room?playerId=${playerId}`)
     } catch (error) {
       console.error('Error creating player:', error)
       setIsLoading(false)
@@ -68,8 +67,7 @@ export default function NicknameEntry({ onClose }: NicknameEntryProps) {
               {isLoading ? 'Creating...' : 'Enter Match Room'}
             </Button>
             <Button 
-              type="button" 
-              variant="outline"
+              type="button"
               onClick={onClose}
               disabled={isLoading}
             >
