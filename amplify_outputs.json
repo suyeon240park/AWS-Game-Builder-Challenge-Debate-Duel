@@ -20,6 +20,13 @@
               "isRequired": true,
               "attributes": []
             },
+            "matchId": {
+              "name": "matchId",
+              "isArray": false,
+              "type": "String",
+              "isRequired": true,
+              "attributes": []
+            },
             "player1Id": {
               "name": "player1Id",
               "isArray": false,
@@ -38,14 +45,14 @@
               "name": "player1Ready",
               "isArray": false,
               "type": "Boolean",
-              "isRequired": true,
+              "isRequired": false,
               "attributes": []
             },
             "player2Ready": {
               "name": "player2Ready",
               "isArray": false,
               "type": "Boolean",
-              "isRequired": true,
+              "isRequired": false,
               "attributes": []
             },
             "matchStatus": {
@@ -75,7 +82,7 @@
               "name": "topic",
               "isArray": false,
               "type": "String",
-              "isRequired": true,
+              "isRequired": false,
               "attributes": []
             },
             "createdAt": {

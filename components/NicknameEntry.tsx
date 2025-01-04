@@ -24,19 +24,50 @@ export default function NicknameEntry({ onClose }: NicknameEntryProps) {
 
     setIsLoading(true)
     try {
-      const playerId = `player_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+      // Create a new player
+      const playerId = `player_${Date.now().toString(36)}`
+      console.log(playerId)
       
       await client.models.Player.create({
         playerId: playerId,
         nickname: nickname.trim()
       })
 
-      onClose() // Call onClose after successful creation
-      router.push('/match-room')
-      // Pass playerId as query parameter
-      router.push(`/match-room?playerId=${playerId}`)
-    } catch (error) {
-      console.error('Error creating player:', error)
+      // Check for existing WAITING matches
+      const { data: waitingMatches } = await client.models.Match.list({
+        filter: {
+          and: [
+            { matchStatus: { eq: 'WAITING' } },
+            { player2Id: { attributeExists: false } }
+          ]
+        }
+      })
+  
+      let matchId: string
+  
+      // If waiting match exists, join the game
+      if (waitingMatches.length > 0) {
+        matchId = waitingMatches[0].matchId
+      }
+      // If no waiting match, create a new match
+      else {
+        matchId = crypto.randomUUID()
+        const newMatch = await client.models.Match.create({
+          matchId: matchId,
+          player1Id: playerId,
+          matchStatus: 'WAITING'
+        })
+      }
+
+      // Redirect to match room with matchId as query parameter
+      onClose()
+      router.push(`/match-room?matchId=${matchId}`)
+    }
+    catch (error) {
+      console.error('Error joining match:', error)
+      setIsLoading(false)
+    }
+    finally {
       setIsLoading(false)
     }
   }

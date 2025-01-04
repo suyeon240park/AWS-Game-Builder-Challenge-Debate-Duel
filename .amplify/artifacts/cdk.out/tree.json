@@ -83,7 +83,7 @@
                               ]
                             },
                             "definitionS3Location": {
-                              "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/fd895d59f24763ddb97ffe071deefbbd057d2908ff119e5082919b1876e523e9.graphql"
+                              "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/1f0f1427f471aa0a8df6e4b7bb8ac550cebc54cc9dd98124f55a0fc52ce8a9bb.graphql"
                             }
                           }
                         },
@@ -104,7 +104,7 @@
                                 "ApiId"
                               ]
                             },
-                            "expires": 1738377427
+                            "expires": 1738606879
                           }
                         },
                         "constructInfo": {
@@ -1850,6 +1850,67 @@
                           "version": "10.4.2"
                         }
                       },
+                      "MutationcreateMatchinit1Function": {
+                        "id": "MutationcreateMatchinit1Function",
+                        "path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/MutationcreateMatchinit1Function",
+                        "children": {
+                          "Templateresolvers--Mutation.createMatch.init.2.req.vtl": {
+                            "id": "Templateresolvers--Mutation.createMatch.init.2.req.vtl",
+                            "path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/MutationcreateMatchinit1Function/Templateresolvers--Mutation.createMatch.init.2.req.vtl",
+                            "children": {
+                              "Stage": {
+                                "id": "Stage",
+                                "path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/MutationcreateMatchinit1Function/Templateresolvers--Mutation.createMatch.init.2.req.vtl/Stage",
+                                "constructInfo": {
+                                  "fqn": "aws-cdk-lib.AssetStaging",
+                                  "version": "2.173.4"
+                                }
+                              },
+                              "AssetBucket": {
+                                "id": "AssetBucket",
+                                "path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/MutationcreateMatchinit1Function/Templateresolvers--Mutation.createMatch.init.2.req.vtl/AssetBucket",
+                                "constructInfo": {
+                                  "fqn": "aws-cdk-lib.aws_s3.BucketBase",
+                                  "version": "2.173.4"
+                                }
+                              }
+                            },
+                            "constructInfo": {
+                              "fqn": "aws-cdk-lib.aws_s3_assets.Asset",
+                              "version": "2.173.4"
+                            }
+                          },
+                          "MutationcreateMatchinit1Function.AppSyncFunction": {
+                            "id": "MutationcreateMatchinit1Function.AppSyncFunction",
+                            "path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/MutationcreateMatchinit1Function/MutationcreateMatchinit1Function.AppSyncFunction",
+                            "attributes": {
+                              "aws:cdk:cloudformation:type": "AWS::AppSync::FunctionConfiguration",
+                              "aws:cdk:cloudformation:props": {
+                                "apiId": {
+                                  "Ref": "referencetoamplifydebateduellilylsandbox48173f5855dataamplifyDataGraphQLAPI99159CCEApiId"
+                                },
+                                "dataSourceName": {
+                                  "Ref": "referencetoamplifydebateduellilylsandbox48173f5855dataamplifyDataGraphQLAPINONEDS3734F344Name"
+                                },
+                                "functionVersion": "2018-05-29",
+                                "name": "MutationcreateMatchinit1Function",
+                                "requestMappingTemplateS3Location": {
+                                  "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/2a77d601b22b71d84ed197ebade5e64a71218d66c1ec50fb5a862b46c4457931.vtl"
+                                },
+                                "responseMappingTemplate": "$util.toJson({})"
+                              }
+                            },
+                            "constructInfo": {
+                              "fqn": "aws-cdk-lib.aws_appsync.CfnFunctionConfiguration",
+                              "version": "2.173.4"
+                            }
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "constructs.Construct",
+                          "version": "10.4.2"
+                        }
+                      },
                       "MutationcreateMatchauth0Function": {
                         "id": "MutationcreateMatchauth0Function",
                         "path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/MutationcreateMatchauth0Function",
@@ -2080,6 +2141,12 @@
                                 {
                                   "Fn::GetAtt": [
                                     "MutationcreateMatchinit0FunctionMutationcreateMatchinit0FunctionAppSyncFunction3924C5A2",
+                                    "FunctionId"
+                                  ]
+                                },
+                                {
+                                  "Fn::GetAtt": [
+                                    "MutationcreateMatchinit1FunctionMutationcreateMatchinit1FunctionAppSyncFunction4159D647",
                                     "FunctionId"
                                   ]
                                 },
@@ -3796,7 +3863,7 @@
                                   {
                                     "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
                                   },
-                                  "/659085661656338e66503a2da4db11344e4e36b5d1067c0b774393e850f247e9.json"
+                                  "/87ca4bcd05eb465f86090cc674fcaef4c65826e371d5146a0989a105e485b176.json"
                                 ]
                               ]
                             }
@@ -7965,7 +8032,7 @@
                           {
                             "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
                           },
-                          "/0921bc82c47efff4bc695aa113abad61e26f74091a50fef914682d3522150cb0.json"
+                          "/0ce88788aec66a7a179c1afd1f35f29f5f5148cdf9174789188132f52b8238e2.json"
                         ]
                       ]
                     }

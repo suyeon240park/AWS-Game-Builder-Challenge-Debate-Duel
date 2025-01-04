@@ -1,0 +1,30 @@
+type Match @model @auth(rules: [{allow: public, provider: apiKey}])
+{
+  matchId: String!
+  player1Id: String!
+  player2Id: String
+  player1Ready: Boolean!
+  player2Ready: Boolean!
+  matchStatus: MatchMatchStatus
+  currentTurnPlayerId: String
+  winner: String
+  topic: String!
+}
+
+type Player @model @auth(rules: [{allow: public, provider: apiKey}])
+{
+  playerId: String!
+  nickname: String!
+  currentMatchId: String
+  score: Int
+  turn: String
+  message: String
+}
+
+enum MatchMatchStatus {
+  WAITING
+  MATCHED
+  READY
+  IN_PROGRESS
+  FINISHED
+}

@@ -3,14 +3,15 @@ import { a, defineData, type ClientSchema } from '@aws-amplify/backend';
 const schema = a.schema({
   // 1. Match data
   Match: a.model({
+    matchId: a.string().required(),
     player1Id: a.string().required(),
     player2Id: a.string(),
-    player1Ready: a.boolean().required(),
-    player2Ready: a.boolean().required(),
+    player1Ready: a.boolean().default(false),
+    player2Ready: a.boolean().default(false),
     matchStatus: a.enum(['WAITING', 'MATCHED', 'READY', 'IN_PROGRESS', 'FINISHED']),
     currentTurnPlayerId: a.string(),
     winner: a.string(),
-    topic: a.string().required(),
+    topic: a.string(),
   })
   .authorization(allow => [allow.publicApiKey()]),
 

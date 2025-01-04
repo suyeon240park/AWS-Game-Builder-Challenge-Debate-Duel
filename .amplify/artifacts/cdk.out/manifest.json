@@ -22,7 +22,7 @@
         "validateOnSynth": false,
         "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-deploy-role-${AWS::AccountId}-${AWS::Region}",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-cfn-exec-role-${AWS::AccountId}-${AWS::Region}",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/e81bcbaadc1ba5785972d4e90562699f0e45e83ee3f5dfcad8237a1e148c7ee5.json",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/891b165ae06cbdbc19f9063e198d81a3fa3246430bb242558e9be202616209d1.json",
         "requiresBootstrapStackVersion": 6,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
@@ -385,6 +385,16 @@
           {
             "type": "graphqltransformer:resourceName",
             "data": "MutationcreateMatchinit0Function"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/MutationcreateMatchinit1Function/MutationcreateMatchinit1Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MutationcreateMatchinit1FunctionMutationcreateMatchinit1FunctionAppSyncFunction4159D647"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "MutationcreateMatchinit1Function"
           }
         ],
         "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/MutationcreateMatchauth0Function/MutationcreateMatchauth0Function.AppSyncFunction": [
