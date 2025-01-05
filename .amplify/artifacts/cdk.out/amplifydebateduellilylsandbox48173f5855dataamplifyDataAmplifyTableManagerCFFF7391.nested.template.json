@@ -443,7 +443,7 @@
   "CDKMetadata": {
    "Type": "AWS::CDK::Metadata",
    "Properties": {
-    "Analytics": "v2:deflate64:H4sIAAAAAAAA/zWNwQqDMBBEv8V73FYt9FyFHkvRD5A1WWWrJuAmlSL+e1Hx9GZ4MJNCcs/gFuEssTZ9PHADy4vEk6k86l7hLPXCOMJSuoFU0dqdbzew/m31SKsacGwMwvIMVnt2dnNnXpVkNYqQF3hsUJJBHnRPPkehVZUkLkya1G4rjx3bbj87RdHawlnDx5x1huAjl296hSSDJPoIczwF63kkKA/+AaVe12PcAAAA"
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/zWNSwqDQBBEz+J+7PgJZB2FLEPQA0g700r7mQF7jATx7kHF1aviQVUC8eMOUYCLhNr04cA1rG8ST6b0qHuFi1Qr4whr4QZSeWMPftzA+rfXM21qwLE2COtrttqzs7u78qYkrVCEvMBzh5IUsln35DMU2lRB4uZJkzps6bFl2x5nl8gbmztr+JyzzhB0cvsmEcQpxEEnzOE0W88jQXHyD077JGDcAAAA"
    },
    "Metadata": {
     "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/AmplifyTableManager/CDKMetadata/Default"

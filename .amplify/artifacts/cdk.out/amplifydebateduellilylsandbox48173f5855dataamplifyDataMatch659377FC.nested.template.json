@@ -1825,7 +1825,7 @@
   "CDKMetadata": {
    "Type": "AWS::CDK::Metadata",
    "Properties": {
-    "Analytics": "v2:deflate64:H4sIAAAAAAAA/1WOwW6DMAyGn6X34K1l0s4raMdtgt0rkxiUAg6KnVYV4t0n6NRpp9+f/Mn+D7B/zeFlh1fJrOuzwTcwf5AouVrR9qZo+QsjjqQUVygCO68+sKlIQoqWTJFEw/iHLT9mvMppdjfGMbgGvrEZ6IhCxuMIcxWGux0GWgxOk9zYwlxuetmUqFg/Tv6n98R2LVEEbn2XIm6Nfj8PF4qLkfyEIqQCb2sYyeGYbE+6FlhW9zPplNRs61qx89wthoMjOMvT5fAM+xz2u7N4n8XE6keC6p4/dpteJTYBAAA="
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/1WOwW6DMAyGn6X34JUyaecV1OM2we6VSQxKCQmKnVYV4t0n6NRpp9+f/Mn+D5C/vcJ+hzfOtBkyZ1uYP4iFTCOoB1V2/gsjjiQUVyiDN1Zs8KomDilqUmViCeMfdv45443Ps7l7HINp4RtbR0dkUhZHmOvgHnZwtCicJr57DXO16VVboWDzPPmfTsnrtUQZfGf7FHFr9PvZXSkuioszMpMwvK+huIBj0gPJWmBZ3c8kUxK1rRvB3vp+UT4Yggu/XA97yAvIdxe2NovJix0J6kf+AHtIgX02AQAA"
    },
    "Metadata": {
     "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/CDKMetadata/Default"
