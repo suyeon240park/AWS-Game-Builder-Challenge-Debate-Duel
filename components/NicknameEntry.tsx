@@ -52,7 +52,7 @@ export default function NicknameEntry({ onClose }: NicknameEntryProps) {
       // If no waiting match, create a new match
       else {
         matchId = crypto.randomUUID()
-        const newMatch = await client.models.Match.create({
+        await client.models.Match.create({
           matchId: matchId,
           player1Id: playerId,
           matchStatus: 'WAITING'
