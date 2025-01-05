@@ -7,10 +7,8 @@ import { type Schema } from '@/amplify/data/resource';
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 
-// Initialize Amplify API client with schema type
 const client = generateClient<Schema>();
 
-// Define types from schema
 type Match = Schema['Match']['type'];
 type Player = Schema['Player']['type'];
 
@@ -22,7 +20,6 @@ const MatchRoomContent = () => {
   const [match, setMatch] = useState<Match | null>(null);
   const [player, setPlayer] = useState<Player | null>(null);
   const [players, setPlayers] = useState<Player[]>([]);
-  const [isReady, setIsReady] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -81,7 +78,6 @@ const MatchRoomContent = () => {
           const updatedMatch = items[0];
           setMatch(updatedMatch);
 
-          // Fetch updated players
           const { data: updatedPlayers } = await client.models.Player.list({
             filter: {
               or: [
@@ -93,7 +89,7 @@ const MatchRoomContent = () => {
           setPlayers(updatedPlayers);
 
           if (updatedMatch.player1Ready && updatedMatch.player2Ready) {
-            router.push(`/arena/${updatedMatch.id}`);
+            router.push(`/arena/${matchId}`);
           }
         } else {
           router.push('/');
@@ -112,15 +108,12 @@ const MatchRoomContent = () => {
 
     try {
       const isPlayer1 = match.player1Id === player.id;
-      setIsReady(true);
-
       await client.models.Match.update({
         id: match.id,
         ...(isPlayer1 ? { player1Ready: true } : { player2Ready: true }),
       });
     } catch (error) {
       console.error('Error updating ready status:', error);
-      setIsReady(false);
     }
   };
 
@@ -129,8 +122,6 @@ const MatchRoomContent = () => {
 
     try {
       const isPlayer1 = match.player1Id === player.id;
-      setIsReady(false);
-
       await client.models.Match.update({
         id: match.id,
         ...(isPlayer1 ? { player1Ready: false } : { player2Ready: false }),
@@ -200,7 +191,7 @@ const MatchRoomContent = () => {
         {ready ? 'Ready' : 'Not Ready'}
       </p>
     </div>
-  );
+  );  
 
   const matchState = match?.player1Ready && match?.player2Ready ? 'ready' : match?.player2Id ? 'found' : 'waiting';
   const playerNickname = player?.nickname;
@@ -208,27 +199,29 @@ const MatchRoomContent = () => {
   const opponentNickname = isPlayer1 
     ? players.find(p => p.id === match?.player2Id)?.nickname 
     : players.find(p => p.id === match?.player1Id)?.nickname;
-  const opponentReady = isPlayer1 ? match?.player2Ready : match?.player1Ready;
-
+  const opponentReady = isPlayer1 ? !!match?.player2Ready : !!match?.player1Ready;
+  const isReady = isPlayer1 ? !!match?.player1Ready : !!match?.player2Ready;
+  
   const renderPlayerStatuses = () => {
     if (isPlayer1) {
       return (
         <>
           <PlayerStatus name={playerNickname || 'You'} ready={isReady} />
           <span className="text-2xl font-bold text-gray-600">VS</span>
-          <PlayerStatus name={opponentNickname || 'Waiting...'} ready={!!opponentReady} />
+          <PlayerStatus name={opponentNickname || 'Waiting...'} ready={opponentReady} />
         </>
       );
     } else {
       return (
         <>
-          <PlayerStatus name={opponentNickname || 'Waiting...'} ready={!!opponentReady} />
+          <PlayerStatus name={opponentNickname || 'Waiting...'} ready={opponentReady} />
           <span className="text-2xl font-bold text-gray-600">VS</span>
           <PlayerStatus name={playerNickname || 'You'} ready={isReady} />
         </>
       );
     }
   };
+  
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-amber-100 to-amber-200 flex flex-col items-center justify-center p-4">
@@ -250,25 +243,17 @@ const MatchRoomContent = () => {
             <div className="flex justify-around items-center">
               {renderPlayerStatuses()}
             </div>
-            <div className="flex space-x-4">
-              <Button 
-                className="w-full text-lg py-6" 
-                size="lg" 
-                onClick={handleReady}
-                disabled={isReady}
-              >
-                {isReady ? "Waiting for opponent..." : "I'm Ready!"}
-              </Button>
-              {isReady && (
-                <Button 
-                  className="w-full text-lg py-6 bg-yellow-400 hover:bg-yellow-500" 
-                  size="lg" 
-                  onClick={handleUndoReady}
-                >
-                  Undo Ready
-                </Button>
-              )}
-            </div>
+            <Button 
+              className={`w-full text-lg py-6 ${
+                isReady 
+                  ? 'bg-yellow-400 hover:bg-yellow-500' 
+                  : 'bg-blue-500 hover:bg-blue-600 text-white'
+              }`}
+              size="lg" 
+              onClick={isReady ? handleUndoReady : handleReady}
+            >
+              {isReady ? "Unready" : "Ready"}
+            </Button>
           </div>
         )}
 
