@@ -25,7 +25,6 @@ export default function GameScreen() {
           return prevTimer - 1
         } else {
           clearInterval(interval)
-          handleTurnEnd()
           return 0
         }
       })
@@ -64,11 +63,10 @@ export default function GameScreen() {
   }
 
   const simulateOpponentTurn = () => {
-    let typingInterval: NodeJS.Timeout
     const opponentFullArgument = "This is the opponent's simulated argument."
     let currentIndex = 0
 
-    typingInterval = setInterval(() => {
+    const typingInterval = setInterval(() => {
       if (currentIndex < opponentFullArgument.length) {
         setOpponentArgument((prev) => prev + opponentFullArgument[currentIndex])
         currentIndex++
