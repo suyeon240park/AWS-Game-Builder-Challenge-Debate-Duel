@@ -21,6 +21,7 @@ const MatchRoomContent = () => {
 
   const [match, setMatch] = useState<Match | null>(null);
   const [player, setPlayer] = useState<Player | null>(null);
+  const [players, setPlayers] = useState<Player[]>([]);
   const [isReady, setIsReady] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -43,7 +44,7 @@ const MatchRoomContent = () => {
         const matchData = matches[0];
         setMatch(matchData);
 
-        const { data: players } = await client.models.Player.list({
+        const { data: playersData } = await client.models.Player.list({
           filter: {
             or: [
               { id: { eq: matchData.player1Id } },
@@ -52,7 +53,9 @@ const MatchRoomContent = () => {
           },
         });
 
-        const currentPlayer = players.find(
+        setPlayers(playersData);
+
+        const currentPlayer = playersData.find(
           (p) => p.id === matchData.player1Id || p.id === matchData.player2Id
         );
 
@@ -73,10 +76,21 @@ const MatchRoomContent = () => {
     const subscription = client.models.Match.observeQuery({
       filter: { id: { eq: matchId } },
     }).subscribe({
-      next: ({ items }) => {
+      next: async ({ items }) => {
         if (items.length > 0) {
           const updatedMatch = items[0];
           setMatch(updatedMatch);
+
+          // Fetch updated players
+          const { data: updatedPlayers } = await client.models.Player.list({
+            filter: {
+              or: [
+                { id: { eq: updatedMatch.player1Id } },
+                ...(updatedMatch.player2Id ? [{ id: { eq: updatedMatch.player2Id } }] : []),
+              ],
+            },
+          });
+          setPlayers(updatedPlayers);
 
           if (updatedMatch.player1Ready && updatedMatch.player2Ready) {
             router.push(`/arena/${updatedMatch.id}`);
@@ -132,6 +146,9 @@ const MatchRoomContent = () => {
     try {
       const isPlayer1 = match.player1Id === player.id;
 
+      // Delete current player
+      await client.models.Player.delete({ id: player.id });
+
       if (isPlayer1) {
         if (match.player2Id) {
           await client.models.Match.update({
@@ -145,8 +162,6 @@ const MatchRoomContent = () => {
         } else {
           await client.models.Match.delete({ id: match.id });
         }
-
-        await client.models.Player.delete({ id: player.id });
       } else {
         await client.models.Match.update({
           id: match.id,
@@ -154,8 +169,6 @@ const MatchRoomContent = () => {
           player2Ready: false,
           matchStatus: 'WAITING',
         });
-
-        await client.models.Player.delete({ id: player.id });
       }
 
       router.push('/');
@@ -192,8 +205,30 @@ const MatchRoomContent = () => {
   const matchState = match?.player1Ready && match?.player2Ready ? 'ready' : match?.player2Id ? 'found' : 'waiting';
   const playerNickname = player?.nickname;
   const isPlayer1 = match?.player1Id === player?.id;
-  const opponentNickname = isPlayer1 ? match?.player2Id && player?.nickname : match?.player1Id && player?.nickname;
+  const opponentNickname = isPlayer1 
+    ? players.find(p => p.id === match?.player2Id)?.nickname 
+    : players.find(p => p.id === match?.player1Id)?.nickname;
   const opponentReady = isPlayer1 ? match?.player2Ready : match?.player1Ready;
+
+  const renderPlayerStatuses = () => {
+    if (isPlayer1) {
+      return (
+        <>
+          <PlayerStatus name={playerNickname || 'You'} ready={isReady} />
+          <span className="text-2xl font-bold text-gray-600">VS</span>
+          <PlayerStatus name={opponentNickname || 'Waiting...'} ready={!!opponentReady} />
+        </>
+      );
+    } else {
+      return (
+        <>
+          <PlayerStatus name={opponentNickname || 'Waiting...'} ready={!!opponentReady} />
+          <span className="text-2xl font-bold text-gray-600">VS</span>
+          <PlayerStatus name={playerNickname || 'You'} ready={isReady} />
+        </>
+      );
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-amber-100 to-amber-200 flex flex-col items-center justify-center p-4">
@@ -209,11 +244,11 @@ const MatchRoomContent = () => {
 
         {matchState === 'found' && (
           <div className="space-y-6">
-            <p className="text-xl text-gray-700 text-center">Opponent found! Are you ready to duel?</p>
+            <p className="text-xl text-gray-700 text-center">
+              {opponentNickname ? `${opponentNickname} has joined! Are you ready to duel?` : 'Opponent found! Are you ready to duel?'}
+            </p>
             <div className="flex justify-around items-center">
-              <PlayerStatus name={playerNickname} ready={isReady} />
-              <span className="text-2xl font-bold text-gray-600">VS</span>
-              <PlayerStatus name={opponentNickname || 'Opponent'} ready={!!opponentReady} />
+              {renderPlayerStatuses()}
             </div>
             <div className="flex space-x-4">
               <Button 
@@ -226,7 +261,7 @@ const MatchRoomContent = () => {
               </Button>
               {isReady && (
                 <Button 
-                  className="w-full text-lg py-6 bg-yellow-400" 
+                  className="w-full text-lg py-6 bg-yellow-400 hover:bg-yellow-500" 
                   size="lg" 
                   onClick={handleUndoReady}
                 >
@@ -240,17 +275,23 @@ const MatchRoomContent = () => {
         {matchState === 'ready' && (
           <div className="text-center space-y-4">
             <p className="text-2xl text-green-600 font-bold">Both players are ready!</p>
+            <div className="flex justify-around items-center">
+              {renderPlayerStatuses()}
+            </div>
             <p className="text-xl text-gray-700">Preparing the debate arena...</p>
             <Loader2 className="animate-spin h-12 w-12 mx-auto text-gray-600" />
           </div>
         )}
 
-        <Button className="mt-4 w-full text-lg py-4 bg-red-500 text-white" onClick={handleLeave}>
+        <Button 
+          className="mt-4 w-full text-lg py-4 bg-red-500 hover:bg-red-600 text-white" 
+          onClick={handleLeave}
+        >
           Leave Match
         </Button>
       </div>
     </div>
-  )
+  );
 }
 
 export default function MatchRoom() {
@@ -258,5 +299,5 @@ export default function MatchRoom() {
     <Suspense fallback={<div>Loading match room...</div>}>
       <MatchRoomContent />
     </Suspense>
-  )
+  );
 }
