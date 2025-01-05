@@ -19,11 +19,10 @@ export default function GameScreen() {
   const [showHit, setShowHit] = useState(false)
 
   const simulateOpponentTurn = useCallback(() => {
-    let typingInterval: NodeJS.Timeout // Changed from let to const
     const opponentFullArgument = "This is the opponent's simulated argument."
     let currentIndex = 0
 
-    typingInterval = setInterval(() => {
+    const typingInterval = setInterval(() => {
       if (currentIndex < opponentFullArgument.length) {
         setOpponentArgument((prev) => prev + opponentFullArgument[currentIndex])
         currentIndex++
