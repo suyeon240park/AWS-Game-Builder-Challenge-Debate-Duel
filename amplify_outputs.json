@@ -20,13 +20,6 @@
               "isRequired": true,
               "attributes": []
             },
-            "matchId": {
-              "name": "matchId",
-              "isArray": false,
-              "type": "String",
-              "isRequired": true,
-              "attributes": []
-            },
             "player1Id": {
               "name": "player1Id",
               "isArray": false,
@@ -140,13 +133,6 @@
               "name": "id",
               "isArray": false,
               "type": "ID",
-              "isRequired": true,
-              "attributes": []
-            },
-            "playerId": {
-              "name": "playerId",
-              "isArray": false,
-              "type": "String",
               "isRequired": true,
               "attributes": []
             },
