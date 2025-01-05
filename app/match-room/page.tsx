@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, Suspense } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { generateClient } from 'aws-amplify/api'
 import { type Schema } from '@/amplify/data/resource'
@@ -12,7 +12,7 @@ const client = generateClient<Schema>()
 type Match = Schema['Match']['type']
 type Player = Schema['Player']['type']
 
-export default function MatchRoom() {
+const MatchRoomContent = () => {
   const searchParams = useSearchParams()
   const router = useRouter()
   const matchId = searchParams.get('matchId')
@@ -47,7 +47,7 @@ export default function MatchRoom() {
           filter: {
             or: [
               { playerId: { eq: matchData.player1Id } },
-              ...(matchData.player2Id ? [{ playerId: { eq: matchData.player2Id } }] : [])
+              ...(matchData.player2Id ? [{ playerId: { eq: matchData.player2Id } }] : []),
             ]
           }
         })
@@ -70,7 +70,6 @@ export default function MatchRoom() {
 
     initializeMatch()
 
-    // Set up match subscription
     const subscription = client.models.Match.observeQuery({
       filter: { matchId: { eq: matchId } }
     }).subscribe({
@@ -79,12 +78,10 @@ export default function MatchRoom() {
           const updatedMatch = items[0]
           setMatch(updatedMatch)
 
-          // If both players are ready, redirect to arena
           if (updatedMatch.player1Ready && updatedMatch.player2Ready) {
             router.push(`/arena/${updatedMatch.matchId}`)
           }
         } else {
-          // Match was deleted
           router.push('/')
         }
       },
@@ -123,12 +120,8 @@ export default function MatchRoom() {
       const isPlayer1 = match.player1Id === player.playerId
 
       if (isPlayer1) {
-        // If player1 leaves, delete the match
-        await client.models.Match.delete({
-          id: match.id
-        })
+        await client.models.Match.delete({ id: match.id })
       } else {
-        // If player2 leaves, update the match
         await client.models.Match.update({
           id: match.id,
           player2Id: undefined,
@@ -137,7 +130,6 @@ export default function MatchRoom() {
         })
       }
 
-      // Update player
       await client.models.Player.update({
         id: player.id,
         currentMatchId: undefined
@@ -172,14 +164,13 @@ export default function MatchRoom() {
         {ready ? 'Ready' : 'Not Ready'}
       </p>
     </div>
-  );
+  )
 
-  const matchState = match?.player1Ready && match?.player2Ready ? 'ready' : match?.player2Id ? 'found' : 'waiting';
-  const playerNickname = player?.nickname || 'You';
-  const isPlayer1 = match?.player1Id === player?.playerId;
-  const opponentReady = isPlayer1 ? match?.player2Ready : match?.player1Ready;
+  const matchState = match?.player1Ready && match?.player2Ready ? 'ready' : match?.player2Id ? 'found' : 'waiting'
+  const playerNickname = player?.nickname || 'You'
+  const isPlayer1 = match?.player1Id === player?.playerId
+  const opponentReady = isPlayer1 ? match?.player2Ready : match?.player1Ready
 
-  
   return (
     <div className="min-h-screen bg-gradient-to-b from-amber-100 to-amber-200 flex flex-col items-center justify-center p-4">
       <div className="max-w-2xl w-full bg-white rounded-lg shadow-xl p-8 space-y-8">
@@ -223,5 +214,13 @@ export default function MatchRoom() {
         </Button>
       </div>
     </div>
-  );
+  )
+}
+
+export default function MatchRoom() {
+  return (
+    <Suspense fallback={<div>Loading match room...</div>}>
+      <MatchRoomContent />
+    </Suspense>
+  )
 }
