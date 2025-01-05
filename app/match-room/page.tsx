@@ -130,36 +130,51 @@ const MatchRoomContent = () => {
   // Handle player leaving the match
   const handleLeave = async () => {
     if (!match || !player) return
-
+  
     try {
+      // Check whether the current palyer is player 1 or player 2
       const isPlayer1 = match.player1Id === player.id
-
-      // If player1 leaves, delete match
+  
+      // If player1 leaves
       if (isPlayer1) {
-        await client.models.Match.delete({ id: match.id })
+        if (match.player2Id) {
+          // Move player2 to player1's position
+          await client.models.Match.update({
+            id: match.id,
+            player1Id: match.player2Id,
+            player2Id: undefined,
+            player1Ready: match.player2Ready,
+            player2Ready: false,
+            matchStatus: 'WAITING'
+          })
+        } else {
+          // If no player2, delete the match
+          await client.models.Match.delete({ id: match.id })
+        }
+        
+        // Delete player1 (current player)
+        await client.models.Player.delete({ id: player.id })
       }
-      // If player2 leaves, reset player2 fields
+      // If player2 leaves
       else {
+        // Reset player2 fields in match
         await client.models.Match.update({
           id: match.id,
           player2Id: undefined,
           player2Ready: false,
           matchStatus: 'WAITING'
         })
+        
+        // Delete player2 (current player)
+        await client.models.Player.delete({ id: player.id })
       }
-
-      // Update player's current match reference
-      await client.models.Player.update({
-        id: player.id,
-        currentMatchId: undefined
-      })
-
+  
       router.push('/')
     } catch (error) {
       console.error('Error leaving match:', error)
     }
   }
-
+  
   // Loading state UI
   if (loading) {
     return (
@@ -187,10 +202,10 @@ const MatchRoomContent = () => {
   )
 
   const matchState = match?.player1Ready && match?.player2Ready ? 'ready' : match?.player2Id ? 'found' : 'waiting'
-  const playerNickname = player?.nickname || 'You'
+  const playerNickname = player?.nickname
   const isPlayer1 = match?.player1Id === player?.id
   const opponentReady = isPlayer1 ? match?.player2Ready : match?.player1Ready
-
+  
   return (
     <div className="min-h-screen bg-gradient-to-b from-amber-100 to-amber-200 flex flex-col items-center justify-center p-4">
       <div className="max-w-2xl w-full bg-white rounded-lg shadow-xl p-8 space-y-8">
