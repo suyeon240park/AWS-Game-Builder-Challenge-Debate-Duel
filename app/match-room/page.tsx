@@ -7,22 +7,27 @@ import { type Schema } from '@/amplify/data/resource'
 import { Button } from "@/components/ui/button"
 import { Loader2 } from "lucide-react"
 
+// Initialize Amplify API client with schema type
 const client = generateClient<Schema>()
 
+// Define types from schema
 type Match = Schema['Match']['type']
 type Player = Schema['Player']['type']
 
 const MatchRoomContent = () => {
+  // Get matchId from URL query parameters
   const searchParams = useSearchParams()
   const router = useRouter()
   const matchId = searchParams.get('matchId')
   
+  // State management for match data, player info, and UI states
   const [match, setMatch] = useState<Match | null>(null)
   const [player, setPlayer] = useState<Player | null>(null)
   const [isReady, setIsReady] = useState(false)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    // Redirect to home if no matchId is provided
     if (!matchId) {
       router.push('/')
       return
@@ -30,9 +35,9 @@ const MatchRoomContent = () => {
 
     const initializeMatch = async () => {
       try {
-        // Fetch match data
+        // Fetch match details using matchId
         const { data: matches } = await client.models.Match.list({
-          filter: { matchId: { eq: matchId } }
+          filter: { id: { eq: matchId } }
         })
 
         if (matches.length === 0) {
@@ -42,18 +47,18 @@ const MatchRoomContent = () => {
         const matchData = matches[0]
         setMatch(matchData)
 
-        // Find the current player
+        // Fetch players in the match
         const { data: players } = await client.models.Player.list({
           filter: {
             or: [
-              { playerId: { eq: matchData.player1Id } },
-              ...(matchData.player2Id ? [{ playerId: { eq: matchData.player2Id } }] : []),
+              { id: { eq: matchData.player1Id } },
+              ...(matchData.player2Id ? [{ id: { eq: matchData.player2Id } }] : []),
             ]
           }
         })
 
         const currentPlayer = players.find(p => 
-          p.playerId === matchData.player1Id || p.playerId === matchData.player2Id
+          p.id === matchData.player1Id || p.id === matchData.player2Id
         )
 
         if (currentPlayer) {
@@ -70,18 +75,23 @@ const MatchRoomContent = () => {
 
     initializeMatch()
 
+    // Set up real-time subscription for match updates
     const subscription = client.models.Match.observeQuery({
-      filter: { matchId: { eq: matchId } }
+      filter: { id: { eq: matchId } }
     }).subscribe({
       next: ({ items }) => {
         if (items.length > 0) {
           const updatedMatch = items[0]
           setMatch(updatedMatch)
 
+          // Redirect to area when both players are ready
           if (updatedMatch.player1Ready && updatedMatch.player2Ready) {
-            router.push(`/arena/${updatedMatch.matchId}`)
+            router.push(`/arena/${updatedMatch.id}`)
           }
-        } else {
+        }
+
+        // Redirect to home if match is deleted
+        else {
           router.push('/')
         }
       },
@@ -90,16 +100,20 @@ const MatchRoomContent = () => {
       }
     })
 
+    // Cleanup subscription on component unmount
     return () => subscription.unsubscribe()
   }, [matchId, router])
 
+  // Handle player ready state
   const handleReady = async () => {
     if (!match || !player) return
 
     try {
-      const isPlayer1 = match.player1Id === player.playerId
+      
+      const isPlayer1 = match.player1Id === player.id
       setIsReady(true)
 
+      // Update ready status based on player position (1 or 2)
       await client.models.Match.update({
         id: match.id,
         ...(isPlayer1 
@@ -113,15 +127,19 @@ const MatchRoomContent = () => {
     }
   }
 
+  // Handle player leaving the match
   const handleLeave = async () => {
     if (!match || !player) return
 
     try {
-      const isPlayer1 = match.player1Id === player.playerId
+      const isPlayer1 = match.player1Id === player.id
 
+      // If player1 leaves, delete match
       if (isPlayer1) {
         await client.models.Match.delete({ id: match.id })
-      } else {
+      }
+      // If player2 leaves, reset player2 fields
+      else {
         await client.models.Match.update({
           id: match.id,
           player2Id: undefined,
@@ -130,6 +148,7 @@ const MatchRoomContent = () => {
         })
       }
 
+      // Update player's current match reference
       await client.models.Player.update({
         id: player.id,
         currentMatchId: undefined
@@ -141,6 +160,7 @@ const MatchRoomContent = () => {
     }
   }
 
+  // Loading state UI
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -168,7 +188,7 @@ const MatchRoomContent = () => {
 
   const matchState = match?.player1Ready && match?.player2Ready ? 'ready' : match?.player2Id ? 'found' : 'waiting'
   const playerNickname = player?.nickname || 'You'
-  const isPlayer1 = match?.player1Id === player?.playerId
+  const isPlayer1 = match?.player1Id === player?.id
   const opponentReady = isPlayer1 ? match?.player2Ready : match?.player1Ready
 
   return (

@@ -3,7 +3,6 @@ import { a, defineData, type ClientSchema } from '@aws-amplify/backend';
 const schema = a.schema({
   // 1. Match data
   Match: a.model({
-    matchId: a.string().required(),
     player1Id: a.string().required(),
     player2Id: a.string(),
     player1Ready: a.boolean().default(false),
@@ -17,7 +16,6 @@ const schema = a.schema({
 
   // 2. Player data
   Player: a.model({
-    playerId: a.string().required(),
     nickname: a.string().required(),
     currentMatchId: a.string(),
     score: a.integer(),

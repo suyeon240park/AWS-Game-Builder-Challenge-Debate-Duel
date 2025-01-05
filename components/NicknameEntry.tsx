@@ -29,7 +29,7 @@ export default function NicknameEntry({ onClose }: NicknameEntryProps) {
       console.log(playerId)
       
       await client.models.Player.create({
-        playerId: playerId,
+        id: playerId,
         nickname: nickname.trim()
       })
 
@@ -47,13 +47,18 @@ export default function NicknameEntry({ onClose }: NicknameEntryProps) {
   
       // If waiting match exists, join the game
       if (waitingMatches.length > 0) {
-        matchId = waitingMatches[0].matchId
+        matchId = waitingMatches[0].id
+        await client.models.Match.update({
+          id: matchId,
+          player2Id: playerId,
+          matchStatus: 'MATCHED'
+        })
       }
       // If no waiting match, create a new match
       else {
         matchId = crypto.randomUUID()
         await client.models.Match.create({
-          matchId: matchId,
+          id: matchId,
           player1Id: playerId,
           matchStatus: 'WAITING'
         })
