@@ -201,6 +201,7 @@ const MatchRoomContent = () => {
     </div>
   )
 
+  // Initialize variables
   const matchState = match?.player1Ready && match?.player2Ready ? 'ready' : match?.player2Id ? 'found' : 'waiting'
   const playerNickname = player?.nickname
   const isPlayer1 = match?.player1Id === player?.id
