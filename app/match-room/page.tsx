@@ -30,27 +30,35 @@ export default function MatchRoom() {
 
     const initializeMatch = async () => {
       try {
+        // Fetch match data
         const { data: matches } = await client.models.Match.list({
-          filter: { matchId: { eq: matchId } },
+          filter: { matchId: { eq: matchId } }
         })
 
-        if (matches.length === 0) throw new Error('Match not found')
+        if (matches.length === 0) {
+          throw new Error('Match not found')
+        }
+
         const matchData = matches[0]
         setMatch(matchData)
 
+        // Find the current player
         const { data: players } = await client.models.Player.list({
           filter: {
             or: [
               { playerId: { eq: matchData.player1Id } },
-              ...(matchData.player2Id ? [{ playerId: { eq: matchData.player2Id } }] : []),
-            ],
-          },
+              ...(matchData.player2Id ? [{ playerId: { eq: matchData.player2Id } }] : [])
+            ]
+          }
         })
 
-        const currentPlayer = players.find(
-          (p) => p.playerId === matchData.player1Id || p.playerId === matchData.player2Id
+        const currentPlayer = players.find(p => 
+          p.playerId === matchData.player1Id || p.playerId === matchData.player2Id
         )
-        setPlayer(currentPlayer || null)
+
+        if (currentPlayer) {
+          setPlayer(currentPlayer)
+        }
 
         setLoading(false)
       } catch (error) {
@@ -62,22 +70,27 @@ export default function MatchRoom() {
 
     initializeMatch()
 
+    // Set up match subscription
     const subscription = client.models.Match.observeQuery({
-      filter: { matchId: { eq: matchId } },
+      filter: { matchId: { eq: matchId } }
     }).subscribe({
       next: ({ items }) => {
         if (items.length > 0) {
           const updatedMatch = items[0]
           setMatch(updatedMatch)
 
+          // If both players are ready, redirect to arena
           if (updatedMatch.player1Ready && updatedMatch.player2Ready) {
             router.push(`/arena/${updatedMatch.matchId}`)
           }
         } else {
+          // Match was deleted
           router.push('/')
         }
       },
-      error: (error) => console.error('Subscription error:', error),
+      error: (error) => {
+        console.error('Subscription error:', error)
+      }
     })
 
     return () => subscription.unsubscribe()
@@ -92,9 +105,10 @@ export default function MatchRoom() {
 
       await client.models.Match.update({
         id: match.id,
-        ...(isPlayer1
+        ...(isPlayer1 
           ? { player1Ready: true }
-          : { player2Ready: true }),
+          : { player2Ready: true }
+        )
       })
     } catch (error) {
       console.error('Error updating ready status:', error)
@@ -109,19 +123,24 @@ export default function MatchRoom() {
       const isPlayer1 = match.player1Id === player.playerId
 
       if (isPlayer1) {
-        await client.models.Match.delete({ id: match.id })
+        // If player1 leaves, delete the match
+        await client.models.Match.delete({
+          id: match.id
+        })
       } else {
+        // If player2 leaves, update the match
         await client.models.Match.update({
           id: match.id,
           player2Id: undefined,
           player2Ready: false,
-          matchStatus: 'WAITING',
+          matchStatus: 'WAITING'
         })
       }
 
+      // Update player
       await client.models.Player.update({
         id: player.id,
-        currentMatchId: undefined,
+        currentMatchId: undefined
       })
 
       router.push('/')
@@ -146,15 +165,63 @@ export default function MatchRoom() {
     )
   }
 
+  const PlayerStatus = ({ name, ready }: { name: string; ready: boolean }) => (
+    <div className="text-center">
+      <p className="text-lg font-semibold">{name}</p>
+      <p className={`text-sm ${ready ? 'text-green-600' : 'text-red-600'}`}>
+        {ready ? 'Ready' : 'Not Ready'}
+      </p>
+    </div>
+  );
+
+  const matchState = match?.player1Ready && match?.player2Ready ? 'ready' : match?.player2Id ? 'found' : 'waiting';
+  const playerNickname = player?.nickname || 'You';
+  const isPlayer1 = match?.player1Id === player?.playerId;
+  const opponentReady = isPlayer1 ? match?.player2Ready : match?.player1Ready;
+
+  
   return (
     <div className="min-h-screen bg-gradient-to-b from-amber-100 to-amber-200 flex flex-col items-center justify-center p-4">
       <div className="max-w-2xl w-full bg-white rounded-lg shadow-xl p-8 space-y-8">
         <h1 className="text-4xl font-serif font-bold text-gray-800 text-center">Match Room</h1>
-        {/* Additional UI and conditional rendering */}
+
+        {matchState === 'waiting' && (
+          <div className="text-center space-y-4">
+            <Loader2 className="animate-spin h-12 w-12 mx-auto text-gray-600" />
+            <p className="text-xl text-gray-700">Waiting for an opponent...</p>
+          </div>
+        )}
+
+        {matchState === 'found' && (
+          <div className="space-y-6">
+            <p className="text-xl text-gray-700 text-center">Opponent found! Are you ready to duel?</p>
+            <div className="flex justify-around items-center">
+              <PlayerStatus name={playerNickname} ready={isReady} />
+              <span className="text-2xl font-bold text-gray-600">VS</span>
+              <PlayerStatus name="Opponent" ready={!!opponentReady} />
+            </div>
+            <Button 
+              className="w-full text-lg py-6" 
+              size="lg" 
+              onClick={handleReady}
+              disabled={isReady}
+            >
+              {isReady ? "Waiting for opponent..." : "I'm Ready!"}
+            </Button>
+          </div>
+        )}
+
+        {matchState === 'ready' && (
+          <div className="text-center space-y-4">
+            <p className="text-2xl text-green-600 font-bold">Both players are ready!</p>
+            <p className="text-xl text-gray-700">Preparing the debate arena...</p>
+            <Loader2 className="animate-spin h-12 w-12 mx-auto text-gray-600" />
+          </div>
+        )}
         <Button className="mt-4 w-full text-lg py-4 bg-red-500 text-white" onClick={handleLeave}>
           Leave Match
         </Button>
       </div>
     </div>
-  )
+  );
 }
