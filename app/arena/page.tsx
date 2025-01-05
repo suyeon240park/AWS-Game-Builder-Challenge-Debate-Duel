@@ -18,7 +18,7 @@ export default function GameScreen() {
   const [roundNumber, setRoundNumber] = useState(1)
   const [showHit, setShowHit] = useState(false)
 
-  const simulateOpponentTurn = useCallback(() => {
+  const simulateOpponentTurn = useCallback((): void => {
     const opponentFullArgument = "This is the opponent's simulated argument."
     let currentIndex = 0
 
@@ -39,7 +39,7 @@ export default function GameScreen() {
     }, 100)
   }, []) // Empty dependency array since it doesn't depend on any state
 
-  const handleTurnEnd = useCallback(() => {
+  const handleTurnEnd = useCallback((): void => {
     setShowHit(true)
     setTimeout(() => {
       setShowHit(false)
@@ -58,7 +58,7 @@ export default function GameScreen() {
     }, 2000)
   }, [currentTurn, roundNumber, router, playerScore, opponentScore, simulateOpponentTurn])
 
-  const handleSubmit = useCallback(() => {
+  const handleSubmit = useCallback((): void => {
     if (playerArgument.trim() !== '') {
       const score = Math.floor(Math.random() * 20) + 1
       setPlayerScore((prevScore) => Math.min(prevScore + score, 100))
@@ -147,4 +147,3 @@ export default function GameScreen() {
     </div>
   )
 }
-
