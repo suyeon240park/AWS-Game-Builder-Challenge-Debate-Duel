@@ -1,10 +1,11 @@
-"use client"
+'use client'
 
 import { useSearchParams } from 'next/navigation'
 import { Button } from "@/components/ui/button"
 import Link from 'next/link'
+import { Suspense } from 'react'
 
-export default function ResultScreen() {
+function ResultScreenContent() {
   const searchParams = useSearchParams()
   const playerScore = parseInt(searchParams.get('playerScore') || '0', 10)
   const opponentScore = parseInt(searchParams.get('opponentScore') || '0', 10)
@@ -45,3 +46,10 @@ export default function ResultScreen() {
   )
 }
 
+export default function ResultScreen() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ResultScreenContent />
+    </Suspense>
+  )
+}
