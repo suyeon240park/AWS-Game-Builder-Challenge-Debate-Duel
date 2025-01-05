@@ -94,7 +94,7 @@ export default function MatchRoom() {
     })
 
     return () => subscription.unsubscribe()
-  }, [matchId])
+  }, [router])
 
   const handleReady = async () => {
     if (!match || !player) return

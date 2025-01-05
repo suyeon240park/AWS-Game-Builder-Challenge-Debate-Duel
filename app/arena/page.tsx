@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react' // Added useCallback
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Progress } from "@/components/ui/progress"
@@ -18,53 +18,8 @@ export default function GameScreen() {
   const [roundNumber, setRoundNumber] = useState(1)
   const [showHit, setShowHit] = useState(false)
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setTimer((prevTimer) => {
-        if (prevTimer > 0) {
-          return prevTimer - 1
-        } else {
-          clearInterval(interval)
-          handleTurnEnd()
-          return 0
-        }
-      })
-    }, 1000)
-
-    return () => clearInterval(interval)
-  }, [currentTurn])
-
-  const handleSubmit = () => {
-    if (playerArgument.trim() !== '') {
-      const score = Math.floor(Math.random() * 20) + 1
-      setPlayerScore((prevScore) => Math.min(prevScore + score, 100))
-      setOpponentScore((prevScore) => Math.max(prevScore - score, 0))
-      setPlayerArgument('')
-      handleTurnEnd()
-    }
-  }
-
-  const handleTurnEnd = () => {
-    setShowHit(true)
-    setTimeout(() => {
-      setShowHit(false)
-      if (currentTurn === 'player') {
-        setCurrentTurn('opponent')
-        simulateOpponentTurn()
-      } else {
-        setCurrentTurn('player')
-        if (roundNumber < 3) {
-          setRoundNumber((prevRound) => prevRound + 1)
-        } else {
-          router.push(`/result?playerScore=${playerScore}&opponentScore=${opponentScore}`)
-        }
-      }
-      setTimer(30)
-    }, 2000)
-  }
-
-  const simulateOpponentTurn = () => {
-    let typingInterval: NodeJS.Timeout
+  const simulateOpponentTurn = useCallback(() => {
+    let typingInterval: NodeJS.Timeout // Changed from let to const
     const opponentFullArgument = "This is the opponent's simulated argument."
     let currentIndex = 0
 
@@ -83,7 +38,52 @@ export default function GameScreen() {
         }, 1000)
       }
     }, 100)
-  }
+  }, []) // Empty dependency array since it doesn't depend on any state
+
+  const handleTurnEnd = useCallback(() => {
+    setShowHit(true)
+    setTimeout(() => {
+      setShowHit(false)
+      if (currentTurn === 'player') {
+        setCurrentTurn('opponent')
+        simulateOpponentTurn()
+      } else {
+        setCurrentTurn('player')
+        if (roundNumber < 3) {
+          setRoundNumber((prevRound) => prevRound + 1)
+        } else {
+          router.push(`/result?playerScore=${playerScore}&opponentScore=${opponentScore}`)
+        }
+      }
+      setTimer(30)
+    }, 2000)
+  }, [currentTurn, roundNumber, router, playerScore, opponentScore, simulateOpponentTurn])
+
+  const handleSubmit = useCallback(() => {
+    if (playerArgument.trim() !== '') {
+      const score = Math.floor(Math.random() * 20) + 1
+      setPlayerScore((prevScore) => Math.min(prevScore + score, 100))
+      setOpponentScore((prevScore) => Math.max(prevScore - score, 0))
+      setPlayerArgument('')
+      handleTurnEnd()
+    }
+  }, [playerArgument, handleTurnEnd])
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTimer((prevTimer) => {
+        if (prevTimer > 0) {
+          return prevTimer - 1
+        } else {
+          clearInterval(interval)
+          handleTurnEnd()
+          return 0
+        }
+      })
+    }, 1000)
+
+    return () => clearInterval(interval)
+  }, [currentTurn, handleTurnEnd])
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-amber-100 to-amber-200 flex flex-col items-center justify-between p-4">
