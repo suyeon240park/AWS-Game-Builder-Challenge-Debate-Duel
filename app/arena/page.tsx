@@ -162,7 +162,7 @@ export default function ArenaPage() {
     }, 1000)
 
     return () => clearInterval(interval)
-  }, [gameState?.id, match, matchId, router])
+  }, [gameState?.id, match, matchId, router, gameState?.currentTurn, gameState?.phase, gameState?.roundNumber, gameState?.timeRemaining])
 
   const handleSubmit = async () => {
     if (!gameState?.id || !match || !player || input.trim() === '') return
