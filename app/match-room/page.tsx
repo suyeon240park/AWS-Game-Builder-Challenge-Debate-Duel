@@ -136,7 +136,7 @@ const MatchRoomContent = () => {
   
     try {
       const isPlayer1 = match.player1Id === player.id;
-  
+      console.log(isPlayer1)
       // Case 1: Player 1 leaves with Player 2 present
       if (isPlayer1) {
         if (match.player2Id) {
