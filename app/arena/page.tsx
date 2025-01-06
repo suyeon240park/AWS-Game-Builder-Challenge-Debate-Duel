@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Progress } from "@/components/ui/progress"
-import { useParams, useRouter } from 'next/navigation'
+import { useSearchParams, useRouter } from 'next/navigation'
 import { generateClient } from 'aws-amplify/api'
 import { type Schema } from '@/amplify/data/resource'
 
@@ -20,8 +20,8 @@ const TOPICS = [
 
 export default function ArenaPage() {
   const router = useRouter()
-  const params = useParams()
-  const matchId = params.matchId as string
+  const searchParams = useSearchParams()
+  const matchId = searchParams.get('matchId')
 
   const [match, setMatch] = useState<Schema['Match']['type'] | null>(null)
   const [gameState, setGameState] = useState<Schema['GameState']['type'] | null>(null)
@@ -122,7 +122,7 @@ export default function ArenaPage() {
   }, [matchId])
 
   useEffect(() => {
-    if (!gameState?.id || !match) return
+    if (!gameState?.id || !match || !matchId) return
 
     const interval = setInterval(async () => {
       try {
