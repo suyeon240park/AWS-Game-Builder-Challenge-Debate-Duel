@@ -348,7 +348,7 @@
   }
  },
  "Resources": {
-  "MatchTable": {
+  "GameStateTable": {
    "Type": "Custom::AmplifyDynamoDBTable",
    "Properties": {
     "ServiceToken": {
@@ -358,7 +358,7 @@
      "Fn::Join": [
       "",
       [
-       "Match-",
+       "GameState-",
        {
         "Ref": "referencetoamplifydebateduellilylsandbox48173f5855dataamplifyDataGraphQLAPI99159CCEApiId"
        },
@@ -432,10 +432,10 @@
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/MatchTable/Default/Default"
+    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/GameStateTable/Default/Default"
    }
   },
-  "MatchIAMRole49B859E5": {
+  "GameStateIAMRole111BE853": {
    "Type": "AWS::IAM::Role",
    "Properties": {
     "AssumeRolePolicyDocument": {
@@ -479,7 +479,7 @@
               "Fn::Join": [
                "",
                [
-                "Match-",
+                "GameState-",
                 {
                  "Ref": "referencetoamplifydebateduellilylsandbox48173f5855dataamplifyDataGraphQLAPI99159CCEApiId"
                 },
@@ -498,7 +498,7 @@
               "Fn::Join": [
                "",
                [
-                "Match-",
+                "GameState-",
                 {
                  "Ref": "referencetoamplifydebateduellilylsandbox48173f5855dataamplifyDataGraphQLAPI99159CCEApiId"
                 },
@@ -521,7 +521,7 @@
      "Fn::Join": [
       "",
       [
-       "MatchIAMRoleaf4b0b-",
+       "GameStateIAMRole9c2153-",
        {
         "Ref": "referencetoamplifydebateduellilylsandbox48173f5855dataamplifyDataGraphQLAPI99159CCEApiId"
        },
@@ -547,10 +547,10 @@
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/MatchIAMRole/Resource"
+    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/GameStateIAMRole/Resource"
    }
   },
-  "MatchDataSource": {
+  "GameStateDataSource": {
    "Type": "AWS::AppSync::DataSource",
    "Properties": {
     "ApiId": {
@@ -574,7 +574,7 @@
              ":",
              {
               "Fn::GetAtt": [
-               "MatchTable",
+               "GameStateTable",
                "TableArn"
               ]
              }
@@ -587,25 +587,25 @@
       ]
      }
     },
-    "Name": "MatchTable",
+    "Name": "GameStateTable",
     "ServiceRoleArn": {
      "Fn::GetAtt": [
-      "MatchIAMRole49B859E5",
+      "GameStateIAMRole111BE853",
       "Arn"
      ]
     },
     "Type": "AMAZON_DYNAMODB"
    },
    "DependsOn": [
-    "MatchIAMRole49B859E5"
+    "GameStateIAMRole111BE853"
    ],
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/MatchDataSource/Resource"
+    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/GameStateDataSource/Resource"
    }
   },
-  "QuerygetMatchauth0FunctionQuerygetMatchauth0FunctionAppSyncFunction82AE3811": {
+  "QuerygetGameStateauth0FunctionQuerygetGameStateauth0FunctionAppSyncFunction0DCEFF25": {
    "Type": "AWS::AppSync::FunctionConfiguration",
    "Properties": {
     "ApiId": {
@@ -615,7 +615,7 @@
      "Ref": "referencetoamplifydebateduellilylsandbox48173f5855dataamplifyDataGraphQLAPINONEDS3734F344Name"
     },
     "FunctionVersion": "2018-05-29",
-    "Name": "QuerygetMatchauth0Function",
+    "Name": "QuerygetGameStateauth0Function",
     "RequestMappingTemplateS3Location": {
      "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/74c1522efb7733193e4d75cee5b96595110452c456623a36d786f743aea94e7c.vtl"
     },
@@ -624,10 +624,10 @@
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/QuerygetMatchauth0Function/QuerygetMatchauth0Function.AppSyncFunction"
+    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/QuerygetGameStateauth0Function/QuerygetGameStateauth0Function.AppSyncFunction"
    }
   },
-  "QuerygetMatchpostAuth0FunctionQuerygetMatchpostAuth0FunctionAppSyncFunction1BA4D5FB": {
+  "QuerygetGameStatepostAuth0FunctionQuerygetGameStatepostAuth0FunctionAppSyncFunction1E235F95": {
    "Type": "AWS::AppSync::FunctionConfiguration",
    "Properties": {
     "ApiId": {
@@ -637,7 +637,7 @@
      "Ref": "referencetoamplifydebateduellilylsandbox48173f5855dataamplifyDataGraphQLAPINONEDS3734F344Name"
     },
     "FunctionVersion": "2018-05-29",
-    "Name": "QuerygetMatchpostAuth0Function",
+    "Name": "QuerygetGameStatepostAuth0Function",
     "RequestMappingTemplateS3Location": {
      "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/c1721bcd774e27c514d3454b5be4f9bdd094c0161b57ddf053d618e3b0086a77.vtl"
     },
@@ -646,10 +646,10 @@
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/QuerygetMatchpostAuth0Function/QuerygetMatchpostAuth0Function.AppSyncFunction"
+    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/QuerygetGameStatepostAuth0Function/QuerygetGameStatepostAuth0Function.AppSyncFunction"
    }
   },
-  "QueryGetMatchDataResolverFnQueryGetMatchDataResolverFnAppSyncFunction742547CF": {
+  "QueryGetGameStateDataResolverFnQueryGetGameStateDataResolverFnAppSyncFunction09C5E838": {
    "Type": "AWS::AppSync::FunctionConfiguration",
    "Properties": {
     "ApiId": {
@@ -657,12 +657,12 @@
     },
     "DataSourceName": {
      "Fn::GetAtt": [
-      "MatchDataSource",
+      "GameStateDataSource",
       "Name"
      ]
     },
     "FunctionVersion": "2018-05-29",
-    "Name": "QueryGetMatchDataResolverFn",
+    "Name": "QueryGetGameStateDataResolverFn",
     "RequestMappingTemplateS3Location": {
      "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/08f4d557693d96c1a4efba0f9dc91330e4b19772fd5477c156468843e3d9cb5e.vtl"
     },
@@ -671,39 +671,39 @@
     }
    },
    "DependsOn": [
-    "MatchDataSource"
+    "GameStateDataSource"
    ],
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/QueryGetMatchDataResolverFn/QueryGetMatchDataResolverFn.AppSyncFunction"
+    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/QueryGetGameStateDataResolverFn/QueryGetGameStateDataResolverFn.AppSyncFunction"
    }
   },
-  "GetMatchResolver": {
+  "GetGameStateResolver": {
    "Type": "AWS::AppSync::Resolver",
    "Properties": {
     "ApiId": {
      "Ref": "referencetoamplifydebateduellilylsandbox48173f5855dataamplifyDataGraphQLAPI99159CCEApiId"
     },
-    "FieldName": "getMatch",
+    "FieldName": "getGameState",
     "Kind": "PIPELINE",
     "PipelineConfig": {
      "Functions": [
       {
        "Fn::GetAtt": [
-        "QuerygetMatchauth0FunctionQuerygetMatchauth0FunctionAppSyncFunction82AE3811",
+        "QuerygetGameStateauth0FunctionQuerygetGameStateauth0FunctionAppSyncFunction0DCEFF25",
         "FunctionId"
        ]
       },
       {
        "Fn::GetAtt": [
-        "QuerygetMatchpostAuth0FunctionQuerygetMatchpostAuth0FunctionAppSyncFunction1BA4D5FB",
+        "QuerygetGameStatepostAuth0FunctionQuerygetGameStatepostAuth0FunctionAppSyncFunction1E235F95",
         "FunctionId"
        ]
       },
       {
        "Fn::GetAtt": [
-        "QueryGetMatchDataResolverFnQueryGetMatchDataResolverFnAppSyncFunction742547CF",
+        "QueryGetGameStateDataResolverFnQueryGetGameStateDataResolverFnAppSyncFunction09C5E838",
         "FunctionId"
        ]
       }
@@ -713,7 +713,7 @@
      "Fn::Join": [
       "",
       [
-       "$util.qr($ctx.stash.put(\"typeName\", \"Query\"))\n$util.qr($ctx.stash.put(\"fieldName\", \"getMatch\"))\n$util.qr($ctx.stash.put(\"conditions\", []))\n$util.qr($ctx.stash.put(\"metadata\", {}))\n$util.qr($ctx.stash.metadata.put(\"dataSourceType\", \"AMAZON_DYNAMODB\"))\n$util.qr($ctx.stash.metadata.put(\"apiId\", \"",
+       "$util.qr($ctx.stash.put(\"typeName\", \"Query\"))\n$util.qr($ctx.stash.put(\"fieldName\", \"getGameState\"))\n$util.qr($ctx.stash.put(\"conditions\", []))\n$util.qr($ctx.stash.put(\"metadata\", {}))\n$util.qr($ctx.stash.metadata.put(\"dataSourceType\", \"AMAZON_DYNAMODB\"))\n$util.qr($ctx.stash.metadata.put(\"apiId\", \"",
        {
         "Ref": "referencetoamplifydebateduellilylsandbox48173f5855dataamplifyDataGraphQLAPI99159CCEApiId"
        },
@@ -732,7 +732,7 @@
                ":",
                {
                 "Fn::GetAtt": [
-                 "MatchTable",
+                 "GameStateTable",
                  "TableArn"
                 ]
                }
@@ -754,10 +754,10 @@
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/queryGetMatchResolver"
+    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/queryGetGameStateResolver"
    }
   },
-  "QuerylistMatchesauth0FunctionQuerylistMatchesauth0FunctionAppSyncFunction5BDE4D39": {
+  "QuerylistGameStatesauth0FunctionQuerylistGameStatesauth0FunctionAppSyncFunction691A96CB": {
    "Type": "AWS::AppSync::FunctionConfiguration",
    "Properties": {
     "ApiId": {
@@ -767,7 +767,7 @@
      "Ref": "referencetoamplifydebateduellilylsandbox48173f5855dataamplifyDataGraphQLAPINONEDS3734F344Name"
     },
     "FunctionVersion": "2018-05-29",
-    "Name": "QuerylistMatchesauth0Function",
+    "Name": "QuerylistGameStatesauth0Function",
     "RequestMappingTemplateS3Location": {
      "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/74c1522efb7733193e4d75cee5b96595110452c456623a36d786f743aea94e7c.vtl"
     },
@@ -776,10 +776,10 @@
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/QuerylistMatchesauth0Function/QuerylistMatchesauth0Function.AppSyncFunction"
+    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/QuerylistGameStatesauth0Function/QuerylistGameStatesauth0Function.AppSyncFunction"
    }
   },
-  "QuerylistMatchespostAuth0FunctionQuerylistMatchespostAuth0FunctionAppSyncFunctionB67632F5": {
+  "QuerylistGameStatespostAuth0FunctionQuerylistGameStatespostAuth0FunctionAppSyncFunctionBDBDE07C": {
    "Type": "AWS::AppSync::FunctionConfiguration",
    "Properties": {
     "ApiId": {
@@ -789,7 +789,7 @@
      "Ref": "referencetoamplifydebateduellilylsandbox48173f5855dataamplifyDataGraphQLAPINONEDS3734F344Name"
     },
     "FunctionVersion": "2018-05-29",
-    "Name": "QuerylistMatchespostAuth0Function",
+    "Name": "QuerylistGameStatespostAuth0Function",
     "RequestMappingTemplateS3Location": {
      "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/c1721bcd774e27c514d3454b5be4f9bdd094c0161b57ddf053d618e3b0086a77.vtl"
     },
@@ -798,10 +798,10 @@
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/QuerylistMatchespostAuth0Function/QuerylistMatchespostAuth0Function.AppSyncFunction"
+    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/QuerylistGameStatespostAuth0Function/QuerylistGameStatespostAuth0Function.AppSyncFunction"
    }
   },
-  "QueryListMatchesDataResolverFnQueryListMatchesDataResolverFnAppSyncFunctionA21F36C1": {
+  "QueryListGameStatesDataResolverFnQueryListGameStatesDataResolverFnAppSyncFunction3FE02530": {
    "Type": "AWS::AppSync::FunctionConfiguration",
    "Properties": {
     "ApiId": {
@@ -809,12 +809,12 @@
     },
     "DataSourceName": {
      "Fn::GetAtt": [
-      "MatchDataSource",
+      "GameStateDataSource",
       "Name"
      ]
     },
     "FunctionVersion": "2018-05-29",
-    "Name": "QueryListMatchesDataResolverFn",
+    "Name": "QueryListGameStatesDataResolverFn",
     "RequestMappingTemplateS3Location": {
      "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/9fcbe070ecd3023c5bf5b966fa9584757db9762eef123bad0820bd87591b2174.vtl"
     },
@@ -823,39 +823,39 @@
     }
    },
    "DependsOn": [
-    "MatchDataSource"
+    "GameStateDataSource"
    ],
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/QueryListMatchesDataResolverFn/QueryListMatchesDataResolverFn.AppSyncFunction"
+    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/QueryListGameStatesDataResolverFn/QueryListGameStatesDataResolverFn.AppSyncFunction"
    }
   },
-  "ListMatchResolver": {
+  "ListGameStateResolver": {
    "Type": "AWS::AppSync::Resolver",
    "Properties": {
     "ApiId": {
      "Ref": "referencetoamplifydebateduellilylsandbox48173f5855dataamplifyDataGraphQLAPI99159CCEApiId"
     },
-    "FieldName": "listMatches",
+    "FieldName": "listGameStates",
     "Kind": "PIPELINE",
     "PipelineConfig": {
      "Functions": [
       {
        "Fn::GetAtt": [
-        "QuerylistMatchesauth0FunctionQuerylistMatchesauth0FunctionAppSyncFunction5BDE4D39",
+        "QuerylistGameStatesauth0FunctionQuerylistGameStatesauth0FunctionAppSyncFunction691A96CB",
         "FunctionId"
        ]
       },
       {
        "Fn::GetAtt": [
-        "QuerylistMatchespostAuth0FunctionQuerylistMatchespostAuth0FunctionAppSyncFunctionB67632F5",
+        "QuerylistGameStatespostAuth0FunctionQuerylistGameStatespostAuth0FunctionAppSyncFunctionBDBDE07C",
         "FunctionId"
        ]
       },
       {
        "Fn::GetAtt": [
-        "QueryListMatchesDataResolverFnQueryListMatchesDataResolverFnAppSyncFunctionA21F36C1",
+        "QueryListGameStatesDataResolverFnQueryListGameStatesDataResolverFnAppSyncFunction3FE02530",
         "FunctionId"
        ]
       }
@@ -865,7 +865,7 @@
      "Fn::Join": [
       "",
       [
-       "$util.qr($ctx.stash.put(\"typeName\", \"Query\"))\n$util.qr($ctx.stash.put(\"fieldName\", \"listMatches\"))\n$util.qr($ctx.stash.put(\"conditions\", []))\n$util.qr($ctx.stash.put(\"metadata\", {}))\n$util.qr($ctx.stash.metadata.put(\"dataSourceType\", \"AMAZON_DYNAMODB\"))\n$util.qr($ctx.stash.metadata.put(\"apiId\", \"",
+       "$util.qr($ctx.stash.put(\"typeName\", \"Query\"))\n$util.qr($ctx.stash.put(\"fieldName\", \"listGameStates\"))\n$util.qr($ctx.stash.put(\"conditions\", []))\n$util.qr($ctx.stash.put(\"metadata\", {}))\n$util.qr($ctx.stash.metadata.put(\"dataSourceType\", \"AMAZON_DYNAMODB\"))\n$util.qr($ctx.stash.metadata.put(\"apiId\", \"",
        {
         "Ref": "referencetoamplifydebateduellilylsandbox48173f5855dataamplifyDataGraphQLAPI99159CCEApiId"
        },
@@ -884,7 +884,7 @@
                ":",
                {
                 "Fn::GetAtt": [
-                 "MatchTable",
+                 "GameStateTable",
                  "TableArn"
                 ]
                }
@@ -906,10 +906,10 @@
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/queryListMatchesResolver"
+    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/queryListGameStatesResolver"
    }
   },
-  "MutationcreateMatchinit0FunctionMutationcreateMatchinit0FunctionAppSyncFunction3924C5A2": {
+  "MutationcreateGameStateinit0FunctionMutationcreateGameStateinit0FunctionAppSyncFunctionF6CBB10C": {
    "Type": "AWS::AppSync::FunctionConfiguration",
    "Properties": {
     "ApiId": {
@@ -919,7 +919,7 @@
      "Ref": "referencetoamplifydebateduellilylsandbox48173f5855dataamplifyDataGraphQLAPINONEDS3734F344Name"
     },
     "FunctionVersion": "2018-05-29",
-    "Name": "MutationcreateMatchinit0Function",
+    "Name": "MutationcreateGameStateinit0Function",
     "RequestMappingTemplateS3Location": {
      "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/a183ddccbd956316c38ef97177b8f088ef0826f62023323f5ae6053d348ccffc.vtl"
     },
@@ -928,10 +928,10 @@
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/MutationcreateMatchinit0Function/MutationcreateMatchinit0Function.AppSyncFunction"
+    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/MutationcreateGameStateinit0Function/MutationcreateGameStateinit0Function.AppSyncFunction"
    }
   },
-  "MutationcreateMatchinit1FunctionMutationcreateMatchinit1FunctionAppSyncFunction4159D647": {
+  "MutationcreateGameStateinit1FunctionMutationcreateGameStateinit1FunctionAppSyncFunctionA5624AD9": {
    "Type": "AWS::AppSync::FunctionConfiguration",
    "Properties": {
     "ApiId": {
@@ -941,19 +941,19 @@
      "Ref": "referencetoamplifydebateduellilylsandbox48173f5855dataamplifyDataGraphQLAPINONEDS3734F344Name"
     },
     "FunctionVersion": "2018-05-29",
-    "Name": "MutationcreateMatchinit1Function",
+    "Name": "MutationcreateGameStateinit1Function",
     "RequestMappingTemplateS3Location": {
-     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/3b7e01084bd40cc5b573e1e105b6652d41c1ab0b1cf96c8943facfbaa9b95c5f.vtl"
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/576159d3390b40208153dcdc6cab1e9cbccbaaa268f6ec2f878642154798a030.vtl"
     },
     "ResponseMappingTemplate": "$util.toJson({})"
    },
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/MutationcreateMatchinit1Function/MutationcreateMatchinit1Function.AppSyncFunction"
+    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/MutationcreateGameStateinit1Function/MutationcreateGameStateinit1Function.AppSyncFunction"
    }
   },
-  "MutationcreateMatchauth0FunctionMutationcreateMatchauth0FunctionAppSyncFunction0869976D": {
+  "MutationcreateGameStateauth0FunctionMutationcreateGameStateauth0FunctionAppSyncFunctionDAB63375": {
    "Type": "AWS::AppSync::FunctionConfiguration",
    "Properties": {
     "ApiId": {
@@ -963,7 +963,7 @@
      "Ref": "referencetoamplifydebateduellilylsandbox48173f5855dataamplifyDataGraphQLAPINONEDS3734F344Name"
     },
     "FunctionVersion": "2018-05-29",
-    "Name": "MutationcreateMatchauth0Function",
+    "Name": "MutationcreateGameStateauth0Function",
     "RequestMappingTemplateS3Location": {
      "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/eda4511e01e0956a1b97d4ca904a6671ee21a1a583dff170fb18cbbd4f9dd6e6.vtl"
     },
@@ -972,10 +972,10 @@
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/MutationcreateMatchauth0Function/MutationcreateMatchauth0Function.AppSyncFunction"
+    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/MutationcreateGameStateauth0Function/MutationcreateGameStateauth0Function.AppSyncFunction"
    }
   },
-  "MutationcreateMatchpostAuth0FunctionMutationcreateMatchpostAuth0FunctionAppSyncFunction9B1D4D4E": {
+  "MutationcreateGameStatepostAuth0FunctionMutationcreateGameStatepostAuth0FunctionAppSyncFunction17411026": {
    "Type": "AWS::AppSync::FunctionConfiguration",
    "Properties": {
     "ApiId": {
@@ -985,7 +985,7 @@
      "Ref": "referencetoamplifydebateduellilylsandbox48173f5855dataamplifyDataGraphQLAPINONEDS3734F344Name"
     },
     "FunctionVersion": "2018-05-29",
-    "Name": "MutationcreateMatchpostAuth0Function",
+    "Name": "MutationcreateGameStatepostAuth0Function",
     "RequestMappingTemplateS3Location": {
      "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/c1721bcd774e27c514d3454b5be4f9bdd094c0161b57ddf053d618e3b0086a77.vtl"
     },
@@ -994,10 +994,10 @@
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/MutationcreateMatchpostAuth0Function/MutationcreateMatchpostAuth0Function.AppSyncFunction"
+    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/MutationcreateGameStatepostAuth0Function/MutationcreateGameStatepostAuth0Function.AppSyncFunction"
    }
   },
-  "MutationCreateMatchDataResolverFnMutationCreateMatchDataResolverFnAppSyncFunction20643302": {
+  "MutationCreateGameStateDataResolverFnMutationCreateGameStateDataResolverFnAppSyncFunction2218FBE0": {
    "Type": "AWS::AppSync::FunctionConfiguration",
    "Properties": {
     "ApiId": {
@@ -1005,65 +1005,65 @@
     },
     "DataSourceName": {
      "Fn::GetAtt": [
-      "MatchDataSource",
+      "GameStateDataSource",
       "Name"
      ]
     },
     "FunctionVersion": "2018-05-29",
-    "Name": "MutationCreateMatchDataResolverFn",
+    "Name": "MutationCreateGameStateDataResolverFn",
     "RequestMappingTemplateS3Location": {
-     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/43490ffd08ec88502686a3b3151f861869e8cb4d2220c6d482edea8054e274a7.vtl"
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/b1d4ac4d1601bcf2567abe694ed0fd28f81446ec4ba0834f0ad78cdc17930778.vtl"
     },
     "ResponseMappingTemplateS3Location": {
      "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/f4a52b72209a9dfa197b5e7367a5c378c5bb86de6e29ddd9e48b49a3fe54b249.vtl"
     }
    },
    "DependsOn": [
-    "MatchDataSource"
+    "GameStateDataSource"
    ],
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/MutationCreateMatchDataResolverFn/MutationCreateMatchDataResolverFn.AppSyncFunction"
+    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/MutationCreateGameStateDataResolverFn/MutationCreateGameStateDataResolverFn.AppSyncFunction"
    }
   },
-  "CreateMatchResolver": {
+  "CreateGameStateResolver": {
    "Type": "AWS::AppSync::Resolver",
    "Properties": {
     "ApiId": {
      "Ref": "referencetoamplifydebateduellilylsandbox48173f5855dataamplifyDataGraphQLAPI99159CCEApiId"
     },
-    "FieldName": "createMatch",
+    "FieldName": "createGameState",
     "Kind": "PIPELINE",
     "PipelineConfig": {
      "Functions": [
       {
        "Fn::GetAtt": [
-        "MutationcreateMatchinit0FunctionMutationcreateMatchinit0FunctionAppSyncFunction3924C5A2",
+        "MutationcreateGameStateinit0FunctionMutationcreateGameStateinit0FunctionAppSyncFunctionF6CBB10C",
         "FunctionId"
        ]
       },
       {
        "Fn::GetAtt": [
-        "MutationcreateMatchinit1FunctionMutationcreateMatchinit1FunctionAppSyncFunction4159D647",
+        "MutationcreateGameStateinit1FunctionMutationcreateGameStateinit1FunctionAppSyncFunctionA5624AD9",
         "FunctionId"
        ]
       },
       {
        "Fn::GetAtt": [
-        "MutationcreateMatchauth0FunctionMutationcreateMatchauth0FunctionAppSyncFunction0869976D",
+        "MutationcreateGameStateauth0FunctionMutationcreateGameStateauth0FunctionAppSyncFunctionDAB63375",
         "FunctionId"
        ]
       },
       {
        "Fn::GetAtt": [
-        "MutationcreateMatchpostAuth0FunctionMutationcreateMatchpostAuth0FunctionAppSyncFunction9B1D4D4E",
+        "MutationcreateGameStatepostAuth0FunctionMutationcreateGameStatepostAuth0FunctionAppSyncFunction17411026",
         "FunctionId"
        ]
       },
       {
        "Fn::GetAtt": [
-        "MutationCreateMatchDataResolverFnMutationCreateMatchDataResolverFnAppSyncFunction20643302",
+        "MutationCreateGameStateDataResolverFnMutationCreateGameStateDataResolverFnAppSyncFunction2218FBE0",
         "FunctionId"
        ]
       }
@@ -1073,7 +1073,7 @@
      "Fn::Join": [
       "",
       [
-       "$util.qr($ctx.stash.put(\"typeName\", \"Mutation\"))\n$util.qr($ctx.stash.put(\"fieldName\", \"createMatch\"))\n$util.qr($ctx.stash.put(\"conditions\", []))\n$util.qr($ctx.stash.put(\"metadata\", {}))\n$util.qr($ctx.stash.metadata.put(\"dataSourceType\", \"AMAZON_DYNAMODB\"))\n$util.qr($ctx.stash.metadata.put(\"apiId\", \"",
+       "$util.qr($ctx.stash.put(\"typeName\", \"Mutation\"))\n$util.qr($ctx.stash.put(\"fieldName\", \"createGameState\"))\n$util.qr($ctx.stash.put(\"conditions\", []))\n$util.qr($ctx.stash.put(\"metadata\", {}))\n$util.qr($ctx.stash.metadata.put(\"dataSourceType\", \"AMAZON_DYNAMODB\"))\n$util.qr($ctx.stash.metadata.put(\"apiId\", \"",
        {
         "Ref": "referencetoamplifydebateduellilylsandbox48173f5855dataamplifyDataGraphQLAPI99159CCEApiId"
        },
@@ -1092,7 +1092,7 @@
                ":",
                {
                 "Fn::GetAtt": [
-                 "MatchTable",
+                 "GameStateTable",
                  "TableArn"
                 ]
                }
@@ -1114,10 +1114,10 @@
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/mutationCreateMatchResolver"
+    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/mutationCreateGameStateResolver"
    }
   },
-  "MutationupdateMatchinit0FunctionMutationupdateMatchinit0FunctionAppSyncFunctionD1691195": {
+  "MutationupdateGameStateinit0FunctionMutationupdateGameStateinit0FunctionAppSyncFunction2698F06B": {
    "Type": "AWS::AppSync::FunctionConfiguration",
    "Properties": {
     "ApiId": {
@@ -1127,7 +1127,7 @@
      "Ref": "referencetoamplifydebateduellilylsandbox48173f5855dataamplifyDataGraphQLAPINONEDS3734F344Name"
     },
     "FunctionVersion": "2018-05-29",
-    "Name": "MutationupdateMatchinit0Function",
+    "Name": "MutationupdateGameStateinit0Function",
     "RequestMappingTemplateS3Location": {
      "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/06db846fd14e6fc371f22b12b5545ba8e2dbfeda85d8c8d586c71c282166657b.vtl"
     },
@@ -1136,10 +1136,10 @@
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/MutationupdateMatchinit0Function/MutationupdateMatchinit0Function.AppSyncFunction"
+    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/MutationupdateGameStateinit0Function/MutationupdateGameStateinit0Function.AppSyncFunction"
    }
   },
-  "MutationupdateMatchauth0FunctionMutationupdateMatchauth0FunctionAppSyncFunctionF61468FF": {
+  "MutationupdateGameStateauth0FunctionMutationupdateGameStateauth0FunctionAppSyncFunction02D3EB1D": {
    "Type": "AWS::AppSync::FunctionConfiguration",
    "Properties": {
     "ApiId": {
@@ -1147,12 +1147,12 @@
     },
     "DataSourceName": {
      "Fn::GetAtt": [
-      "MatchDataSource",
+      "GameStateDataSource",
       "Name"
      ]
     },
     "FunctionVersion": "2018-05-29",
-    "Name": "MutationupdateMatchauth0Function",
+    "Name": "MutationupdateGameStateauth0Function",
     "RequestMappingTemplateS3Location": {
      "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/1f5fed297da9c32ae3af922bf3a38ccf23b956078887d16891ec06c20c64722c.vtl"
     },
@@ -1161,15 +1161,15 @@
     }
    },
    "DependsOn": [
-    "MatchDataSource"
+    "GameStateDataSource"
    ],
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/MutationupdateMatchauth0Function/MutationupdateMatchauth0Function.AppSyncFunction"
+    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/MutationupdateGameStateauth0Function/MutationupdateGameStateauth0Function.AppSyncFunction"
    }
   },
-  "MutationupdateMatchpostAuth0FunctionMutationupdateMatchpostAuth0FunctionAppSyncFunctionF5E0BBF7": {
+  "MutationupdateGameStatepostAuth0FunctionMutationupdateGameStatepostAuth0FunctionAppSyncFunction000C5861": {
    "Type": "AWS::AppSync::FunctionConfiguration",
    "Properties": {
     "ApiId": {
@@ -1179,7 +1179,7 @@
      "Ref": "referencetoamplifydebateduellilylsandbox48173f5855dataamplifyDataGraphQLAPINONEDS3734F344Name"
     },
     "FunctionVersion": "2018-05-29",
-    "Name": "MutationupdateMatchpostAuth0Function",
+    "Name": "MutationupdateGameStatepostAuth0Function",
     "RequestMappingTemplateS3Location": {
      "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/c1721bcd774e27c514d3454b5be4f9bdd094c0161b57ddf053d618e3b0086a77.vtl"
     },
@@ -1188,10 +1188,10 @@
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/MutationupdateMatchpostAuth0Function/MutationupdateMatchpostAuth0Function.AppSyncFunction"
+    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/MutationupdateGameStatepostAuth0Function/MutationupdateGameStatepostAuth0Function.AppSyncFunction"
    }
   },
-  "MutationUpdateMatchDataResolverFnMutationUpdateMatchDataResolverFnAppSyncFunction9A9220BA": {
+  "MutationUpdateGameStateDataResolverFnMutationUpdateGameStateDataResolverFnAppSyncFunctionB0DCBBEE": {
    "Type": "AWS::AppSync::FunctionConfiguration",
    "Properties": {
     "ApiId": {
@@ -1199,12 +1199,12 @@
     },
     "DataSourceName": {
      "Fn::GetAtt": [
-      "MatchDataSource",
+      "GameStateDataSource",
       "Name"
      ]
     },
     "FunctionVersion": "2018-05-29",
-    "Name": "MutationUpdateMatchDataResolverFn",
+    "Name": "MutationUpdateGameStateDataResolverFn",
     "RequestMappingTemplateS3Location": {
      "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/474bf0776ec2164a13191d1a0a9e057154931e4918fea5086f49850d02a5371b.vtl"
     },
@@ -1213,45 +1213,45 @@
     }
    },
    "DependsOn": [
-    "MatchDataSource"
+    "GameStateDataSource"
    ],
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/MutationUpdateMatchDataResolverFn/MutationUpdateMatchDataResolverFn.AppSyncFunction"
+    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/MutationUpdateGameStateDataResolverFn/MutationUpdateGameStateDataResolverFn.AppSyncFunction"
    }
   },
-  "UpdateMatchResolver": {
+  "UpdateGameStateResolver": {
    "Type": "AWS::AppSync::Resolver",
    "Properties": {
     "ApiId": {
      "Ref": "referencetoamplifydebateduellilylsandbox48173f5855dataamplifyDataGraphQLAPI99159CCEApiId"
     },
-    "FieldName": "updateMatch",
+    "FieldName": "updateGameState",
     "Kind": "PIPELINE",
     "PipelineConfig": {
      "Functions": [
       {
        "Fn::GetAtt": [
-        "MutationupdateMatchinit0FunctionMutationupdateMatchinit0FunctionAppSyncFunctionD1691195",
+        "MutationupdateGameStateinit0FunctionMutationupdateGameStateinit0FunctionAppSyncFunction2698F06B",
         "FunctionId"
        ]
       },
       {
        "Fn::GetAtt": [
-        "MutationupdateMatchauth0FunctionMutationupdateMatchauth0FunctionAppSyncFunctionF61468FF",
+        "MutationupdateGameStateauth0FunctionMutationupdateGameStateauth0FunctionAppSyncFunction02D3EB1D",
         "FunctionId"
        ]
       },
       {
        "Fn::GetAtt": [
-        "MutationupdateMatchpostAuth0FunctionMutationupdateMatchpostAuth0FunctionAppSyncFunctionF5E0BBF7",
+        "MutationupdateGameStatepostAuth0FunctionMutationupdateGameStatepostAuth0FunctionAppSyncFunction000C5861",
         "FunctionId"
        ]
       },
       {
        "Fn::GetAtt": [
-        "MutationUpdateMatchDataResolverFnMutationUpdateMatchDataResolverFnAppSyncFunction9A9220BA",
+        "MutationUpdateGameStateDataResolverFnMutationUpdateGameStateDataResolverFnAppSyncFunctionB0DCBBEE",
         "FunctionId"
        ]
       }
@@ -1261,7 +1261,7 @@
      "Fn::Join": [
       "",
       [
-       "$util.qr($ctx.stash.put(\"typeName\", \"Mutation\"))\n$util.qr($ctx.stash.put(\"fieldName\", \"updateMatch\"))\n$util.qr($ctx.stash.put(\"conditions\", []))\n$util.qr($ctx.stash.put(\"metadata\", {}))\n$util.qr($ctx.stash.metadata.put(\"dataSourceType\", \"AMAZON_DYNAMODB\"))\n$util.qr($ctx.stash.metadata.put(\"apiId\", \"",
+       "$util.qr($ctx.stash.put(\"typeName\", \"Mutation\"))\n$util.qr($ctx.stash.put(\"fieldName\", \"updateGameState\"))\n$util.qr($ctx.stash.put(\"conditions\", []))\n$util.qr($ctx.stash.put(\"metadata\", {}))\n$util.qr($ctx.stash.metadata.put(\"dataSourceType\", \"AMAZON_DYNAMODB\"))\n$util.qr($ctx.stash.metadata.put(\"apiId\", \"",
        {
         "Ref": "referencetoamplifydebateduellilylsandbox48173f5855dataamplifyDataGraphQLAPI99159CCEApiId"
        },
@@ -1280,7 +1280,7 @@
                ":",
                {
                 "Fn::GetAtt": [
-                 "MatchTable",
+                 "GameStateTable",
                  "TableArn"
                 ]
                }
@@ -1302,10 +1302,10 @@
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/mutationUpdateMatchResolver"
+    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/mutationUpdateGameStateResolver"
    }
   },
-  "MutationdeleteMatchauth0FunctionMutationdeleteMatchauth0FunctionAppSyncFunctionF7759B39": {
+  "MutationdeleteGameStateauth0FunctionMutationdeleteGameStateauth0FunctionAppSyncFunction50043B33": {
    "Type": "AWS::AppSync::FunctionConfiguration",
    "Properties": {
     "ApiId": {
@@ -1313,12 +1313,12 @@
     },
     "DataSourceName": {
      "Fn::GetAtt": [
-      "MatchDataSource",
+      "GameStateDataSource",
       "Name"
      ]
     },
     "FunctionVersion": "2018-05-29",
-    "Name": "MutationdeleteMatchauth0Function",
+    "Name": "MutationdeleteGameStateauth0Function",
     "RequestMappingTemplateS3Location": {
      "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/1f5fed297da9c32ae3af922bf3a38ccf23b956078887d16891ec06c20c64722c.vtl"
     },
@@ -1327,15 +1327,15 @@
     }
    },
    "DependsOn": [
-    "MatchDataSource"
+    "GameStateDataSource"
    ],
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/MutationdeleteMatchauth0Function/MutationdeleteMatchauth0Function.AppSyncFunction"
+    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/MutationdeleteGameStateauth0Function/MutationdeleteGameStateauth0Function.AppSyncFunction"
    }
   },
-  "MutationdeleteMatchpostAuth0FunctionMutationdeleteMatchpostAuth0FunctionAppSyncFunction0AF7F94D": {
+  "MutationdeleteGameStatepostAuth0FunctionMutationdeleteGameStatepostAuth0FunctionAppSyncFunction4927802E": {
    "Type": "AWS::AppSync::FunctionConfiguration",
    "Properties": {
     "ApiId": {
@@ -1345,7 +1345,7 @@
      "Ref": "referencetoamplifydebateduellilylsandbox48173f5855dataamplifyDataGraphQLAPINONEDS3734F344Name"
     },
     "FunctionVersion": "2018-05-29",
-    "Name": "MutationdeleteMatchpostAuth0Function",
+    "Name": "MutationdeleteGameStatepostAuth0Function",
     "RequestMappingTemplateS3Location": {
      "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/c1721bcd774e27c514d3454b5be4f9bdd094c0161b57ddf053d618e3b0086a77.vtl"
     },
@@ -1354,10 +1354,10 @@
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/MutationdeleteMatchpostAuth0Function/MutationdeleteMatchpostAuth0Function.AppSyncFunction"
+    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/MutationdeleteGameStatepostAuth0Function/MutationdeleteGameStatepostAuth0Function.AppSyncFunction"
    }
   },
-  "MutationDeleteMatchDataResolverFnMutationDeleteMatchDataResolverFnAppSyncFunction7499751F": {
+  "MutationDeleteGameStateDataResolverFnMutationDeleteGameStateDataResolverFnAppSyncFunction2ACA4777": {
    "Type": "AWS::AppSync::FunctionConfiguration",
    "Properties": {
     "ApiId": {
@@ -1365,12 +1365,12 @@
     },
     "DataSourceName": {
      "Fn::GetAtt": [
-      "MatchDataSource",
+      "GameStateDataSource",
       "Name"
      ]
     },
     "FunctionVersion": "2018-05-29",
-    "Name": "MutationDeleteMatchDataResolverFn",
+    "Name": "MutationDeleteGameStateDataResolverFn",
     "RequestMappingTemplateS3Location": {
      "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/4f7907d1209a2c9953a0c053df402c634e359546d70c7cc5c2e8e21ea734880f.vtl"
     },
@@ -1379,39 +1379,39 @@
     }
    },
    "DependsOn": [
-    "MatchDataSource"
+    "GameStateDataSource"
    ],
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/MutationDeleteMatchDataResolverFn/MutationDeleteMatchDataResolverFn.AppSyncFunction"
+    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/MutationDeleteGameStateDataResolverFn/MutationDeleteGameStateDataResolverFn.AppSyncFunction"
    }
   },
-  "DeleteMatchResolver": {
+  "DeleteGameStateResolver": {
    "Type": "AWS::AppSync::Resolver",
    "Properties": {
     "ApiId": {
      "Ref": "referencetoamplifydebateduellilylsandbox48173f5855dataamplifyDataGraphQLAPI99159CCEApiId"
     },
-    "FieldName": "deleteMatch",
+    "FieldName": "deleteGameState",
     "Kind": "PIPELINE",
     "PipelineConfig": {
      "Functions": [
       {
        "Fn::GetAtt": [
-        "MutationdeleteMatchauth0FunctionMutationdeleteMatchauth0FunctionAppSyncFunctionF7759B39",
+        "MutationdeleteGameStateauth0FunctionMutationdeleteGameStateauth0FunctionAppSyncFunction50043B33",
         "FunctionId"
        ]
       },
       {
        "Fn::GetAtt": [
-        "MutationdeleteMatchpostAuth0FunctionMutationdeleteMatchpostAuth0FunctionAppSyncFunction0AF7F94D",
+        "MutationdeleteGameStatepostAuth0FunctionMutationdeleteGameStatepostAuth0FunctionAppSyncFunction4927802E",
         "FunctionId"
        ]
       },
       {
        "Fn::GetAtt": [
-        "MutationDeleteMatchDataResolverFnMutationDeleteMatchDataResolverFnAppSyncFunction7499751F",
+        "MutationDeleteGameStateDataResolverFnMutationDeleteGameStateDataResolverFnAppSyncFunction2ACA4777",
         "FunctionId"
        ]
       }
@@ -1421,7 +1421,7 @@
      "Fn::Join": [
       "",
       [
-       "$util.qr($ctx.stash.put(\"typeName\", \"Mutation\"))\n$util.qr($ctx.stash.put(\"fieldName\", \"deleteMatch\"))\n$util.qr($ctx.stash.put(\"conditions\", []))\n$util.qr($ctx.stash.put(\"metadata\", {}))\n$util.qr($ctx.stash.metadata.put(\"dataSourceType\", \"AMAZON_DYNAMODB\"))\n$util.qr($ctx.stash.metadata.put(\"apiId\", \"",
+       "$util.qr($ctx.stash.put(\"typeName\", \"Mutation\"))\n$util.qr($ctx.stash.put(\"fieldName\", \"deleteGameState\"))\n$util.qr($ctx.stash.put(\"conditions\", []))\n$util.qr($ctx.stash.put(\"metadata\", {}))\n$util.qr($ctx.stash.metadata.put(\"dataSourceType\", \"AMAZON_DYNAMODB\"))\n$util.qr($ctx.stash.metadata.put(\"apiId\", \"",
        {
         "Ref": "referencetoamplifydebateduellilylsandbox48173f5855dataamplifyDataGraphQLAPI99159CCEApiId"
        },
@@ -1440,7 +1440,7 @@
                ":",
                {
                 "Fn::GetAtt": [
-                 "MatchTable",
+                 "GameStateTable",
                  "TableArn"
                 ]
                }
@@ -1462,10 +1462,10 @@
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/mutationDeleteMatchResolver"
+    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/mutationDeleteGameStateResolver"
    }
   },
-  "SubscriptiononCreateMatchauth0FunctionSubscriptiononCreateMatchauth0FunctionAppSyncFunctionA5B352EC": {
+  "SubscriptiononCreateGameStateauth0FunctionSubscriptiononCreateGameStateauth0FunctionAppSyncFunction94555EFE": {
    "Type": "AWS::AppSync::FunctionConfiguration",
    "Properties": {
     "ApiId": {
@@ -1475,7 +1475,7 @@
      "Ref": "referencetoamplifydebateduellilylsandbox48173f5855dataamplifyDataGraphQLAPINONEDS3734F344Name"
     },
     "FunctionVersion": "2018-05-29",
-    "Name": "SubscriptiononCreateMatchauth0Function",
+    "Name": "SubscriptiononCreateGameStateauth0Function",
     "RequestMappingTemplateS3Location": {
      "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/0064bfbd7fdaea51ef97e8494f036beca0be53bc5c1c7b05c29a27f9cdb28bd2.vtl"
     },
@@ -1484,10 +1484,10 @@
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/SubscriptiononCreateMatchauth0Function/SubscriptiononCreateMatchauth0Function.AppSyncFunction"
+    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/SubscriptiononCreateGameStateauth0Function/SubscriptiononCreateGameStateauth0Function.AppSyncFunction"
    }
   },
-  "SubscriptiononCreateMatchpostAuth0FunctionSubscriptiononCreateMatchpostAuth0FunctionAppSyncFunction9A09764B": {
+  "SubscriptiononCreateGameStatepostAuth0FunctionSubscriptiononCreateGameStatepostAuth0FunctionAppSyncFunctionC4371208": {
    "Type": "AWS::AppSync::FunctionConfiguration",
    "Properties": {
     "ApiId": {
@@ -1497,7 +1497,7 @@
      "Ref": "referencetoamplifydebateduellilylsandbox48173f5855dataamplifyDataGraphQLAPINONEDS3734F344Name"
     },
     "FunctionVersion": "2018-05-29",
-    "Name": "SubscriptiononCreateMatchpostAuth0Function",
+    "Name": "SubscriptiononCreateGameStatepostAuth0Function",
     "RequestMappingTemplateS3Location": {
      "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/c1721bcd774e27c514d3454b5be4f9bdd094c0161b57ddf053d618e3b0086a77.vtl"
     },
@@ -1506,10 +1506,10 @@
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/SubscriptiononCreateMatchpostAuth0Function/SubscriptiononCreateMatchpostAuth0Function.AppSyncFunction"
+    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/SubscriptiononCreateGameStatepostAuth0Function/SubscriptiononCreateGameStatepostAuth0Function.AppSyncFunction"
    }
   },
-  "SubscriptionOnCreateMatchDataResolverFnSubscriptionOnCreateMatchDataResolverFnAppSyncFunctionEB924D65": {
+  "SubscriptionOnCreateGameStateDataResolverFnSubscriptionOnCreateGameStateDataResolverFnAppSyncFunction97F0EC25": {
    "Type": "AWS::AppSync::FunctionConfiguration",
    "Properties": {
     "ApiId": {
@@ -1519,7 +1519,7 @@
      "Ref": "referencetoamplifydebateduellilylsandbox48173f5855dataamplifyDataGraphQLAPINONEDS3734F344Name"
     },
     "FunctionVersion": "2018-05-29",
-    "Name": "SubscriptionOnCreateMatchDataResolverFn",
+    "Name": "SubscriptionOnCreateGameStateDataResolverFn",
     "RequestMappingTemplateS3Location": {
      "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/fe3c43ada4b9d681a5e2312663ef7a73386424d73b73e51f8e2e9d4b50f7c502.vtl"
     },
@@ -1530,34 +1530,34 @@
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/SubscriptionOnCreateMatchDataResolverFn/SubscriptionOnCreateMatchDataResolverFn.AppSyncFunction"
+    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/SubscriptionOnCreateGameStateDataResolverFn/SubscriptionOnCreateGameStateDataResolverFn.AppSyncFunction"
    }
   },
-  "SubscriptiononCreateMatchResolver": {
+  "SubscriptiononCreateGameStateResolver": {
    "Type": "AWS::AppSync::Resolver",
    "Properties": {
     "ApiId": {
      "Ref": "referencetoamplifydebateduellilylsandbox48173f5855dataamplifyDataGraphQLAPI99159CCEApiId"
     },
-    "FieldName": "onCreateMatch",
+    "FieldName": "onCreateGameState",
     "Kind": "PIPELINE",
     "PipelineConfig": {
      "Functions": [
       {
        "Fn::GetAtt": [
-        "SubscriptiononCreateMatchauth0FunctionSubscriptiononCreateMatchauth0FunctionAppSyncFunctionA5B352EC",
+        "SubscriptiononCreateGameStateauth0FunctionSubscriptiononCreateGameStateauth0FunctionAppSyncFunction94555EFE",
         "FunctionId"
        ]
       },
       {
        "Fn::GetAtt": [
-        "SubscriptiononCreateMatchpostAuth0FunctionSubscriptiononCreateMatchpostAuth0FunctionAppSyncFunction9A09764B",
+        "SubscriptiononCreateGameStatepostAuth0FunctionSubscriptiononCreateGameStatepostAuth0FunctionAppSyncFunctionC4371208",
         "FunctionId"
        ]
       },
       {
        "Fn::GetAtt": [
-        "SubscriptionOnCreateMatchDataResolverFnSubscriptionOnCreateMatchDataResolverFnAppSyncFunctionEB924D65",
+        "SubscriptionOnCreateGameStateDataResolverFnSubscriptionOnCreateGameStateDataResolverFnAppSyncFunction97F0EC25",
         "FunctionId"
        ]
       }
@@ -1567,7 +1567,7 @@
      "Fn::Join": [
       "",
       [
-       "$util.qr($ctx.stash.put(\"typeName\", \"Subscription\"))\n$util.qr($ctx.stash.put(\"fieldName\", \"onCreateMatch\"))\n$util.qr($ctx.stash.put(\"conditions\", []))\n$util.qr($ctx.stash.put(\"metadata\", {}))\n$util.qr($ctx.stash.metadata.put(\"dataSourceType\", \"NONE\"))\n$util.qr($ctx.stash.metadata.put(\"apiId\", \"",
+       "$util.qr($ctx.stash.put(\"typeName\", \"Subscription\"))\n$util.qr($ctx.stash.put(\"fieldName\", \"onCreateGameState\"))\n$util.qr($ctx.stash.put(\"conditions\", []))\n$util.qr($ctx.stash.put(\"metadata\", {}))\n$util.qr($ctx.stash.metadata.put(\"dataSourceType\", \"NONE\"))\n$util.qr($ctx.stash.metadata.put(\"apiId\", \"",
        {
         "Ref": "referencetoamplifydebateduellilylsandbox48173f5855dataamplifyDataGraphQLAPI99159CCEApiId"
        },
@@ -1581,10 +1581,10 @@
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/subscriptionOnCreateMatchResolver"
+    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/subscriptionOnCreateGameStateResolver"
    }
   },
-  "SubscriptiononUpdateMatchauth0FunctionSubscriptiononUpdateMatchauth0FunctionAppSyncFunctionF13493E4": {
+  "SubscriptiononUpdateGameStateauth0FunctionSubscriptiononUpdateGameStateauth0FunctionAppSyncFunction89AB2768": {
    "Type": "AWS::AppSync::FunctionConfiguration",
    "Properties": {
     "ApiId": {
@@ -1594,7 +1594,7 @@
      "Ref": "referencetoamplifydebateduellilylsandbox48173f5855dataamplifyDataGraphQLAPINONEDS3734F344Name"
     },
     "FunctionVersion": "2018-05-29",
-    "Name": "SubscriptiononUpdateMatchauth0Function",
+    "Name": "SubscriptiononUpdateGameStateauth0Function",
     "RequestMappingTemplateS3Location": {
      "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/0064bfbd7fdaea51ef97e8494f036beca0be53bc5c1c7b05c29a27f9cdb28bd2.vtl"
     },
@@ -1603,10 +1603,10 @@
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/SubscriptiononUpdateMatchauth0Function/SubscriptiononUpdateMatchauth0Function.AppSyncFunction"
+    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/SubscriptiononUpdateGameStateauth0Function/SubscriptiononUpdateGameStateauth0Function.AppSyncFunction"
    }
   },
-  "SubscriptiononUpdateMatchpostAuth0FunctionSubscriptiononUpdateMatchpostAuth0FunctionAppSyncFunction4909DF5A": {
+  "SubscriptiononUpdateGameStatepostAuth0FunctionSubscriptiononUpdateGameStatepostAuth0FunctionAppSyncFunction75DF67C4": {
    "Type": "AWS::AppSync::FunctionConfiguration",
    "Properties": {
     "ApiId": {
@@ -1616,7 +1616,7 @@
      "Ref": "referencetoamplifydebateduellilylsandbox48173f5855dataamplifyDataGraphQLAPINONEDS3734F344Name"
     },
     "FunctionVersion": "2018-05-29",
-    "Name": "SubscriptiononUpdateMatchpostAuth0Function",
+    "Name": "SubscriptiononUpdateGameStatepostAuth0Function",
     "RequestMappingTemplateS3Location": {
      "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/c1721bcd774e27c514d3454b5be4f9bdd094c0161b57ddf053d618e3b0086a77.vtl"
     },
@@ -1625,10 +1625,10 @@
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/SubscriptiononUpdateMatchpostAuth0Function/SubscriptiononUpdateMatchpostAuth0Function.AppSyncFunction"
+    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/SubscriptiononUpdateGameStatepostAuth0Function/SubscriptiononUpdateGameStatepostAuth0Function.AppSyncFunction"
    }
   },
-  "SubscriptionOnUpdateMatchDataResolverFnSubscriptionOnUpdateMatchDataResolverFnAppSyncFunction43F5D6A6": {
+  "SubscriptionOnUpdateGameStateDataResolverFnSubscriptionOnUpdateGameStateDataResolverFnAppSyncFunctionF31CADB6": {
    "Type": "AWS::AppSync::FunctionConfiguration",
    "Properties": {
     "ApiId": {
@@ -1638,7 +1638,7 @@
      "Ref": "referencetoamplifydebateduellilylsandbox48173f5855dataamplifyDataGraphQLAPINONEDS3734F344Name"
     },
     "FunctionVersion": "2018-05-29",
-    "Name": "SubscriptionOnUpdateMatchDataResolverFn",
+    "Name": "SubscriptionOnUpdateGameStateDataResolverFn",
     "RequestMappingTemplateS3Location": {
      "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/fe3c43ada4b9d681a5e2312663ef7a73386424d73b73e51f8e2e9d4b50f7c502.vtl"
     },
@@ -1649,34 +1649,34 @@
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/SubscriptionOnUpdateMatchDataResolverFn/SubscriptionOnUpdateMatchDataResolverFn.AppSyncFunction"
+    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/SubscriptionOnUpdateGameStateDataResolverFn/SubscriptionOnUpdateGameStateDataResolverFn.AppSyncFunction"
    }
   },
-  "SubscriptiononUpdateMatchResolver": {
+  "SubscriptiononUpdateGameStateResolver": {
    "Type": "AWS::AppSync::Resolver",
    "Properties": {
     "ApiId": {
      "Ref": "referencetoamplifydebateduellilylsandbox48173f5855dataamplifyDataGraphQLAPI99159CCEApiId"
     },
-    "FieldName": "onUpdateMatch",
+    "FieldName": "onUpdateGameState",
     "Kind": "PIPELINE",
     "PipelineConfig": {
      "Functions": [
       {
        "Fn::GetAtt": [
-        "SubscriptiononUpdateMatchauth0FunctionSubscriptiononUpdateMatchauth0FunctionAppSyncFunctionF13493E4",
+        "SubscriptiononUpdateGameStateauth0FunctionSubscriptiononUpdateGameStateauth0FunctionAppSyncFunction89AB2768",
         "FunctionId"
        ]
       },
       {
        "Fn::GetAtt": [
-        "SubscriptiononUpdateMatchpostAuth0FunctionSubscriptiononUpdateMatchpostAuth0FunctionAppSyncFunction4909DF5A",
+        "SubscriptiononUpdateGameStatepostAuth0FunctionSubscriptiononUpdateGameStatepostAuth0FunctionAppSyncFunction75DF67C4",
         "FunctionId"
        ]
       },
       {
        "Fn::GetAtt": [
-        "SubscriptionOnUpdateMatchDataResolverFnSubscriptionOnUpdateMatchDataResolverFnAppSyncFunction43F5D6A6",
+        "SubscriptionOnUpdateGameStateDataResolverFnSubscriptionOnUpdateGameStateDataResolverFnAppSyncFunctionF31CADB6",
         "FunctionId"
        ]
       }
@@ -1686,7 +1686,7 @@
      "Fn::Join": [
       "",
       [
-       "$util.qr($ctx.stash.put(\"typeName\", \"Subscription\"))\n$util.qr($ctx.stash.put(\"fieldName\", \"onUpdateMatch\"))\n$util.qr($ctx.stash.put(\"conditions\", []))\n$util.qr($ctx.stash.put(\"metadata\", {}))\n$util.qr($ctx.stash.metadata.put(\"dataSourceType\", \"NONE\"))\n$util.qr($ctx.stash.metadata.put(\"apiId\", \"",
+       "$util.qr($ctx.stash.put(\"typeName\", \"Subscription\"))\n$util.qr($ctx.stash.put(\"fieldName\", \"onUpdateGameState\"))\n$util.qr($ctx.stash.put(\"conditions\", []))\n$util.qr($ctx.stash.put(\"metadata\", {}))\n$util.qr($ctx.stash.metadata.put(\"dataSourceType\", \"NONE\"))\n$util.qr($ctx.stash.metadata.put(\"apiId\", \"",
        {
         "Ref": "referencetoamplifydebateduellilylsandbox48173f5855dataamplifyDataGraphQLAPI99159CCEApiId"
        },
@@ -1700,10 +1700,10 @@
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/subscriptionOnUpdateMatchResolver"
+    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/subscriptionOnUpdateGameStateResolver"
    }
   },
-  "SubscriptiononDeleteMatchauth0FunctionSubscriptiononDeleteMatchauth0FunctionAppSyncFunctionB980EBDF": {
+  "SubscriptiononDeleteGameStateauth0FunctionSubscriptiononDeleteGameStateauth0FunctionAppSyncFunction3D79577A": {
    "Type": "AWS::AppSync::FunctionConfiguration",
    "Properties": {
     "ApiId": {
@@ -1713,7 +1713,7 @@
      "Ref": "referencetoamplifydebateduellilylsandbox48173f5855dataamplifyDataGraphQLAPINONEDS3734F344Name"
     },
     "FunctionVersion": "2018-05-29",
-    "Name": "SubscriptiononDeleteMatchauth0Function",
+    "Name": "SubscriptiononDeleteGameStateauth0Function",
     "RequestMappingTemplateS3Location": {
      "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/0064bfbd7fdaea51ef97e8494f036beca0be53bc5c1c7b05c29a27f9cdb28bd2.vtl"
     },
@@ -1722,10 +1722,10 @@
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/SubscriptiononDeleteMatchauth0Function/SubscriptiononDeleteMatchauth0Function.AppSyncFunction"
+    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/SubscriptiononDeleteGameStateauth0Function/SubscriptiononDeleteGameStateauth0Function.AppSyncFunction"
    }
   },
-  "SubscriptiononDeleteMatchpostAuth0FunctionSubscriptiononDeleteMatchpostAuth0FunctionAppSyncFunction5BE6041F": {
+  "SubscriptiononDeleteGameStatepostAuth0FunctionSubscriptiononDeleteGameStatepostAuth0FunctionAppSyncFunction85842CC5": {
    "Type": "AWS::AppSync::FunctionConfiguration",
    "Properties": {
     "ApiId": {
@@ -1735,7 +1735,7 @@
      "Ref": "referencetoamplifydebateduellilylsandbox48173f5855dataamplifyDataGraphQLAPINONEDS3734F344Name"
     },
     "FunctionVersion": "2018-05-29",
-    "Name": "SubscriptiononDeleteMatchpostAuth0Function",
+    "Name": "SubscriptiononDeleteGameStatepostAuth0Function",
     "RequestMappingTemplateS3Location": {
      "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/c1721bcd774e27c514d3454b5be4f9bdd094c0161b57ddf053d618e3b0086a77.vtl"
     },
@@ -1744,10 +1744,10 @@
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/SubscriptiononDeleteMatchpostAuth0Function/SubscriptiononDeleteMatchpostAuth0Function.AppSyncFunction"
+    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/SubscriptiononDeleteGameStatepostAuth0Function/SubscriptiononDeleteGameStatepostAuth0Function.AppSyncFunction"
    }
   },
-  "SubscriptionOnDeleteMatchDataResolverFnSubscriptionOnDeleteMatchDataResolverFnAppSyncFunctionABD99418": {
+  "SubscriptionOnDeleteGameStateDataResolverFnSubscriptionOnDeleteGameStateDataResolverFnAppSyncFunction58174D6A": {
    "Type": "AWS::AppSync::FunctionConfiguration",
    "Properties": {
     "ApiId": {
@@ -1757,7 +1757,7 @@
      "Ref": "referencetoamplifydebateduellilylsandbox48173f5855dataamplifyDataGraphQLAPINONEDS3734F344Name"
     },
     "FunctionVersion": "2018-05-29",
-    "Name": "SubscriptionOnDeleteMatchDataResolverFn",
+    "Name": "SubscriptionOnDeleteGameStateDataResolverFn",
     "RequestMappingTemplateS3Location": {
      "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/fe3c43ada4b9d681a5e2312663ef7a73386424d73b73e51f8e2e9d4b50f7c502.vtl"
     },
@@ -1768,34 +1768,34 @@
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/SubscriptionOnDeleteMatchDataResolverFn/SubscriptionOnDeleteMatchDataResolverFn.AppSyncFunction"
+    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/SubscriptionOnDeleteGameStateDataResolverFn/SubscriptionOnDeleteGameStateDataResolverFn.AppSyncFunction"
    }
   },
-  "SubscriptiononDeleteMatchResolver": {
+  "SubscriptiononDeleteGameStateResolver": {
    "Type": "AWS::AppSync::Resolver",
    "Properties": {
     "ApiId": {
      "Ref": "referencetoamplifydebateduellilylsandbox48173f5855dataamplifyDataGraphQLAPI99159CCEApiId"
     },
-    "FieldName": "onDeleteMatch",
+    "FieldName": "onDeleteGameState",
     "Kind": "PIPELINE",
     "PipelineConfig": {
      "Functions": [
       {
        "Fn::GetAtt": [
-        "SubscriptiononDeleteMatchauth0FunctionSubscriptiononDeleteMatchauth0FunctionAppSyncFunctionB980EBDF",
+        "SubscriptiononDeleteGameStateauth0FunctionSubscriptiononDeleteGameStateauth0FunctionAppSyncFunction3D79577A",
         "FunctionId"
        ]
       },
       {
        "Fn::GetAtt": [
-        "SubscriptiononDeleteMatchpostAuth0FunctionSubscriptiononDeleteMatchpostAuth0FunctionAppSyncFunction5BE6041F",
+        "SubscriptiononDeleteGameStatepostAuth0FunctionSubscriptiononDeleteGameStatepostAuth0FunctionAppSyncFunction85842CC5",
         "FunctionId"
        ]
       },
       {
        "Fn::GetAtt": [
-        "SubscriptionOnDeleteMatchDataResolverFnSubscriptionOnDeleteMatchDataResolverFnAppSyncFunctionABD99418",
+        "SubscriptionOnDeleteGameStateDataResolverFnSubscriptionOnDeleteGameStateDataResolverFnAppSyncFunction58174D6A",
         "FunctionId"
        ]
       }
@@ -1805,7 +1805,7 @@
      "Fn::Join": [
       "",
       [
-       "$util.qr($ctx.stash.put(\"typeName\", \"Subscription\"))\n$util.qr($ctx.stash.put(\"fieldName\", \"onDeleteMatch\"))\n$util.qr($ctx.stash.put(\"conditions\", []))\n$util.qr($ctx.stash.put(\"metadata\", {}))\n$util.qr($ctx.stash.metadata.put(\"dataSourceType\", \"NONE\"))\n$util.qr($ctx.stash.metadata.put(\"apiId\", \"",
+       "$util.qr($ctx.stash.put(\"typeName\", \"Subscription\"))\n$util.qr($ctx.stash.put(\"fieldName\", \"onDeleteGameState\"))\n$util.qr($ctx.stash.put(\"conditions\", []))\n$util.qr($ctx.stash.put(\"metadata\", {}))\n$util.qr($ctx.stash.metadata.put(\"dataSourceType\", \"NONE\"))\n$util.qr($ctx.stash.metadata.put(\"apiId\", \"",
        {
         "Ref": "referencetoamplifydebateduellilylsandbox48173f5855dataamplifyDataGraphQLAPI99159CCEApiId"
        },
@@ -1819,7 +1819,7 @@
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/subscriptionOnDeleteMatchResolver"
+    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/subscriptionOnDeleteGameStateResolver"
    }
   },
   "CDKMetadata": {
@@ -1828,17 +1828,17 @@
     "Analytics": "v2:deflate64:H4sIAAAAAAAA/1WOwW6DMAyGn6X34JUyaecV1OM2we6VSQxKCQmKnVYV4t0n6NRpp9+f/Mn+D5C/vcJ+hzfOtBkyZ1uYP4iFTCOoB1V2/gsjjiQUVyiDN1Zs8KomDilqUmViCeMfdv45443Ps7l7HINp4RtbR0dkUhZHmOvgHnZwtCicJr57DXO16VVboWDzPPmfTsnrtUQZfGf7FHFr9PvZXSkuioszMpMwvK+huIBj0gPJWmBZ3c8kUxK1rRvB3vp+UT4Yggu/XA97yAvIdxe2NovJix0J6kf+AHtIgX02AQAA"
    },
    "Metadata": {
-    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Match/CDKMetadata/Default"
+    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/CDKMetadata/Default"
    },
    "Condition": "CDKMetadataAvailable"
   }
  },
  "Outputs": {
-  "GetAttMatchTableStreamArn": {
+  "GetAttGameStateTableStreamArn": {
    "Description": "Your DynamoDB table StreamArn.",
    "Value": {
     "Fn::GetAtt": [
-     "MatchTable",
+     "GameStateTable",
      "TableStreamArn"
     ]
    },
@@ -1850,19 +1850,19 @@
        {
         "Ref": "referencetoamplifydebateduellilylsandbox48173f5855dataamplifyDataGraphQLAPI99159CCEApiId"
        },
-       "GetAtt:MatchTable:StreamArn"
+       "GetAtt:GameStateTable:StreamArn"
       ]
      ]
     }
    }
   },
-  "GetAttMatchTableName": {
+  "GetAttGameStateTableName": {
    "Description": "Your DynamoDB table name.",
    "Value": {
     "Fn::Join": [
      "",
      [
-      "Match-",
+      "GameState-",
       {
        "Ref": "referencetoamplifydebateduellilylsandbox48173f5855dataamplifyDataGraphQLAPI99159CCEApiId"
       },
@@ -1878,7 +1878,7 @@
        {
         "Ref": "referencetoamplifydebateduellilylsandbox48173f5855dataamplifyDataGraphQLAPI99159CCEApiId"
        },
-       "GetAtt:MatchTable:Name"
+       "GetAtt:GameStateTable:Name"
       ]
      ]
     }

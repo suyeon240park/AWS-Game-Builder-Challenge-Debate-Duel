@@ -42,7 +42,7 @@
      ]
     },
     "DefinitionS3Location": {
-     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/2a0c7c90771bc8a16a4ecac99ba71e066e277f811ff5bf73ddfb12652ae14d39.graphql"
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/e6facc0d6271ce7ca085f72c1d373cef11e2ccf6a9e67718611044353519e31f.graphql"
     }
    },
    "UpdateReplacePolicy": "Delete",
@@ -60,7 +60,7 @@
       "ApiId"
      ]
     },
-    "Expires": 1738701171
+    "Expires": 1738791090
    },
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
@@ -209,7 +209,7 @@
        {
         "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
        },
-       "/6533fe8662ebf03a4c79144a401131cb951a3fab51b5a422992ab8c4889c412d.json"
+       "/547dfab1660d21cd55fc08e820e9caee2e9f30c5d328b604004da3fcb59461cd.json"
       ]
      ]
     }
@@ -293,7 +293,7 @@
        {
         "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
        },
-       "/60f6e12ac37d9ea7392159bd8adff5a06fe518db9f0f0caeacdefc350ccf790b.json"
+       "/65bb1b094cfe77af8938af59787e60fab6ef55800b32b030c447a96bde89a9fa.json"
       ]
      ]
     }
@@ -306,6 +306,90 @@
    "Metadata": {
     "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Player.NestedStack/Player.NestedStackResource",
     "aws:asset:path": "amplifydebateduellilylsandbox48173f5855dataamplifyDataPlayer1C7ADD18.nested.template.json",
+    "aws:asset:property": "TemplateURL"
+   }
+  },
+  "amplifyDataGameStateNestedStackGameStateNestedStackResource6D87AAF6": {
+   "Type": "AWS::CloudFormation::Stack",
+   "Properties": {
+    "Parameters": {
+     "DynamoDBModelTableReadIOPS": {
+      "Ref": "DynamoDBModelTableReadIOPS"
+     },
+     "DynamoDBModelTableWriteIOPS": {
+      "Ref": "DynamoDBModelTableWriteIOPS"
+     },
+     "DynamoDBBillingMode": {
+      "Ref": "DynamoDBBillingMode"
+     },
+     "DynamoDBEnablePointInTimeRecovery": {
+      "Ref": "DynamoDBEnablePointInTimeRecovery"
+     },
+     "DynamoDBEnableServerSideEncryption": {
+      "Ref": "DynamoDBEnableServerSideEncryption"
+     },
+     "referencetoamplifydebateduellilylsandbox48173f5855dataamplifyDataAmplifyTableManagerNestedStackAmplifyTableManagerNestedStackResource223A44E6Outputsamplifydebateduellilylsandbox48173f5855dataamplifyDataAmplifyTableManagerTableManagerCustomP23F5E299": {
+      "Fn::GetAtt": [
+       "amplifyDataAmplifyTableManagerNestedStackAmplifyTableManagerNestedStackResource86290833",
+       "Outputs.amplifydebateduellilylsandbox48173f5855dataamplifyDataAmplifyTableManagerTableManagerCustomProviderframeworkonEventE14834E5Arn"
+      ]
+     },
+     "referencetoamplifydebateduellilylsandbox48173f5855dataamplifyDataGraphQLAPI99159CCEApiId": {
+      "Fn::GetAtt": [
+       "amplifyDataGraphQLAPI42A6FA33",
+       "ApiId"
+      ]
+     },
+     "referencetoamplifydebateduellilylsandbox48173f5855dataamplifyDataGraphQLAPINONEDS3734F344Name": {
+      "Fn::GetAtt": [
+       "amplifyDataGraphQLAPINONEDS684BF699",
+       "Name"
+      ]
+     }
+    },
+    "Tags": [
+     {
+      "Key": "amplify:deployment-type",
+      "Value": "sandbox"
+     },
+     {
+      "Key": "amplify:friendly-name",
+      "Value": "amplifyData"
+     },
+     {
+      "Key": "created-by",
+      "Value": "amplify"
+     }
+    ],
+    "TemplateURL": {
+     "Fn::Join": [
+      "",
+      [
+       "https://s3.",
+       {
+        "Ref": "AWS::Region"
+       },
+       ".",
+       {
+        "Ref": "AWS::URLSuffix"
+       },
+       "/",
+       {
+        "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
+       },
+       "/12e575b33397c8985def522a357e647d849da88b6c011b43726f99dd7d27411a.json"
+      ]
+     ]
+    }
+   },
+   "DependsOn": [
+    "amplifyDataGraphQLAPITransformerSchemaFF50A789"
+   ],
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState.NestedStack/GameState.NestedStackResource",
+    "aws:asset:path": "amplifydebateduellilylsandbox48173f5855dataamplifyDataGameStateA29872CD.nested.template.json",
     "aws:asset:property": "TemplateURL"
    }
   },
@@ -482,7 +566,7 @@
      }
     ],
     "SourceObjectKeys": [
-     "d750f7dadd007336c01ade69dc47d740a450250b603b06d71444c85614aaf4cc.zip"
+     "4f390c81921ebe5e770181c459c2139c86af3555293f1d92319bdd0e57e72b29.zip"
     ],
     "SourceMarkers": [
      {}
@@ -994,7 +1078,7 @@
      }
     ],
     "SourceObjectKeys": [
-     "1af11033bd013bfe85b2e64e7f0480a71a272ba5eed8e8317d1978d02a82fb5a.zip"
+     "450604f68ea25f9200e846fbe7d79a455f9ca6e7178155313297d2a8d567889f.zip"
     ],
     "SourceMarkers": [
      {}

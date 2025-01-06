@@ -1,0 +1,36 @@
+type Match @model @auth(rules: [{allow: public, provider: apiKey}])
+{
+  player1Id: String!
+  player2Id: String
+  player1Ready: Boolean @default(value: "false")
+  player2Ready: Boolean @default(value: "false")
+  matchStatus: MatchMatchStatus
+  topic: String
+  currentTurn: Int
+  roundNumber: Int @default(value: "1")
+  timeRemaining: Int @default(value: "30")
+}
+
+type Player @model @auth(rules: [{allow: public, provider: apiKey}])
+{
+  nickname: String!
+  currentMatchId: String
+  argument: String
+  score: Int @default(value: "0")
+}
+
+type GameState @model @auth(rules: [{allow: public, provider: apiKey}])
+{
+  topic: String
+  currentTurn: Int
+  roundNumber: Int @default(value: "1")
+  timeRemaining: Int @default(value: "30")
+}
+
+enum MatchMatchStatus {
+  WAITING
+  MATCHED
+  READY
+  IN_PROGRESS
+  FINISHED
+}

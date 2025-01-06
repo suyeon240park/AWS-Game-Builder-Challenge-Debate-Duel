@@ -22,7 +22,7 @@
         "validateOnSynth": false,
         "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-deploy-role-${AWS::AccountId}-${AWS::Region}",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-cfn-exec-role-${AWS::AccountId}-${AWS::Region}",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/0792e6c3bc171c13461fe035a88ad308891ca4b2e2a13f0416b8b407f6706e96.json",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/6374d613bf1363027109a13115913abce889fdac329830977d5a36018f9c03df.json",
         "requiresBootstrapStackVersion": 6,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
@@ -893,6 +893,16 @@
             "data": "MutationcreatePlayerinit0Function"
           }
         ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Player/MutationcreatePlayerinit1Function/MutationcreatePlayerinit1Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MutationcreatePlayerinit1FunctionMutationcreatePlayerinit1FunctionAppSyncFunction455FF156"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "MutationcreatePlayerinit1Function"
+          }
+        ],
         "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Player/MutationcreatePlayerauth0Function/MutationcreatePlayerauth0Function.AppSyncFunction": [
           {
             "type": "aws:cdk:logicalId",
@@ -1177,6 +1187,512 @@
           {
             "type": "aws:cdk:logicalId",
             "data": "amplifyDataPlayerNestedStackPlayerNestedStackResource9B60BC82"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/DynamoDBModelTableReadIOPS": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DynamoDBModelTableReadIOPS"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/DynamoDBModelTableWriteIOPS": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DynamoDBModelTableWriteIOPS"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/DynamoDBBillingMode": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DynamoDBBillingMode"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/DynamoDBEnablePointInTimeRecovery": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DynamoDBEnablePointInTimeRecovery"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/DynamoDBEnableServerSideEncryption": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DynamoDBEnableServerSideEncryption"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/HasEnvironmentParameter": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "HasEnvironmentParameter"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/ShouldUseServerSideEncryption": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ShouldUseServerSideEncryption"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/ShouldUsePayPerRequestBilling": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ShouldUsePayPerRequestBilling"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/ShouldUsePointInTimeRecovery": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ShouldUsePointInTimeRecovery"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/GameStateTable": [
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "GameState"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/GameStateTable/Default/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GameStateTable"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "GameState"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/CustomTableGameStateTable": [
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "GameState"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/GetAttGameStateTableStreamArn": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GetAttGameStateTableStreamArn"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/GetAttGameStateTableName": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GetAttGameStateTableName"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/GameStateIAMRole": [
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "GameStateIAMRole"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/GameStateIAMRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GameStateIAMRole111BE853"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "GameStateIAMRole"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/GameStateDataSource": [
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "GameStateTable"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/GameStateDataSource/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GameStateDataSource"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "GameStateTable"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/QuerygetGameStateauth0Function/QuerygetGameStateauth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "QuerygetGameStateauth0FunctionQuerygetGameStateauth0FunctionAppSyncFunction0DCEFF25"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "QuerygetGameStateauth0Function"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/QuerygetGameStatepostAuth0Function/QuerygetGameStatepostAuth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "QuerygetGameStatepostAuth0FunctionQuerygetGameStatepostAuth0FunctionAppSyncFunction1E235F95"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "QuerygetGameStatepostAuth0Function"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/QueryGetGameStateDataResolverFn/QueryGetGameStateDataResolverFn.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "QueryGetGameStateDataResolverFnQueryGetGameStateDataResolverFnAppSyncFunction09C5E838"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "QueryGetGameStateDataResolverFn"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/queryGetGameStateResolver": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GetGameStateResolver"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "Query.getGameState"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/QuerylistGameStatesauth0Function/QuerylistGameStatesauth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "QuerylistGameStatesauth0FunctionQuerylistGameStatesauth0FunctionAppSyncFunction691A96CB"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "QuerylistGameStatesauth0Function"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/QuerylistGameStatespostAuth0Function/QuerylistGameStatespostAuth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "QuerylistGameStatespostAuth0FunctionQuerylistGameStatespostAuth0FunctionAppSyncFunctionBDBDE07C"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "QuerylistGameStatespostAuth0Function"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/QueryListGameStatesDataResolverFn/QueryListGameStatesDataResolverFn.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "QueryListGameStatesDataResolverFnQueryListGameStatesDataResolverFnAppSyncFunction3FE02530"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "QueryListGameStatesDataResolverFn"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/queryListGameStatesResolver": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ListGameStateResolver"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "Query.listGameStates"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/MutationcreateGameStateinit0Function/MutationcreateGameStateinit0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MutationcreateGameStateinit0FunctionMutationcreateGameStateinit0FunctionAppSyncFunctionF6CBB10C"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "MutationcreateGameStateinit0Function"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/MutationcreateGameStateinit1Function/MutationcreateGameStateinit1Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MutationcreateGameStateinit1FunctionMutationcreateGameStateinit1FunctionAppSyncFunctionA5624AD9"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "MutationcreateGameStateinit1Function"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/MutationcreateGameStateauth0Function/MutationcreateGameStateauth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MutationcreateGameStateauth0FunctionMutationcreateGameStateauth0FunctionAppSyncFunctionDAB63375"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "MutationcreateGameStateauth0Function"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/MutationcreateGameStatepostAuth0Function/MutationcreateGameStatepostAuth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MutationcreateGameStatepostAuth0FunctionMutationcreateGameStatepostAuth0FunctionAppSyncFunction17411026"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "MutationcreateGameStatepostAuth0Function"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/MutationCreateGameStateDataResolverFn/MutationCreateGameStateDataResolverFn.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MutationCreateGameStateDataResolverFnMutationCreateGameStateDataResolverFnAppSyncFunction2218FBE0"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "MutationCreateGameStateDataResolverFn"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/mutationCreateGameStateResolver": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CreateGameStateResolver"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "Mutation.createGameState"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/MutationupdateGameStateinit0Function/MutationupdateGameStateinit0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MutationupdateGameStateinit0FunctionMutationupdateGameStateinit0FunctionAppSyncFunction2698F06B"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "MutationupdateGameStateinit0Function"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/MutationupdateGameStateauth0Function/MutationupdateGameStateauth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MutationupdateGameStateauth0FunctionMutationupdateGameStateauth0FunctionAppSyncFunction02D3EB1D"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "MutationupdateGameStateauth0Function"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/MutationupdateGameStatepostAuth0Function/MutationupdateGameStatepostAuth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MutationupdateGameStatepostAuth0FunctionMutationupdateGameStatepostAuth0FunctionAppSyncFunction000C5861"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "MutationupdateGameStatepostAuth0Function"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/MutationUpdateGameStateDataResolverFn/MutationUpdateGameStateDataResolverFn.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MutationUpdateGameStateDataResolverFnMutationUpdateGameStateDataResolverFnAppSyncFunctionB0DCBBEE"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "MutationUpdateGameStateDataResolverFn"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/mutationUpdateGameStateResolver": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "UpdateGameStateResolver"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "Mutation.updateGameState"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/MutationdeleteGameStateauth0Function/MutationdeleteGameStateauth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MutationdeleteGameStateauth0FunctionMutationdeleteGameStateauth0FunctionAppSyncFunction50043B33"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "MutationdeleteGameStateauth0Function"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/MutationdeleteGameStatepostAuth0Function/MutationdeleteGameStatepostAuth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MutationdeleteGameStatepostAuth0FunctionMutationdeleteGameStatepostAuth0FunctionAppSyncFunction4927802E"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "MutationdeleteGameStatepostAuth0Function"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/MutationDeleteGameStateDataResolverFn/MutationDeleteGameStateDataResolverFn.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MutationDeleteGameStateDataResolverFnMutationDeleteGameStateDataResolverFnAppSyncFunction2ACA4777"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "MutationDeleteGameStateDataResolverFn"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/mutationDeleteGameStateResolver": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DeleteGameStateResolver"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "Mutation.deleteGameState"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/SubscriptiononCreateGameStateauth0Function/SubscriptiononCreateGameStateauth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SubscriptiononCreateGameStateauth0FunctionSubscriptiononCreateGameStateauth0FunctionAppSyncFunction94555EFE"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "SubscriptiononCreateGameStateauth0Function"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/SubscriptiononCreateGameStatepostAuth0Function/SubscriptiononCreateGameStatepostAuth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SubscriptiononCreateGameStatepostAuth0FunctionSubscriptiononCreateGameStatepostAuth0FunctionAppSyncFunctionC4371208"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "SubscriptiononCreateGameStatepostAuth0Function"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/SubscriptionOnCreateGameStateDataResolverFn/SubscriptionOnCreateGameStateDataResolverFn.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SubscriptionOnCreateGameStateDataResolverFnSubscriptionOnCreateGameStateDataResolverFnAppSyncFunction97F0EC25"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "SubscriptionOnCreateGameStateDataResolverFn"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/subscriptionOnCreateGameStateResolver": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SubscriptiononCreateGameStateResolver"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "Subscription.onCreateGameState"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/SubscriptiononUpdateGameStateauth0Function/SubscriptiononUpdateGameStateauth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SubscriptiononUpdateGameStateauth0FunctionSubscriptiononUpdateGameStateauth0FunctionAppSyncFunction89AB2768"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "SubscriptiononUpdateGameStateauth0Function"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/SubscriptiononUpdateGameStatepostAuth0Function/SubscriptiononUpdateGameStatepostAuth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SubscriptiononUpdateGameStatepostAuth0FunctionSubscriptiononUpdateGameStatepostAuth0FunctionAppSyncFunction75DF67C4"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "SubscriptiononUpdateGameStatepostAuth0Function"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/SubscriptionOnUpdateGameStateDataResolverFn/SubscriptionOnUpdateGameStateDataResolverFn.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SubscriptionOnUpdateGameStateDataResolverFnSubscriptionOnUpdateGameStateDataResolverFnAppSyncFunctionF31CADB6"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "SubscriptionOnUpdateGameStateDataResolverFn"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/subscriptionOnUpdateGameStateResolver": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SubscriptiononUpdateGameStateResolver"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "Subscription.onUpdateGameState"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/SubscriptiononDeleteGameStateauth0Function/SubscriptiononDeleteGameStateauth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SubscriptiononDeleteGameStateauth0FunctionSubscriptiononDeleteGameStateauth0FunctionAppSyncFunction3D79577A"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "SubscriptiononDeleteGameStateauth0Function"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/SubscriptiononDeleteGameStatepostAuth0Function/SubscriptiononDeleteGameStatepostAuth0Function.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SubscriptiononDeleteGameStatepostAuth0FunctionSubscriptiononDeleteGameStatepostAuth0FunctionAppSyncFunction85842CC5"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "SubscriptiononDeleteGameStatepostAuth0Function"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/SubscriptionOnDeleteGameStateDataResolverFn/SubscriptionOnDeleteGameStateDataResolverFn.AppSyncFunction": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SubscriptionOnDeleteGameStateDataResolverFnSubscriptionOnDeleteGameStateDataResolverFnAppSyncFunction58174D6A"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "SubscriptionOnDeleteGameStateDataResolverFn"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/subscriptionOnDeleteGameStateResolver": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SubscriptiononDeleteGameStateResolver"
+          },
+          {
+            "type": "graphqltransformer:resourceName",
+            "data": "Subscription.onDeleteGameState"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/CDKMetadata/Condition": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadataAvailable"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/reference-to-amplifydebateduellilylsandbox48173f5855dataamplifyDataAmplifyTableManagerNestedStackAmplifyTableManagerNestedStackResource223A44E6Outputs.amplifydebateduellilylsandbox48173f5855dataamplifyDataAmplifyTableManagerTableManagerCustomProviderframeworkonEventE14834E5Arn": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "referencetoamplifydebateduellilylsandbox48173f5855dataamplifyDataAmplifyTableManagerNestedStackAmplifyTableManagerNestedStackResource223A44E6Outputsamplifydebateduellilylsandbox48173f5855dataamplifyDataAmplifyTableManagerTableManagerCustomP23F5E299"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/reference-to-amplifydebateduellilylsandbox48173f5855dataamplifyDataGraphQLAPI99159CCEApiId": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "referencetoamplifydebateduellilylsandbox48173f5855dataamplifyDataGraphQLAPI99159CCEApiId"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState/reference-to-amplifydebateduellilylsandbox48173f5855dataamplifyDataGraphQLAPINONEDS3734F344Name": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "referencetoamplifydebateduellilylsandbox48173f5855dataamplifyDataGraphQLAPINONEDS3734F344Name"
+          }
+        ],
+        "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/GameState.NestedStack/GameState.NestedStackResource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "amplifyDataGameStateNestedStackGameStateNestedStackResource6D87AAF6"
           }
         ],
         "/amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/AmplifyCodegenAssets/AmplifyCodegenAssetsBucket/Resource": [

@@ -931,6 +931,28 @@
     "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Player/MutationcreatePlayerinit0Function/MutationcreatePlayerinit0Function.AppSyncFunction"
    }
   },
+  "MutationcreatePlayerinit1FunctionMutationcreatePlayerinit1FunctionAppSyncFunction455FF156": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifydebateduellilylsandbox48173f5855dataamplifyDataGraphQLAPI99159CCEApiId"
+    },
+    "DataSourceName": {
+     "Ref": "referencetoamplifydebateduellilylsandbox48173f5855dataamplifyDataGraphQLAPINONEDS3734F344Name"
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "MutationcreatePlayerinit1Function",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/22302812014673db412d1e92e39443f835e47b69a73a3cb63e161b077c9892f3.vtl"
+    },
+    "ResponseMappingTemplate": "$util.toJson({})"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-debateduel-lilyl-sandbox-48173f5855/data/amplifyData/Player/MutationcreatePlayerinit1Function/MutationcreatePlayerinit1Function.AppSyncFunction"
+   }
+  },
   "MutationcreatePlayerauth0FunctionMutationcreatePlayerauth0FunctionAppSyncFunction83A973C0": {
    "Type": "AWS::AppSync::FunctionConfiguration",
    "Properties": {
@@ -1018,6 +1040,12 @@
       {
        "Fn::GetAtt": [
         "MutationcreatePlayerinit0FunctionMutationcreatePlayerinit0FunctionAppSyncFunction902FFE7B",
+        "FunctionId"
+       ]
+      },
+      {
+       "Fn::GetAtt": [
+        "MutationcreatePlayerinit1FunctionMutationcreatePlayerinit1FunctionAppSyncFunction455FF156",
         "FunctionId"
        ]
       },

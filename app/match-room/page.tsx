@@ -209,13 +209,23 @@ const MatchRoomContent = () => {
   const isReady = isPlayer1 ? !!match?.player1Ready : !!match?.player2Ready
   
   const renderPlayerStatuses = () => {
-    return (
-      <>
-        <PlayerStatus name={playerNickname || 'You'} ready={isReady} />
-        <span className="text-2xl font-bold text-gray-600">VS</span>
-        <PlayerStatus name={opponentNickname || 'Waiting...'} ready={opponentReady} />
-      </>
-    );
+    if (isPlayer1) {
+      return (
+        <>
+          <PlayerStatus name={playerNickname || 'You'} ready={isReady} />
+          <span className="text-2xl font-bold text-gray-600">VS</span>
+          <PlayerStatus name={opponentNickname || 'Waiting...'} ready={opponentReady} />
+        </>
+      );
+    } else {
+      return (
+        <>
+          <PlayerStatus name={opponentNickname || 'Waiting...'} ready={opponentReady} />
+          <span className="text-2xl font-bold text-gray-600">VS</span>
+          <PlayerStatus name={playerNickname || 'You'} ready={isReady} />
+        </>
+      );
+    }
   };
   
 
