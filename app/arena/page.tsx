@@ -117,8 +117,7 @@ const ArenaPageContent = () => {
         
         const currentPlayer = players.find(p => p.id === matchData.player1Id)
         const opponentPlayer = players.find(p => p.id === matchData.player2Id)
-        console.log(currentPlayer)
-        console.log(opponentPlayer)
+
         if (!currentPlayer || !opponentPlayer) throw new Error('Players not found')
         
         setPlayer(currentPlayer)

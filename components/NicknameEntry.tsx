@@ -53,6 +53,10 @@ export default function NicknameEntry({ onClose }: NicknameEntryProps) {
           player2Id: playerId,
           matchStatus: 'MATCHED'
         })
+        await client.models.Player.update({
+          id: playerId,
+          currentMatchId: matchId
+        })
       }
       // If no waiting match, create a new match
       else {
@@ -61,6 +65,10 @@ export default function NicknameEntry({ onClose }: NicknameEntryProps) {
           id: matchId,
           player1Id: playerId,
           matchStatus: 'WAITING'
+        })
+        await client.models.Player.update({
+          id: playerId,
+          currentMatchId: matchId
         })
       }
 
