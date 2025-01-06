@@ -7,6 +7,7 @@ import { Progress } from "@/components/ui/progress"
 import { useSearchParams, useRouter } from 'next/navigation'
 import { generateClient } from 'aws-amplify/api'
 import { type Schema } from '@/amplify/data/resource'
+import { Suspense } from 'react';
 
 const client = generateClient<Schema>()
 
@@ -18,7 +19,7 @@ const TOPICS = [
   "Is space exploration worth the cost?",
 ]
 
-export default function ArenaPage() {
+const ArenaPageContent = () => {
   const router = useRouter()
   const searchParams = useSearchParams()
   const matchId = searchParams.get('matchId')
@@ -259,4 +260,12 @@ export default function ArenaPage() {
       </div>
     </div>
   )
+}
+
+export default function ArenaPage() {
+  return (
+    <Suspense fallback={<div>Loading arena...</div>}>
+      <ArenaPageContent />
+    </Suspense>
+  );
 }
