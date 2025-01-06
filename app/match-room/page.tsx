@@ -133,15 +133,15 @@ const MatchRoomContent = () => {
 
   const handleLeave = async () => {
     if (!match || !player) return;
-
+  
     try {
       const isPlayer1 = match.player1Id === player.id;
-
-      // Delete current player
-      await client.models.Player.delete({ id: player.id });
-
+      const player2 = players.find(p => p.id === match.player2Id);
+  
+      // Case 1: Player 1 leaves with Player 2 present
       if (isPlayer1) {
-        if (match.player2Id) {
+        if (match.player2Id && player2) {
+          // Update match with Player 2 becoming Player 1
           await client.models.Match.update({
             id: match.id,
             player1Id: match.player2Id,
@@ -150,24 +150,31 @@ const MatchRoomContent = () => {
             player2Ready: false,
             matchStatus: 'WAITING',
           });
-        } else {
+        }
+        // If no Player 2, delete the match
+        else {
           await client.models.Match.delete({ id: match.id });
         }
-      } else {
+      }
+      // Case 2: Player 2 leaves
+      else {
+        // Just remove Player 2 from match and delete Player 2's entry
         await client.models.Match.update({
           id: match.id,
           player2Id: undefined,
           player2Ready: false,
           matchStatus: 'WAITING',
-        });
+        });   
       }
 
+      // Delete the player
+      await client.models.Player.delete({ id: player.id });
       router.push('/');
     } catch (error) {
       console.error('Error leaving match:', error);
     }
   };
-
+  
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -193,14 +200,14 @@ const MatchRoomContent = () => {
     </div>
   );  
 
-  const matchState = match?.player1Ready && match?.player2Ready ? 'ready' : match?.player2Id ? 'found' : 'waiting';
-  const playerNickname = player?.nickname;
-  const isPlayer1 = match?.player1Id === player?.id;
+  const matchState = match?.matchStatus
+  const playerNickname = player?.nickname
+  const isPlayer1 = match?.player1Id === player?.id
   const opponentNickname = isPlayer1 
     ? players.find(p => p.id === match?.player2Id)?.nickname 
-    : players.find(p => p.id === match?.player1Id)?.nickname;
-  const opponentReady = isPlayer1 ? !!match?.player2Ready : !!match?.player1Ready;
-  const isReady = isPlayer1 ? !!match?.player1Ready : !!match?.player2Ready;
+    : players.find(p => p.id === match?.player1Id)?.nickname
+  const opponentReady = isPlayer1 ? !!match?.player2Ready : !!match?.player1Ready
+  const isReady = isPlayer1 ? !!match?.player1Ready : !!match?.player2Ready
   
   const renderPlayerStatuses = () => {
     if (isPlayer1) {
@@ -228,14 +235,14 @@ const MatchRoomContent = () => {
       <div className="max-w-2xl w-full bg-white rounded-lg shadow-xl p-8 space-y-8">
         <h1 className="text-4xl font-serif font-bold text-gray-800 text-center">Match Room</h1>
 
-        {matchState === 'waiting' && (
+        {matchState === 'WAITING' && (
           <div className="text-center space-y-4">
             <Loader2 className="animate-spin h-12 w-12 mx-auto text-gray-600" />
             <p className="text-xl text-gray-700">Waiting for an opponent...</p>
           </div>
         )}
 
-        {matchState === 'found' && (
+        {matchState === 'MATCHED' && (
           <div className="space-y-6">
             <p className="text-xl text-gray-700 text-center">
               {opponentNickname ? `${opponentNickname} has joined! Are you ready to duel?` : 'Opponent found! Are you ready to duel?'}
@@ -257,7 +264,7 @@ const MatchRoomContent = () => {
           </div>
         )}
 
-        {matchState === 'ready' && (
+        {matchState === 'READY' && (
           <div className="text-center space-y-4">
             <p className="text-2xl text-green-600 font-bold">Both players are ready!</p>
             <div className="flex justify-around items-center">
