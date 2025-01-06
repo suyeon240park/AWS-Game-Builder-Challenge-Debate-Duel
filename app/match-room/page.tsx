@@ -145,7 +145,7 @@ const MatchRoomContent = () => {
             id: match.id,
             player1Id: match.player2Id,
             player2Id: null,
-            player1Ready: match.player2Ready,
+            player1Ready: false,
             player2Ready: false,
             matchStatus: 'WAITING',
           });
