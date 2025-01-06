@@ -89,7 +89,7 @@ const MatchRoomContent = () => {
           setPlayers(updatedPlayers);
 
           if (updatedMatch.player1Ready && updatedMatch.player2Ready) {
-            router.push(`/arena/${matchId}`);
+            router.push(`/arena?matchId=${matchId}`)
           }
         } else {
           router.push('/');

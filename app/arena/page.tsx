@@ -31,6 +31,11 @@ export default function ArenaPage() {
 
   // Initialize match and game state
   useEffect(() => {
+    if (!matchId) {
+      router.push('/');
+      return;
+    }
+    
     const initializeArena = async () => {
       try {
         // Get match data
