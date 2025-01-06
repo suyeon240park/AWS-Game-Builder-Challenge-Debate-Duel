@@ -1,7 +1,6 @@
 import { a, defineData, type ClientSchema } from '@aws-amplify/backend';
 
 const schema = a.schema({
-  // 1. Match data
   Match: a.model({
     player1Id: a.string().required(),
     player2Id: a.string(),
@@ -11,24 +10,18 @@ const schema = a.schema({
   })
   .authorization(allow => [allow.publicApiKey()]),
 
-  // 2. Player data
   Player: a.model({
     nickname: a.string().required(),
     currentMatchId: a.string(),
-    score: a.integer()
+    argument: a.string(),
+    score: a.integer().default(0)
   })
   .authorization(allow => [allow.publicApiKey()]),
 
   GameState: a.model({
-    matchId: a.string(),  // Reference back to Match
-    currentTurn: a.string(),
-    roundNumber: a.integer().default(1),
-    player1Score: a.integer().default(0),
-    player2Score: a.integer().default(0),
-    player1Argument: a.string(),
-    player2Argument: a.string(),
     topic: a.string(),
-    phase: a.enum(['topic', 'debate', 'transition']),
+    currentTurn: a.integer(),
+    roundNumber: a.integer().default(1),
     timeRemaining: a.integer().default(30)
   })
   .authorization(allow => [allow.publicApiKey()])
