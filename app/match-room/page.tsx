@@ -136,16 +136,15 @@ const MatchRoomContent = () => {
   
     try {
       const isPlayer1 = match.player1Id === player.id;
-      const player2 = players.find(p => p.id === match.player2Id);
   
       // Case 1: Player 1 leaves with Player 2 present
       if (isPlayer1) {
-        if (match.player2Id && player2) {
+        if (match.player2Id) {
           // Update match with Player 2 becoming Player 1
           await client.models.Match.update({
             id: match.id,
             player1Id: match.player2Id,
-            player2Id: undefined,
+            player2Id: null,
             player1Ready: match.player2Ready,
             player2Ready: false,
             matchStatus: 'WAITING',
@@ -161,7 +160,7 @@ const MatchRoomContent = () => {
         // Just remove Player 2 from match and delete Player 2's entry
         await client.models.Match.update({
           id: match.id,
-          player2Id: undefined,
+          player2Id: null,
           player2Ready: false,
           matchStatus: 'WAITING',
         });   
@@ -210,23 +209,13 @@ const MatchRoomContent = () => {
   const isReady = isPlayer1 ? !!match?.player1Ready : !!match?.player2Ready
   
   const renderPlayerStatuses = () => {
-    if (isPlayer1) {
-      return (
-        <>
-          <PlayerStatus name={playerNickname || 'You'} ready={isReady} />
-          <span className="text-2xl font-bold text-gray-600">VS</span>
-          <PlayerStatus name={opponentNickname || 'Waiting...'} ready={opponentReady} />
-        </>
-      );
-    } else {
-      return (
-        <>
-          <PlayerStatus name={opponentNickname || 'Waiting...'} ready={opponentReady} />
-          <span className="text-2xl font-bold text-gray-600">VS</span>
-          <PlayerStatus name={playerNickname || 'You'} ready={isReady} />
-        </>
-      );
-    }
+    return (
+      <>
+        <PlayerStatus name={playerNickname || 'You'} ready={isReady} />
+        <span className="text-2xl font-bold text-gray-600">VS</span>
+        <PlayerStatus name={opponentNickname || 'Waiting...'} ready={opponentReady} />
+      </>
+    );
   };
   
 
