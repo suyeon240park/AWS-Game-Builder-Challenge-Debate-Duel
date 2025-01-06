@@ -223,11 +223,11 @@ export default function ArenaPage() {
 
             <div className="space-y-2">
               <div className="bg-gray-100 p-4 rounded min-h-[100px]">
-                <h3 className="font-semibold mb-2">Your Argument:</h3>
+                <h3 className="font-semibold mb-2">Affirmative argument:</h3>
                 {isPlayer1 ? (gameState.player1Argument ?? '') : (gameState.player2Argument ?? '')}
               </div>
               <div className="bg-gray-100 p-4 rounded min-h-[100px]">
-                <h3 className="font-semibold mb-2">Opponent's Argument:</h3>
+                <h3 className="font-semibold mb-2">Negative argument:</h3>
                 {isPlayer1 ? (gameState.player2Argument ?? '') : (gameState.player1Argument ?? '')}
               </div>
             </div>
