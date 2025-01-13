@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect, useCallback, useRef, Suspense } from 'react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Progress } from "@/components/ui/progress"
@@ -437,4 +437,11 @@ const ArenaPageContent = () => {
   )
 }
 
-export default ArenaPageContent
+export default function ArenaPage() {
+  return (
+    <Suspense fallback={<div>Loading match room...</div>}>
+      <ArenaPageContent />
+    </Suspense>
+  );
+}
+
