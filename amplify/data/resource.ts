@@ -20,14 +20,6 @@ const schema = a.schema({
     argument: a.string(),
     score: a.integer().default(0)
   })
-  .authorization(allow => [allow.publicApiKey()]),
-
-  GameState: a.model({
-    topic: a.string(),
-    currentTurn: a.integer(),
-    roundNumber: a.integer().default(1),
-    timeRemaining: a.integer().default(30)
-  })
   .authorization(allow => [allow.publicApiKey()])
 });
 

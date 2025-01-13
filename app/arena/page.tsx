@@ -68,11 +68,10 @@ const ArenaPageContent = () => {
   // Router and Params
   const router = useRouter()
   const searchParams = useSearchParams()
-  const matchId = searchParams.get('matchId')
+  const matchId = searchParams.get('matchId');
 
   // Game State
   const [match, setMatch] = useState<Schema['Match']['type'] | null>(null)
-  const [gameState, setGameState] = useState<Schema['GameState']['type'] | null>(null)
   const [player, setPlayer] = useState<Schema['Player']['type'] | null>(null)
   const [opponent, setOpponent] = useState<Schema['Player']['type'] | null>(null)
 
@@ -114,34 +113,16 @@ const ArenaPageContent = () => {
         const { data: players } = await client.models.Player.list({
           filter: { currentMatchId: { eq: matchId } }
         })
-        
+
         const currentPlayer = players.find(p => p.id === matchData.player1Id)
         const opponentPlayer = players.find(p => p.id === matchData.player2Id)
 
         if (!currentPlayer || !opponentPlayer) throw new Error('Players not found')
-        
+
         setPlayer(currentPlayer)
         setOpponent(opponentPlayer)
         setPlayerScore(currentPlayer.score ?? GAME_CONSTANTS.INITIAL_SCORE)
         setOpponentScore(opponentPlayer.score ?? GAME_CONSTANTS.INITIAL_SCORE)
-
-        // Get or create game state
-        const { data: existingGameState } = await client.models.GameState.list({
-          filter: { id: { eq: matchId } }
-        })
-
-        if (existingGameState.length === 0) {
-          const { data: newGameState } = await client.models.GameState.create({
-            id: matchId,
-            topic: TOPICS[Math.floor(Math.random() * TOPICS.length)],
-            currentTurn: 1,
-            roundNumber: 1,
-            timeRemaining: GAME_CONSTANTS.TURN_TIME
-          })
-          setGameState(newGameState)
-        } else {
-          setGameState(existingGameState[0])
-        }
       } catch (error) {
         const message = error instanceof Error ? error.message : 'Failed to initialize game'
         setError(message)
@@ -156,36 +137,25 @@ const ArenaPageContent = () => {
 
   // Turn end handler
   const handleTurnEnd = async () => {
-    if (!gameState?.id || !matchId) return
-
     setShowHit(true)
-    setTimeout(async () => {
-        setShowHit(false)
-        
-        try {
-        if (currentTurn === 'player') {
-            handleOpponentTurn()
-        } else {
-            setCurrentTurn('player')
-            if ((gameState.roundNumber ?? 1) >= GAME_CONSTANTS.MAX_ROUNDS) {
-            await client.models.Match.update({
-                id: matchId,
-                matchStatus: 'FINISHED'
-            })
-            router.push(`/result?matchId=${matchId}`)
-            } else {
-            await client.models.GameState.update({
-                id: gameState.id,
-                roundNumber: (gameState.roundNumber ?? 1) + 1,
-                timeRemaining: GAME_CONSTANTS.TURN_TIME
-            })
-            }
-        }
-        } catch (error) {
-        console.error('Error handling turn end:', error)
-        toast.error('Failed to process turn end')
-        }
-    }, GAME_CONSTANTS.HIT_ANIMATION_DURATION)
+    setTimeout(() => setShowHit(false), GAME_CONSTANTS.HIT_ANIMATION_DURATION)
+
+    if (currentTurn === 'player') {
+      setCurrentTurn('opponent')
+    } else {
+      setCurrentTurn('player')
+
+      if (roundNumber >= GAME_CONSTANTS.MAX_ROUNDS) {
+        await client.models.Match.update({
+          id: matchId!,
+          matchStatus: 'FINISHED'
+        })
+        router.push(`/result?matchId=${matchId}`)
+      } else {
+        setRoundNumber(prev => prev + 1)
+        setTimer(GAME_CONSTANTS.TURN_TIME)
+      }
+    }
   }
 
   // Score calculation
@@ -197,7 +167,7 @@ const ArenaPageContent = () => {
     const clarity = Math.min(Math.floor(wordCount / 10), 10)
     const evidence = Math.min(Math.floor(uniqueWords / wordCount * 10), 10)
     const content = Math.min(Math.floor(avgWordLength), 10)
-    
+
     return {
       clarity,
       evidence,
@@ -206,123 +176,24 @@ const ArenaPageContent = () => {
     }
   }, [])
 
-  // Function to display opponent's argument with typing animation
-  const displayOpponentArgument = useCallback((fullArgument: string) => {
-    let currentIndex = 0
-  
-    const typingInterval = setInterval(() => {
-      if (currentIndex < fullArgument.length) {
-        setOpponentTyping(fullArgument.slice(0, currentIndex + 1))
-        currentIndex++
-      } else {
-        clearInterval(typingInterval)
-        setTimeout(() => {
-          const score = calculateScore(fullArgument)
-          setOpponentScore(prev => Math.min(prev + score.total, 100))
-          setPlayerScore(prev => Math.max(prev - score.total, 0))
-          setOpponentTyping('')
-          handleTurnEnd()
-        }, 1000)
-      }
-    }, 100)
-  }, [calculateScore, handleTurnEnd])
-
-  // Timer effect
-  useEffect(() => {
-    if (!gameState?.id || !match) return
-
-    const interval = setInterval(async () => {
-      try {
-        const currentTime = gameState.timeRemaining ?? GAME_CONSTANTS.TURN_TIME
-        if (currentTime > 0) {
-          await client.models.GameState.update({
-            id: gameState.id,
-            timeRemaining: currentTime - 1
-          })
-        } else {
-          handleTurnEnd()
-        }
-      } catch (error) {
-        console.error('Error updating timer:', error)
-        toast.error('Failed to update game timer')
-      }
-    }, 1000)
-
-    return () => clearInterval(interval)
-  }, [gameState?.id, match, gameState?.timeRemaining, handleTurnEnd])
-
-  // Game state subscription
-  useEffect(() => {
-    if (!matchId) return
-
-    const subscription = client.models.GameState.observeQuery({
-      filter: { id: { eq: matchId } }
-    }).subscribe({
-      next: ({ items }) => {
-        if (items.length > 0) {
-          setGameState(items[0])
-          setTimer(items[0].timeRemaining ?? GAME_CONSTANTS.TURN_TIME)
-          setRoundNumber(items[0].roundNumber ?? 1)
-        }
-      },
-      error: (error) => {
-        console.error('Subscription error:', error)
-        toast.error('Lost connection to game. Please refresh.')
-      }
-    })
-
-    return () => subscription.unsubscribe()
-  }, [matchId])
-
-  // Subscription for opponent arguments
-  useEffect(() => {
-    if (!matchId || !opponent) return
-  
-    const subscription = client.models.Player.observeQuery({
-      filter: { 
-        id: { eq: opponent.id },
-        currentMatchId: { eq: matchId }
-      }
-    }).subscribe({
-      next: ({ items }) => {
-        if (items.length > 0 && items[0].argument) {
-          displayOpponentArgument(items[0].argument)
-        }
-      },
-      error: (error) => {
-        console.error('Error in opponent subscription:', error)
-        toast.error('Lost connection to opponent')
-      }
-    })
-  
-    return () => subscription.unsubscribe()
-  }, [matchId, opponent?.id, displayOpponentArgument, opponent])
-
   // Typing handlers
   const handlePlayerTyping = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
     setPlayerArgument(value)
     setPlayerTyping(value)
-    
+
     if (playerTypingRef.current) {
       clearTimeout(playerTypingRef.current)
     }
-    
+
     playerTypingRef.current = setTimeout(() => {
       setPlayerTyping('')
     }, GAME_CONSTANTS.TYPING_TIMEOUT)
   }, [])
 
-  const handleOpponentTurn = useCallback(() => {
-    setCurrentTurn('opponent')
-    // The opponent's input will be handled by the subscription
-    // We just need to show that we're waiting for their input
-    setOpponentTyping('Opponent is typing...')
-  }, [])
-
   // Submit handler
   const handleSubmit = async () => {
-    if (!gameState?.id || !player || !matchId || isSubmitting) return
+    if (!matchId || !player || isSubmitting) return
     if (playerArgument.length < GAME_CONSTANTS.MIN_ARGUMENT_LENGTH) {
       toast.error('Argument is too short')
       return
@@ -331,25 +202,17 @@ const ArenaPageContent = () => {
     try {
       setIsSubmitting(true)
       const score = calculateScore(playerArgument)
-      
-      // Update player's argument and score
+
       await client.models.Player.update({
         id: player.id,
         argument: playerArgument,
         score: Math.min((player.score ?? 0) + score.total, 100)
       })
 
-      // Update game state
-      await client.models.GameState.update({
-        id: gameState.id,
-        currentTurn: gameState.currentTurn === 1 ? 2 : 1,
-        timeRemaining: GAME_CONSTANTS.TURN_TIME
-      })
-
       setPlayerArgument('')
       setPlayerTyping('')
       handleTurnEnd()
-      
+
     } catch (error) {
       console.error('Error submitting argument:', error)
       toast.error('Failed to submit argument')
@@ -360,7 +223,7 @@ const ArenaPageContent = () => {
 
   if (loading) return <LoadingSpinner />
   if (error) return <ErrorMessage message={error} />
-  if (!gameState || !match || !player || !opponent) return <ErrorMessage message="Game data not found" />
+  if (!match || !player || !opponent) return <ErrorMessage message="Game data not found" />
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-amber-100 to-amber-200 flex flex-col items-center justify-center p-4">
@@ -368,7 +231,7 @@ const ArenaPageContent = () => {
         <div className="flex justify-between items-center">
           <div className="space-y-1">
             <h1 className="text-2xl font-bold">Round {roundNumber}/{GAME_CONSTANTS.MAX_ROUNDS}</h1>
-            <p className="text-sm text-gray-500">Topic: {gameState.topic}</p>
+            <p className="text-sm text-gray-500">Topic: {match.topic}</p>
           </div>
           <div className="text-3xl font-bold text-red-600 animate-pulse">{timer}s</div>
         </div>
