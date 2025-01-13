@@ -41,6 +41,14 @@ interface GameState {
   message?: string
 }
 
+interface GameData {
+  match: Schema['Match']['type'] | null
+  player: Schema['Player']['type'] | null
+  opponent: Schema['Player']['type'] | null
+  roundNumber: number
+  timer: number
+}
+
 // Components
 const LoadingSpinner = () => (
   <div className="min-h-screen bg-gradient-to-b from-amber-100 to-amber-200 flex items-center justify-center">
@@ -53,8 +61,6 @@ const ErrorMessage = ({ message }: { message: string }) => (
     <span>{message}</span>
   </div>
 )
-
-const getRandomTopic = () => TOPICS[Math.floor(Math.random() * TOPICS.length)]
 
 const ScoreDisplay = ({ player, opponent }: { player: number, opponent: number }) => (
   <div className="space-y-2">
@@ -69,22 +75,16 @@ const ScoreDisplay = ({ player, opponent }: { player: number, opponent: number }
   </div>
 )
 
-const client = generateClient<Schema>()
+const getRandomTopic = () => TOPICS[Math.floor(Math.random() * TOPICS.length)]
 
-interface GameData {
-    match: Schema['Match']['type'] | null
-    player: Schema['Player']['type'] | null
-    opponent: Schema['Player']['type'] | null
-    roundNumber: number
-    timer: number
-  }
+const client = generateClient<Schema>()
 
 const ArenaPageContent = () => {
   const router = useRouter()
   const searchParams = useSearchParams()
   const matchId = searchParams.get('matchId')
+  const currentPlayerId = searchParams.get('playerId')
 
-  // Consolidated state management
   const [gameState, setGameState] = useState<GameState>({ status: 'loading' })
   const [gameData, setGameData] = useState<GameData>({
     match: null,
@@ -94,7 +94,6 @@ const ArenaPageContent = () => {
     timer: GAME_CONSTANTS.TURN_TIME,
   })
 
-  // UI State
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [playerArgument, setPlayerArgument] = useState('')
   const [showHit, setShowHit] = useState(false)
@@ -102,7 +101,6 @@ const ArenaPageContent = () => {
 
   const timerRef = useRef<NodeJS.Timeout | null>(null)
 
-  // Helper functions
   const isPlayerTurn = useCallback((match: Schema['Match']['type'], playerId: string): boolean => {
     return (playerId === match.player1Id && match.currentTurn === 1) ||
            (playerId === match.player2Id && match.currentTurn === 2)
@@ -123,7 +121,7 @@ const ArenaPageContent = () => {
 
   // Initialize game
   useEffect(() => {
-    if (!matchId) {
+    if (!matchId || !currentPlayerId) {
       router.push('/')
       return
     }
@@ -142,13 +140,20 @@ const ArenaPageContent = () => {
         const matchData = matchResponse.data
         if (!matchData) throw new Error('Match not found')
 
-        const [currentPlayer, opponentPlayer] = playersResponse.data
-        if (!currentPlayer || !opponentPlayer) throw new Error('Players not found')
+        const players = playersResponse.data
+        if (!players || players.length !== 2) throw new Error('Players not found')
+
+        const currentPlayer = players.find(p => p.id === currentPlayerId)
+        const opponentPlayer = players.find(p => p.id !== currentPlayerId)
+
+        if (!currentPlayer || !opponentPlayer) {
+          throw new Error('Player identification failed')
+        }
 
         const topic = getRandomTopic()
         await client.models.Match.update({
           id: matchId,
-          topic: topic,
+          topic,
           matchStatus: 'IN_PROGRESS'
         })
 
@@ -169,26 +174,23 @@ const ArenaPageContent = () => {
     }
 
     initializeGame()
-  }, [matchId, router])
+  }, [matchId, currentPlayerId, router])
 
   // Timer effect
   useEffect(() => {
-    if (!gameData.match || !matchId || gameState.status !== 'success') return
+    if (!gameData.match || !currentPlayerId || gameState.status !== 'success') return
 
     const timerInterval = setInterval(async () => {
       if (gameData.timer > 0) {
-        setGameData((prev: GameData) => ({ 
-            ...prev, 
-            timer: prev.timer - 1 
-          }))
-      } else if (gameData.player && isPlayerTurn(gameData.match!, gameData.player.id)) {
+        setGameData(prev => ({ ...prev, timer: prev.timer - 1 }))
+      } else if (isPlayerTurn(gameData.match!, currentPlayerId)) {
         await handleSubmit()
       }
     }, 1000)
 
     timerRef.current = timerInterval
     return () => clearInterval(timerInterval)
-  }, [gameData.timer, gameData.player?.id, gameData.match, gameState.status])
+  }, [gameData.timer, currentPlayerId, gameData.match, gameState.status])
 
   // Handle turn end
   const handleTurnEnd = async () => {
@@ -213,7 +215,7 @@ const ArenaPageContent = () => {
           currentTurn: nextTurn,
         })
         
-        setGameData((prev: GameData) => ({
+        setGameData(prev => ({
           ...prev,
           roundNumber: newRoundNumber,
           timer: GAME_CONSTANTS.TURN_TIME
@@ -227,20 +229,25 @@ const ArenaPageContent = () => {
 
   // Handle submit
   const handleSubmit = async () => {
-    if (!matchId || !gameData.player || isSubmitting || 
-        !isPlayerTurn(gameData.match!, gameData.player.id)) return
+    if (!matchId || !currentPlayerId || isSubmitting || 
+        !isPlayerTurn(gameData.match!, currentPlayerId)) return
+
+    if (playerArgument.length < GAME_CONSTANTS.MIN_ARGUMENT_LENGTH) {
+      toast.error('Argument is too short')
+      return
+    }
 
     try {
       setIsSubmitting(true)
       const score = calculateScore(playerArgument)
 
       const updatedPlayer = await client.models.Player.update({
-        id: gameData.player.id,
+        id: currentPlayerId,
         argument: playerArgument,
-        score: Math.min((gameData.player.score ?? 0) + score.total, 100)
+        score: Math.min((gameData.player?.score ?? 0) + score.total, 100)
       })
 
-      setGameData((prev: GameData) => ({
+      setGameData(prev => ({
         ...prev,
         player: updatedPlayer.data
       }))
@@ -255,46 +262,26 @@ const ArenaPageContent = () => {
     }
   }
 
-  // Fix timer update
-  useEffect(() => {
-    if (!gameData.match || !matchId || gameState.status !== 'success') return
-
-    const timerInterval = setInterval(async () => {
-      if (gameData.timer > 0) {
-        setGameData((prev: GameData) => ({ 
-          ...prev, 
-          timer: prev.timer - 1 
-        }))
-      } else if (gameData.player && isPlayerTurn(gameData.match!, gameData.player.id)) {
-        await handleSubmit()
-      }
-    }, 1000)
-
-    timerRef.current = timerInterval
-    return () => clearInterval(timerInterval)
-  }, [gameData.timer, gameData.player?.id, gameData.match, gameState.status])
-
-
   // Handle player typing
   const handlePlayerTyping = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!gameData.match || !gameData.player || !isPlayerTurn(gameData.match, gameData.player.id)) return
+    if (!gameData.match || !currentPlayerId || !isPlayerTurn(gameData.match, currentPlayerId)) return
     
     const value = e.target.value
     setPlayerArgument(value)
 
     try {
       await client.models.Player.update({
-        id: gameData.player.id,
+        id: currentPlayerId,
         argument: value
       })
     } catch (error) {
       console.error('Error updating typing status:', error)
     }
-  }, [gameData.match, gameData.player])
+  }, [gameData.match, currentPlayerId])
 
   // Subscriptions
   useEffect(() => {
-    if (!matchId || !gameData.match || gameState.status !== 'success') return
+    if (!matchId || !currentPlayerId || !gameData.match || gameState.status !== 'success') return
 
     const matchSub = client.models.Match.onUpdate({
       filter: { id: { eq: matchId } }
@@ -309,7 +296,7 @@ const ArenaPageContent = () => {
     const playerSub = client.models.Player.onUpdate({
       filter: { id: { eq: gameData.opponent?.id } }
     }).subscribe(updatedPlayer => {
-      if (!gameData.player || isPlayerTurn(gameData.match!, gameData.player.id)) return
+      if (!gameData.player || isPlayerTurn(gameData.match!, currentPlayerId)) return
       
       setOpponentTyping(updatedPlayer.argument || '')
       setGameData(prev => ({
@@ -322,7 +309,7 @@ const ArenaPageContent = () => {
       matchSub.unsubscribe()
       playerSub?.unsubscribe()
     }
-  }, [matchId, gameData.match, gameData.opponent?.id, gameState.status])
+  }, [matchId, currentPlayerId, gameData.match, gameData.opponent?.id, gameState.status])
 
   if (gameState.status === 'loading') return <LoadingSpinner />
   if (gameState.status === 'error') return <ErrorMessage message={gameState.message || 'Unknown error'} />
@@ -349,13 +336,13 @@ const ArenaPageContent = () => {
         <div className="flex justify-between items-center text-sm">
           <div>
             <span className="font-semibold">{gameData.player.nickname}</span>
-            {isPlayerTurn(gameData.match, gameData.player.id) && (
+            {currentPlayerId && isPlayerTurn(gameData.match, currentPlayerId) && (
               <span className="ml-2 text-green-500">(Your turn)</span>
             )}
           </div>
           <div>
             <span className="font-semibold">{gameData.opponent.nickname}</span>
-            {!isPlayerTurn(gameData.match, gameData.player.id) && (
+            {currentPlayerId && !isPlayerTurn(gameData.match, currentPlayerId) && (
               <span className="ml-2 text-green-500">(Their turn)</span>
             )}
           </div>
@@ -374,12 +361,12 @@ const ArenaPageContent = () => {
           </AnimatePresence>
           
           <p className="text-lg">
-            {isPlayerTurn(gameData.match, gameData.player.id) 
+            {currentPlayerId && isPlayerTurn(gameData.match, currentPlayerId)
               ? (playerArgument || "Your turn to argue!")
               : (opponentTyping || "Waiting for opponent's argument...")}
           </p>
           
-          {!isPlayerTurn(gameData.match, gameData.player.id) && opponentTyping && (
+          {currentPlayerId && !isPlayerTurn(gameData.match, currentPlayerId) && opponentTyping && (
             <div className="mt-2 text-sm text-gray-500">
               <motion.div
                 animate={{ opacity: [0, 1, 0] }}
@@ -397,7 +384,7 @@ const ArenaPageContent = () => {
             placeholder="Type your argument here..."
             value={playerArgument}
             onChange={handlePlayerTyping}
-            disabled={!isPlayerTurn(gameData.match, gameData.player.id) || isSubmitting}
+            disabled={currentPlayerId && !isPlayerTurn(gameData.match, currentPlayerId) || isSubmitting}
             className="w-full p-4 text-lg"
             aria-label="Argument input"
           />
@@ -405,7 +392,7 @@ const ArenaPageContent = () => {
           <Button 
             onClick={handleSubmit}
             disabled={
-              !isPlayerTurn(gameData.match, gameData.player.id) || 
+              currentPlayerId && !isPlayerTurn(gameData.match, currentPlayerId) || 
               isSubmitting || 
               playerArgument.length < GAME_CONSTANTS.MIN_ARGUMENT_LENGTH
             }
@@ -444,4 +431,3 @@ export default function ArenaPage() {
     </Suspense>
   );
 }
-
