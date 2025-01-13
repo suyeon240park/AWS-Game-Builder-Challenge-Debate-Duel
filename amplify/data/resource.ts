@@ -8,9 +8,7 @@ const schema = a.schema({
     player2Ready: a.boolean().default(false),
     matchStatus: a.enum(['WAITING', 'MATCHED', 'READY', 'IN_PROGRESS', 'FINISHED']),
     topic: a.string(),
-    currentTurn: a.integer(),
-    roundNumber: a.integer().default(1),
-    timeRemaining: a.integer().default(30)
+    currentTurn: a.integer()
   })
   .authorization(allow => [allow.publicApiKey()]),
 
