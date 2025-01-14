@@ -101,19 +101,9 @@ const ArenaPageContent = () => {
       (isPlayer1 && gameData.match.currentTurn === 1) ||
       (!isPlayer1 && gameData.match.currentTurn === 2)
     );
-  }, [gameData.match?.currentTurn, gameData.player?.id, gameData.match?.player1Id]);
+  }, [gameData.match, gameData.match?.currentTurn, gameData.player?.id, gameData.match?.player1Id]);
 
-  const calculateScore = useCallback((argument: string): number => {
-    const wordCount = argument.split(' ').length
-    const uniqueWords = new Set(argument.toLowerCase().split(' ')).size
-    const avgWordLength = argument.length / wordCount
 
-    const clarity = Math.min(Math.floor(wordCount / 10), 10)
-    const evidence = Math.min(Math.floor(uniqueWords / wordCount * 10), 10)
-    const content = Math.min(Math.floor(avgWordLength), 10)
-
-    return clarity + evidence + content
-  }, [])
 
   // Initialize game
   useEffect(() => {
@@ -208,6 +198,28 @@ const ArenaPageContent = () => {
     }
   }, [isTyping, currentPlayerId, matchId, gameData.player?.id, gameData.match?.player1Id]);
 
+
+  const handleGameEnd = useCallback(async () => {
+    if (!matchId || !currentPlayerId) return;
+  
+    try {
+      // Update match status to FINISHED
+      await client.models.Match.update({
+        id: matchId,
+        matchStatus: 'FINISHED'
+      });
+  
+      // Redirect to result page
+      router.push(`/result?matchId=${matchId}&playerId=${currentPlayerId}`);
+    } catch (error) {
+      const message = error instanceof Error ? 
+        error.message : 
+        'Failed to end game properly';
+      toast.error(message);
+      console.error('Game end error:', error);
+    }
+  }, [matchId, currentPlayerId, router]);
+  
   
 // Update subscription effect
 useEffect(() => {
@@ -256,7 +268,7 @@ useEffect(() => {
   });
 
   return () => sub.unsubscribe();
-}, [matchId, gameState.status, gameData.player?.id]);
+}, [matchId, gameData.opponent, gameData.player, gameState.status, gameData.player?.id, handleGameEnd]);
 
 
   // Timer effect
@@ -308,7 +320,7 @@ useEffect(() => {
     }, 1000);
 
     return () => clearInterval(timerInterval);
-  }, [gameState.status, matchId, currentPlayerId, router, gameData.match]);
+  }, [gameState.status, matchId, currentPlayerId, router, gameData.match, handleGameEnd]);
 
 
   const handleSubmit = async () => {
@@ -367,27 +379,6 @@ useEffect(() => {
     }
   };
 
-  const handleGameEnd = useCallback(async () => {
-    if (!matchId || !currentPlayerId) return;
-  
-    try {
-      // Update match status to FINISHED
-      await client.models.Match.update({
-        id: matchId,
-        matchStatus: 'FINISHED'
-      });
-  
-      // Redirect to result page
-      router.push(`/result?matchId=${matchId}&playerId=${currentPlayerId}`);
-    } catch (error) {
-      const message = error instanceof Error ? 
-        error.message : 
-        'Failed to end game properly';
-      toast.error(message);
-      console.error('Game end error:', error);
-    }
-  }, [matchId, currentPlayerId, router]);
-  
 
   if (gameState.status === 'loading') {
     return <LoadingSpinner />
