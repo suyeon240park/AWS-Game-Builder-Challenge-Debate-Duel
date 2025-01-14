@@ -64,7 +64,9 @@ export default function NicknameEntry({ onClose }: NicknameEntryProps) {
         await client.models.Match.create({
           id: matchId,
           player1Id: playerId,
-          matchStatus: 'WAITING'
+          matchStatus: 'WAITING',
+          roundNumber: 1,
+          currentTurn: 1
         })
         await client.models.Player.update({
           id: playerId,

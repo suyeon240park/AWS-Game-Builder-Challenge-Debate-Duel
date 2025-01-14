@@ -7,6 +7,11 @@ const schema = a.schema({
     player1Ready: a.boolean().default(false),
     player2Ready: a.boolean().default(false),
     matchStatus: a.enum(['WAITING', 'MATCHED', 'READY']),
+    roundNumber: a.integer().required().default(1),
+    currentTurn: a.integer().required().default(1),
+    timer: a.integer().default(30),
+    player1Argument: a.string(),
+    player2Argument: a.string(),
     typingPlayerId: a.string(),
     isTyping: a.boolean()
   })
