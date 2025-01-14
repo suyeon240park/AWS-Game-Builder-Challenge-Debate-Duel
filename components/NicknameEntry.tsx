@@ -74,7 +74,7 @@ export default function NicknameEntry({ onClose }: NicknameEntryProps) {
 
       // Redirect to match room with matchId as query parameter
       onClose()
-      router.push(`/match-room?matchId=${matchId}`)
+      router.push(`/match-room?matchId=${matchId}&playerId=${playerId}`)
     }
     catch (error) {
       console.error('Error joining match:', error)

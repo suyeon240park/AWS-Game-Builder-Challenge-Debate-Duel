@@ -16,6 +16,7 @@ const MatchRoomContent = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const matchId = searchParams.get('matchId');
+  const playerId = searchParams.get('playerId');
 
   const [match, setMatch] = useState<Match | null>(null);
   const [player, setPlayer] = useState<Player | null>(null);
@@ -52,12 +53,11 @@ const MatchRoomContent = () => {
 
         setPlayers(playersData);
 
-        const currentPlayer = playersData.find(
-          (p) => p.id === matchData.player1Id || p.id === matchData.player2Id
-        );
+        const currentPlayer = playersData.find(p => p.id === playerId)
 
         if (currentPlayer) {
           setPlayer(currentPlayer);
+          console.log("match room current player: " + player!.nickname)
         }
 
         setLoading(false);
@@ -89,7 +89,7 @@ const MatchRoomContent = () => {
           setPlayers(updatedPlayers);
 
           if (updatedMatch.player1Ready && updatedMatch.player2Ready) {
-            router.push(`/arena?matchId=${matchId}&playerId=${player?.id}`)
+            router.push(`/arena?matchId=${matchId}&playerId=${playerId}`)
           }
         } else {
           router.push('/');
