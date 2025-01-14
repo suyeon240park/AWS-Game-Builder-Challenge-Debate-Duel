@@ -20,14 +20,6 @@ const GAME_CONSTANTS = {
   MIN_ARGUMENT_LENGTH: 10,
 } as const
 
-const TOPICS = [
-  "Should artificial intelligence be regulated?",
-  "Is social media doing more harm than good?",
-  "Should voting be mandatory?",
-  "Should college education be free?",
-  "Is space exploration worth the cost?",
-] as const
-
 // Types
 interface GameState {
   status: 'loading' | 'error' | 'success'
@@ -66,8 +58,6 @@ const ScoreDisplay = ({ player, opponent }: { player: number, opponent: number }
     </div>
   </div>
 )
-
-const getRandomTopic = () => TOPICS[Math.floor(Math.random() * TOPICS.length)]
 
 const client = generateClient<Schema>()
 
@@ -148,9 +138,9 @@ const ArenaPageContent = () => {
 
         setGameData({
           match: { ...matchData },
-          topic: getRandomTopic(),
           player: currentPlayer,
-          opponent: opponentPlayer
+          opponent: opponentPlayer,
+          topic: "Should artificial intelligence be regulated?"
         })
 
         setGameState({ status: 'success' })
@@ -200,17 +190,14 @@ const ArenaPageContent = () => {
 
 
   const handleGameEnd = useCallback(async () => {
-    if (!matchId || !currentPlayerId) return;
+    if (!matchId) return;
   
     try {
-      // Update match status to FINISHED
       await client.models.Match.update({
         id: matchId,
         matchStatus: 'FINISHED'
       });
-  
-      // Redirect to result page
-      router.push(`/result?matchId=${matchId}&playerId=${currentPlayerId}`);
+      // Don't redirect here - let the subscription handle it
     } catch (error) {
       const message = error instanceof Error ? 
         error.message : 
@@ -218,110 +205,8 @@ const ArenaPageContent = () => {
       toast.error(message);
       console.error('Game end error:', error);
     }
-  }, [matchId, currentPlayerId, router]);
+  }, [matchId]);
   
-  
-// Update subscription effect
-useEffect(() => {
-  if (!matchId || gameState.status !== 'success') return;
-
-  const sub = client.models.Match.observeQuery({
-    filter: { id: { eq: matchId } }
-  }).subscribe({
-    next: ({ items }) => {
-      const matchData = items[0];
-      if (matchData) {
-        // Subscribe to player scores
-        setGameData(prev => ({
-          ...prev,
-          player: gameData.player,
-          opponent: gameData.opponent
-        }));
-
-        // Check if game is FINISHED
-        if (matchData.matchStatus === 'FINISHED') {
-          handleGameEnd();
-          return;
-        }
-
-        // Reset timer when turn changes
-        if (matchData.currentTurn !== prevTurnRef.current) {
-          setTimer(GAME_CONSTANTS.TURN_TIME);
-        }
-        
-        // Update previous turn reference
-        prevTurnRef.current = matchData.currentTurn;
-        
-        // Update opponent's argument in real-time
-        const isPlayer1 = gameData.player?.id === matchData.player1Id;
-        const opponentArgument = isPlayer1 ? matchData.player2Argument : matchData.player1Argument;
-        
-        setOpponentTyping(opponentArgument || '');
-        
-        setGameData(prev => ({
-          ...prev,
-          match: matchData
-        }));
-      }
-    },
-    error: (error) => console.error('Subscription error:', error)
-  });
-
-  return () => sub.unsubscribe();
-}, [matchId, gameData.opponent, gameData.player, gameState.status, gameData.player?.id, handleGameEnd]);
-
-
-  // Timer effect
-  useEffect(() => {
-    if (gameState.status !== 'success') return;
-
-    const timerInterval = setInterval(async () => {
-      // Check match status first
-      try {
-        const matchResponse = await client.models.Match.get({ id: matchId! });
-        const matchData = matchResponse.data;
-        
-        if (matchData?.matchStatus === 'FINISHED') {
-          handleGameEnd();
-          return;
-        }
-      } catch (error) {
-        console.error('Failed to check match status:', error);
-      }
-
-      setTimer(prev => {
-        const newTimer = Math.max(0, prev - 1);
-        
-        if (newTimer === 0) {
-          const matchData = gameData.match;
-          if (!matchData) return prev;
-
-          // Check for game end
-          if (matchData.roundNumber === GAME_CONSTANTS.MAX_ROUNDS && matchData.currentTurn === 2) {
-            handleGameEnd()
-            return GAME_CONSTANTS.TURN_TIME;
-          }
-
-          // Update match in DB when timer expires
-          client.models.Match.update({
-            id: matchId!,
-            currentTurn: matchData.currentTurn === 1 ? 2 : 1,
-            roundNumber: matchData.currentTurn === 2 ? matchData.roundNumber + 1 : matchData.roundNumber,
-            timer: GAME_CONSTANTS.TURN_TIME,
-            player1Argument: null,
-            player2Argument: null
-          }).catch(console.error);
-
-          return GAME_CONSTANTS.TURN_TIME;
-        }
-
-        return newTimer;
-      });
-    }, 1000);
-
-    return () => clearInterval(timerInterval);
-  }, [gameState.status, matchId, currentPlayerId, router, gameData.match, handleGameEnd]);
-
 
   const handleSubmit = async () => {
     if (playerArgument.length < GAME_CONSTANTS.MIN_ARGUMENT_LENGTH) {
@@ -349,6 +234,11 @@ useEffect(() => {
           id: currentPlayerId,
           score: currentScore + score
         });
+
+        setGameData(prev => ({
+          ...prev,
+          player: gameData.player
+        }));
       }
 
       const matchData = gameData.match;
@@ -376,6 +266,124 @@ useEffect(() => {
       toast.error(message)
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const timerInterval = useRef<NodeJS.Timeout | null>(null);
+
+  // Update subscription effect
+  useEffect(() => {
+    if (!matchId || gameState.status !== 'success') return;
+
+    const sub = client.models.Match.observeQuery({
+      filter: { id: { eq: matchId } }
+    }).subscribe({
+      next: async ({ items }) => {
+        const matchData = items[0];
+        if (!matchData) return;
+
+        // Check match status first before any other updates
+        if (matchData.matchStatus === 'FINISHED') {
+          if (timerInterval.current) {
+            clearInterval(timerInterval.current as NodeJS.Timeout);
+          }
+          router.push(`/result?matchId=${matchId}&playerId=${currentPlayerId}`);
+          return;
+        }
+
+        // Rest of your subscription logic...
+        setGameData(prev => ({
+          ...prev,
+          player: gameData.player,
+          opponent: gameData.opponent,
+          match: matchData
+        }));
+
+        if (matchData.currentTurn !== prevTurnRef.current) {
+          setTimer(GAME_CONSTANTS.TURN_TIME);
+        }
+        
+        prevTurnRef.current = matchData.currentTurn;
+        
+        const isPlayer1 = gameData.player?.id === matchData.player1Id;
+        const opponentArgument = isPlayer1 ? matchData.player2Argument : matchData.player1Argument;
+        setOpponentTyping(opponentArgument || '');
+      },
+      error: (error) => console.error('Subscription error:', error)
+    });
+
+    return () => {
+      sub.unsubscribe();
+      if (timerInterval.current) {
+        clearInterval(timerInterval.current as NodeJS.Timeout);
+      }
+    };
+  }, [matchId, gameState.status, currentPlayerId, router]);
+
+  // Timer effect
+  useEffect(() => {
+    if (gameState.status !== 'success') return;
+
+    const runTimer = async () => {
+      // Check match status first
+      const isFinished = await checkMatchStatus();
+      if (isFinished) return;
+
+      setTimer(prev => {
+        const newTimer = Math.max(0, prev - 1);
+        
+        if (newTimer === 0) {
+          const matchData = gameData.match;
+          if (!matchData) return prev;
+
+          // Check for game end
+          if (matchData.roundNumber === GAME_CONSTANTS.MAX_ROUNDS && matchData.currentTurn === 2) {
+            handleGameEnd();
+            return GAME_CONSTANTS.TURN_TIME;
+          }
+
+          // Update match in DB when timer expires
+          client.models.Match.update({
+            id: matchId!,
+            currentTurn: matchData.currentTurn === 1 ? 2 : 1,
+            roundNumber: matchData.currentTurn === 2 ? matchData.roundNumber + 1 : matchData.roundNumber,
+            timer: GAME_CONSTANTS.TURN_TIME,
+            player1Argument: null,
+            player2Argument: null
+          }).catch(console.error);
+
+          return GAME_CONSTANTS.TURN_TIME;
+        }
+
+        return newTimer;
+      });
+    };
+
+    timerInterval.current = setInterval(runTimer, 1000);
+
+    return () => {
+      if (timerInterval.current) {
+        clearInterval(timerInterval.current as NodeJS.Timeout);
+      }
+    };
+  }, [gameState.status, matchId, gameData.match]);
+
+  const checkMatchStatus = async () => {
+    try {
+      const matchResponse = await client.models.Match.get({ id: matchId! });
+      const matchData = matchResponse.data;
+      
+      if (matchData?.matchStatus === 'FINISHED') {
+        if (timerInterval.current) {
+          clearInterval(timerInterval.current as NodeJS.Timeout);
+        }
+        router.push(`/result?matchId=${matchId}&playerId=${currentPlayerId}`);
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error('Failed to check match status:', error);
+      return false;
     }
   };
 
