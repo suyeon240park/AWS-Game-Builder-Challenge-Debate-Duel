@@ -6,7 +6,7 @@ const schema = a.schema({
     player2Id: a.string(),
     player1Ready: a.boolean().default(false),
     player2Ready: a.boolean().default(false),
-    matchStatus: a.enum(['WAITING', 'MATCHED', 'READY']),
+    matchStatus: a.enum(['WAITING', 'MATCHED', 'READY', 'FINISHED']),
     roundNumber: a.integer().required().default(1),
     currentTurn: a.integer().required().default(1),
     timer: a.integer().default(30),

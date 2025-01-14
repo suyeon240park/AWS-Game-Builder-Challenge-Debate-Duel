@@ -30,7 +30,8 @@ export default function NicknameEntry({ onClose }: NicknameEntryProps) {
       
       await client.models.Player.create({
         id: playerId,
-        nickname: nickname.trim()
+        nickname: nickname.trim(),
+        score: 50
       })
 
       // Check for existing WAITING matches
@@ -70,7 +71,7 @@ export default function NicknameEntry({ onClose }: NicknameEntryProps) {
         })
         await client.models.Player.update({
           id: playerId,
-          currentMatchId: matchId
+          currentMatchId: matchId,
         })
       }
 

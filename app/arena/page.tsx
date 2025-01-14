@@ -103,17 +103,7 @@ const ArenaPageContent = () => {
     );
   }, [gameData.match?.currentTurn, gameData.player?.id, gameData.match?.player1Id]);
 
-  const calculateScore = useCallback((argument: string): number => {
-    const wordCount = argument.split(' ').length
-    const uniqueWords = new Set(argument.toLowerCase().split(' ')).size
-    const avgWordLength = argument.length / wordCount
 
-    const clarity = Math.min(Math.floor(wordCount / 10), 10)
-    const evidence = Math.min(Math.floor(uniqueWords / wordCount * 10), 10)
-    const content = Math.min(Math.floor(avgWordLength), 10)
-
-    return clarity + evidence + content
-  }, [])
 
   // Initialize game
   useEffect(() => {
@@ -219,6 +209,19 @@ useEffect(() => {
     next: ({ items }) => {
       const matchData = items[0];
       if (matchData) {
+        // Subscribe to player scores
+        setGameData(prev => ({
+          ...prev,
+          player: gameData.player,
+          opponent: gameData.opponent
+        }));
+
+        // Check if game is FINISHED
+        if (matchData.matchStatus === 'FINISHED') {
+          handleGameEnd();
+          return;
+        }
+
         // Reset timer when turn changes
         if (matchData.currentTurn !== prevTurnRef.current) {
           setTimer(GAME_CONSTANTS.TURN_TIME);
@@ -245,11 +248,25 @@ useEffect(() => {
   return () => sub.unsubscribe();
 }, [matchId, gameState.status, gameData.player?.id]);
 
+
   // Timer effect
   useEffect(() => {
     if (gameState.status !== 'success') return;
 
     const timerInterval = setInterval(async () => {
+      // Check match status first
+      try {
+        const matchResponse = await client.models.Match.get({ id: matchId! });
+        const matchData = matchResponse.data;
+        
+        if (matchData?.matchStatus === 'FINISHED') {
+          handleGameEnd();
+          return;
+        }
+      } catch (error) {
+        console.error('Failed to check match status:', error);
+      }
+
       setTimer(prev => {
         const newTimer = Math.max(0, prev - 1);
         
@@ -259,7 +276,7 @@ useEffect(() => {
 
           // Check for game end
           if (matchData.roundNumber === GAME_CONSTANTS.MAX_ROUNDS && matchData.currentTurn === 2) {
-            router.push(`/result?matchId=${matchId}&playerId=${currentPlayerId}`);
+            handleGameEnd()
             return GAME_CONSTANTS.TURN_TIME;
           }
 
@@ -290,7 +307,8 @@ useEffect(() => {
 
     setIsSubmitting(true);
     try {
-      const score = calculateScore(playerArgument);
+      //const score = calculateScore(playerArgument);
+      const score = 10
 
       // Show hit animation
       setShowHit(true);
@@ -300,6 +318,7 @@ useEffect(() => {
       if (currentPlayerId && score) {
         const playerData = await client.models.Player.get({ id: currentPlayerId });
         const currentScore = playerData.data?.score || 0;
+        console.log(currentScore)
     
         // Update score and argument
         await client.models.Player.update({
@@ -313,8 +332,7 @@ useEffect(() => {
 
       // If Round 3 is done, end the game
       if (matchData.roundNumber === GAME_CONSTANTS.MAX_ROUNDS && matchData.currentTurn === 2) {
-        router.push(`/results?matchId=${matchId}&playerId=${currentPlayerId}`);
-        return;
+        handleGameEnd()
       }
 
       // Update match with new turn/round
@@ -335,6 +353,28 @@ useEffect(() => {
       setIsSubmitting(false);
     }
   };
+
+  const handleGameEnd = useCallback(async () => {
+    if (!matchId || !currentPlayerId) return;
+  
+    try {
+      // Update match status to FINISHED
+      await client.models.Match.update({
+        id: matchId,
+        matchStatus: 'FINISHED'
+      });
+  
+      // Redirect to result page
+      router.push(`/result?matchId=${matchId}&playerId=${currentPlayerId}`);
+    } catch (error) {
+      const message = error instanceof Error ? 
+        error.message : 
+        'Failed to end game properly';
+      toast.error(message);
+      console.error('Game end error:', error);
+    }
+  }, [matchId, currentPlayerId, router]);
+  
 
   if (gameState.status === 'loading') {
     return <LoadingSpinner />
