@@ -143,8 +143,17 @@ const ArenaPageContent = () => {
         const players = playersResponse.data
         if (!players || players.length !== 2) throw new Error('Players not found')
 
+        console.log(players)
+
         const currentPlayer = players.find(p => p.id === currentPlayerId)
         const opponentPlayer = players.find(p => p.id !== currentPlayerId)
+
+        if (currentPlayer) {
+          console.log("current player: " + currentPlayer)
+        }
+        if (opponentPlayer) {
+          console.log("opponent player: " + opponentPlayer)
+        }
 
         if (!currentPlayer || !opponentPlayer) {
           throw new Error('Player identification failed')
