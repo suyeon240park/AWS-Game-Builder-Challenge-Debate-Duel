@@ -6,16 +6,13 @@ const schema = a.schema({
     player2Id: a.string(),
     player1Ready: a.boolean().default(false),
     player2Ready: a.boolean().default(false),
-    matchStatus: a.enum(['WAITING', 'MATCHED', 'READY', 'IN_PROGRESS', 'FINISHED']),
-    topic: a.string(),
-    currentTurn: a.integer()
+    matchStatus: a.enum(['WAITING', 'MATCHED', 'READY']),
   })
   .authorization(allow => [allow.publicApiKey()]),
 
   Player: a.model({
     nickname: a.string().required(),
     currentMatchId: a.string(),
-    argument: a.string(),
     score: a.integer().default(0)
   })
   .authorization(allow => [allow.publicApiKey()])

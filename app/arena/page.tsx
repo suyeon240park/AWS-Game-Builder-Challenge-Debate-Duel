@@ -43,6 +43,7 @@ interface GameState {
 
 interface GameData {
   match: Schema['Match']['type'] | null
+  topic: string | null
   player: Schema['Player']['type'] | null
   opponent: Schema['Player']['type'] | null
   isPlayer1: boolean
@@ -90,6 +91,7 @@ const ArenaPageContent = () => {
   const [gameState, setGameState] = useState<GameState>({ status: 'loading' })
   const [gameData, setGameData] = useState<GameData>({
     match: null,
+    topic: null,
     player: null,
     opponent: null,
     isPlayer1: true,
@@ -103,12 +105,14 @@ const ArenaPageContent = () => {
   const [showHit, setShowHit] = useState(false)
   const [opponentTyping, setOpponentTyping] = useState('')
 
-  const timerRef = useRef<NodeJS.Timeout | null>(null)
+  //const timerRef = useRef<NodeJS.Timeout | null>(null)
 
   const isPlayerTurn = useCallback((): boolean => {
-    return (gameData.isPlayer1 && gameData.currentTurn === 1) ||
-           (!gameData.isPlayer1 && gameData.currentTurn === 2)
-  }, [])
+    return (
+      (gameData.isPlayer1 && gameData.currentTurn === 1) ||
+      (!gameData.isPlayer1 && gameData.currentTurn === 2)
+    );
+  }, [gameData.isPlayer1, gameData.currentTurn]);
 
   const calculateScore = useCallback((argument: string): GameScore => {
     const wordCount = argument.split(' ').length
@@ -133,13 +137,6 @@ const ArenaPageContent = () => {
     const initializeGame = async () => {
       try {
         setGameState({ status: 'loading' })
-
-        const topic = getRandomTopic()
-        await client.models.Match.update({
-          id: matchId,
-          topic,
-          matchStatus: 'IN_PROGRESS'
-        })
 
         const [matchResponse, playersResponse] = await Promise.all([
           client.models.Match.get({ id: matchId }),
@@ -172,6 +169,7 @@ const ArenaPageContent = () => {
 
         setGameData({
           match: { ...matchData},
+          topic: getRandomTopic(),
           player: currentPlayer,
           opponent: opponentPlayer,
           isPlayer1: currentPlayerId === matchData.player1Id,
@@ -193,20 +191,19 @@ const ArenaPageContent = () => {
 
   // Timer effect
   useEffect(() => {
-    if (!gameData.match || gameState.status !== 'success') return
-
+    if (!gameData.match || gameState.status !== "success") return;
+  
     const timerInterval = setInterval(async () => {
-      if (gameData.timer > 0) {
-        setGameData(prev => ({ ...prev, timer: prev.timer - 1 }))
+      setGameData((prev) => ({ ...prev, timer: prev.timer - 1 }));
+  
+      if (gameData.timer <= 0) {
+        clearInterval(timerInterval);
+        await handleTurnEnd();
       }
-      else if (isPlayerTurn()) {
-        await handleSubmit()
-      }
-    }, 1000)
-
-    timerRef.current = timerInterval
-    return () => clearInterval(timerInterval)
-  }, [gameData.timer, gameData.match, gameState.status])
+    }, 1000);
+  
+    return () => clearInterval(timerInterval);
+  }, [gameData.timer, gameState.status]);
 
 
   // Handle turn end
@@ -217,24 +214,16 @@ const ArenaPageContent = () => {
     setTimeout(() => setShowHit(false), GAME_CONSTANTS.HIT_ANIMATION_DURATION)
 
     try {
-      const nextTurn = gameData.match.currentTurn === 1 ? 2 : 1
+      const nextTurn = gameData.currentTurn === 1 ? 2 : 1
       const newRoundNumber = nextTurn === 1 ? gameData.roundNumber + 1 : gameData.roundNumber
 
       if (newRoundNumber > GAME_CONSTANTS.MAX_ROUNDS) {
-        await client.models.Match.update({
-          id: matchId,
-          matchStatus: 'FINISHED'
-        })
         router.push(`/result?matchId=${matchId}&playerId=${currentPlayerId}`)
       } else {
-        await client.models.Match.update({
-          id: matchId,
-          currentTurn: nextTurn,
-        })
-        
         setGameData(prev => ({
           ...prev,
           roundNumber: newRoundNumber,
+          currentTurn: nextTurn,
           timer: GAME_CONSTANTS.TURN_TIME
         }))
       }
@@ -259,8 +248,7 @@ const ArenaPageContent = () => {
 
       const updatedPlayer = await client.models.Player.update({
         id: currentPlayerId,
-        argument: playerArgument,
-        score: Math.min((gameData.player?.score ?? 0) + score.total, 100)
+        score: gameData.player?.score
       })
 
       setGameData(prev => ({
@@ -279,45 +267,42 @@ const ArenaPageContent = () => {
   }
 
   // Handle player typing
-  const handlePlayerTyping = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!isPlayerTurn()) return
-    
-    const value = e.target.value
-    setPlayerArgument(value)
+  const handlePlayerTyping = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    if (isPlayerTurn()) {
+      const value = e.target.value;
+      setPlayerArgument(value);
 
-  }, [])
+    }
+  }, [isPlayerTurn, currentPlayerId]);
 
   // Subscriptions
   useEffect(() => {
-    if (!matchId || gameState.status !== 'success') return
-
-    const matchSub = client.models.Match.onUpdate({
-      filter: { id: { eq: matchId } }
-    }).subscribe(updatedMatch => {
-      if (!updatedMatch) return
-      setGameData(prev => ({
-        ...prev,
-        match: updatedMatch,
-      }))
-    })
+    if (!matchId || gameState.status !== "success") return;
+  
+    const matchSub = client.models.Match.onUpdate({ filter: { id: { eq: matchId } } }).subscribe(
+      (updatedMatch) => {
+        if (updatedMatch) {
+          setGameData((prev) => ({
+            ...prev,
+            match: updatedMatch,
+          }));
+        }
+      }
+    );
 
     const playerSub = client.models.Player.onUpdate({
-      filter: { id: { eq: gameData.opponent?.id } }
-    }).subscribe(updatedPlayer => {
-      if (!gameData.player || isPlayerTurn()) return
-      
-      setOpponentTyping(updatedPlayer.argument || '')
-      setGameData(prev => ({
-        ...prev,
-        opponent: updatedPlayer
-      }))
-    })
-
+      filter: { id: { eq: gameData.opponent?.id } },
+    }).subscribe((updatedPlayer) => {
+      if (updatedPlayer) {
+        setGameData((prev) => ({ ...prev, opponent: updatedPlayer }));
+      }
+    });
+  
     return () => {
-      matchSub.unsubscribe()
-      playerSub?.unsubscribe()
-    }
-  }, [matchId, currentPlayerId, gameData.match, gameData.opponent?.id, gameState.status])
+      matchSub.unsubscribe();
+      playerSub.unsubscribe();
+    };
+  }, [matchId, gameState.status, gameData.opponent?.id]);
 
   if (gameState.status === 'loading') return <LoadingSpinner />
   if (gameState.status === 'error') return <ErrorMessage message={gameState.message || 'Unknown error'} />
@@ -331,7 +316,7 @@ const ArenaPageContent = () => {
         <div className="flex justify-between items-center">
           <div className="space-y-1">
             <h1 className="text-2xl font-bold">Round {gameData.roundNumber}/{GAME_CONSTANTS.MAX_ROUNDS}</h1>
-            <p className="text-sm text-gray-500">Topic: {gameData.match.topic}</p>
+            <p className="text-sm text-gray-500">Topic: {gameData.topic}</p>
           </div>
           <div className="text-3xl font-bold text-red-600 animate-pulse">{gameData.timer}s</div>
         </div>
