@@ -7,12 +7,15 @@ const schema = a.schema({
     player1Ready: a.boolean().default(false),
     player2Ready: a.boolean().default(false),
     matchStatus: a.enum(['WAITING', 'MATCHED', 'READY']),
+    typingPlayerId: a.string(),
+    isTyping: a.boolean()
   })
   .authorization(allow => [allow.publicApiKey()]),
 
   Player: a.model({
     nickname: a.string().required(),
     currentMatchId: a.string(),
+    argument: a.string(),
     score: a.integer().default(0)
   })
   .authorization(allow => [allow.publicApiKey()])

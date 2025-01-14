@@ -104,7 +104,7 @@ const MatchRoomContent = () => {
     });
 
     return () => subscription.unsubscribe();
-  }, [matchId, router]);
+  }, [matchId, router, player, playerId]);
 
   const handleReady = async () => {
     if (!match || !player) return;

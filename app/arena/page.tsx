@@ -15,7 +15,7 @@ const GAME_CONSTANTS = {
   INITIAL_SCORE: 50,
   MAX_ROUNDS: 3,
   TURN_TIME: 30,
-  TYPING_TIMEOUT: 1000,
+  TYPING_THROTTLE: 1000,
   HIT_ANIMATION_DURATION: 2000,
   MIN_ARGUMENT_LENGTH: 10,
 } as const
@@ -29,12 +29,6 @@ const TOPICS = [
 ] as const
 
 // Types
-interface GameScore {
-  clarity: number
-  evidence: number
-  content: number
-  total: number
-}
 
 interface GameState {
   status: 'loading' | 'error' | 'success'
@@ -104,8 +98,8 @@ const ArenaPageContent = () => {
   const [playerArgument, setPlayerArgument] = useState('')
   const [showHit, setShowHit] = useState(false)
   const [opponentTyping, setOpponentTyping] = useState('')
-
-  //const timerRef = useRef<NodeJS.Timeout | null>(null)
+  const [isTyping, setIsTyping] = useState(false)
+  const lastTypingUpdate = useRef<number>(0)
 
   const isPlayerTurn = useCallback((): boolean => {
     return (
@@ -114,18 +108,18 @@ const ArenaPageContent = () => {
     );
   }, [gameData.isPlayer1, gameData.currentTurn]);
 
-  const calculateScore = useCallback((argument: string): GameScore => {
+  const calculateScore = useCallback((argument: string): number => {
     const wordCount = argument.split(' ').length
     const uniqueWords = new Set(argument.toLowerCase().split(' ')).size
     const avgWordLength = argument.length / wordCount
-
-    return {
-      clarity: Math.min(Math.floor(wordCount / 10), 10),
-      evidence: Math.min(Math.floor(uniqueWords / wordCount * 10), 10),
-      content: Math.min(Math.floor(avgWordLength), 10),
-      get total() { return this.clarity + this.evidence + this.content }
-    }
+  
+    const clarity = Math.min(Math.floor(wordCount / 10), 10)
+    const evidence = Math.min(Math.floor(uniqueWords / wordCount * 10), 10)
+    const content = Math.min(Math.floor(avgWordLength), 10)
+  
+    return clarity + evidence + content
   }, [])
+  
 
   // Initialize game
   useEffect(() => {
@@ -151,17 +145,8 @@ const ArenaPageContent = () => {
         const players = playersResponse.data
         if (!players || players.length !== 2) throw new Error('Players not found')
 
-        console.log(players)
-
         const currentPlayer = players.find(p => p.id === currentPlayerId)
         const opponentPlayer = players.find(p => p.id !== currentPlayerId)
-
-        if (currentPlayer) {
-          console.log("current player: " + currentPlayer.nickname)
-        }
-        if (opponentPlayer) {
-          console.log("opponent player: " + opponentPlayer.nickname)
-        }
 
         if (!currentPlayer || !opponentPlayer) {
           throw new Error('Player identification failed')
@@ -189,238 +174,260 @@ const ArenaPageContent = () => {
     initializeGame()
   }, [matchId, currentPlayerId, router])
 
-  // Timer effect
-  useEffect(() => {
-    if (!gameData.match || gameState.status !== "success") return;
-  
-    const timerInterval = setInterval(async () => {
-      setGameData((prev) => ({ ...prev, timer: prev.timer - 1 }));
-  
-      if (gameData.timer <= 0) {
-        clearInterval(timerInterval);
-        await handleTurnEnd();
-      }
-    }, 1000);
-  
-    return () => clearInterval(timerInterval);
-  }, [gameData.timer, gameState.status]);
+  // Handle player typing with throttling
+  const handlePlayerTyping = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setPlayerArgument(value);
+    
+    const now = Date.now();
+    if (!isTyping || now - lastTypingUpdate.current > GAME_CONSTANTS.TYPING_THROTTLE) {
+      setIsTyping(true);
+      lastTypingUpdate.current = now;
+      
+      // Only send typing status, not content
+      client.models.Match.update({
+        id: matchId!,
+        typingPlayerId: currentPlayerId,
+        isTyping: true
+      }).catch(error => {
+        console.warn('Typing sync failed:', error);
+      });
 
-
-  // Handle turn end
-  const handleTurnEnd = async () => {
-    if (!matchId || !gameData.match) return
-
-    setShowHit(true)
-    setTimeout(() => setShowHit(false), GAME_CONSTANTS.HIT_ANIMATION_DURATION)
-
-    try {
-      const nextTurn = gameData.currentTurn === 1 ? 2 : 1
-      const newRoundNumber = nextTurn === 1 ? gameData.roundNumber + 1 : gameData.roundNumber
-
-      if (newRoundNumber > GAME_CONSTANTS.MAX_ROUNDS) {
-        router.push(`/result?matchId=${matchId}&playerId=${currentPlayerId}`)
-      } else {
-        setGameData(prev => ({
-          ...prev,
-          roundNumber: newRoundNumber,
-          currentTurn: nextTurn,
-          timer: GAME_CONSTANTS.TURN_TIME
-        }))
-      }
-    } catch (error) {
-      console.error('Error updating turn:', error)
-      toast.error('Failed to update turn')
+      // Auto-clear typing status after delay
+      setTimeout(() => {
+        setIsTyping(false);
+        client.models.Match.update({
+          id: matchId!,
+          typingPlayerId: currentPlayerId,
+          isTyping: false
+        }).catch(error => {
+          console.warn('Typing clear failed:', error);
+        });
+      }, GAME_CONSTANTS.TYPING_THROTTLE + 500);
     }
+  }, [isTyping, currentPlayerId, matchId]);
+
+  // Subscribe to match updates and typing status
+  useEffect(() => {
+    if (!matchId || gameState.status !== 'success') return;
+
+    const sub = client.models.Match.observeQuery({
+      filter: { id: { eq: matchId } }
+    }).subscribe({
+      next: ({ items }) => {
+        const matchData = items[0];
+        if (matchData?.typingPlayerId === gameData.opponent?.id) {
+          setOpponentTyping(matchData.isTyping ? 'typing' : '');
+        }
+        if (matchData) {
+          setGameData(prev => ({
+            ...prev,
+            match: matchData
+          }));
+        }
+      },
+      error: (error) => console.error('Subscription error:', error)
+    });
+
+    return () => sub.unsubscribe();
+  }, [matchId, gameState.status, gameData.opponent?.id]);
+
+  
+// Timer effect
+useEffect(() => {
+  if (gameState.status !== 'success') return;
+
+  const timer = setInterval(() => {
+    setGameData(prev => {
+      const newTimer = Math.max(0, prev.timer - 1);
+      
+      // When timer reaches 0
+      if (newTimer === 0) {
+        // If both players have played in this round
+        if (prev.currentTurn === 2) {
+          // Move to next round
+          return {
+            ...prev,
+            timer: GAME_CONSTANTS.TURN_TIME,
+            currentTurn: 1,
+            roundNumber: prev.roundNumber + 1
+          };
+        } else {
+          // Switch to opponent's turn
+          return {
+            ...prev,
+            timer: GAME_CONSTANTS.TURN_TIME,
+            currentTurn: 2
+          };
+        }
+      }
+
+      // Just update timer if not zero
+      return {
+        ...prev,
+        timer: newTimer
+      };
+    });
+  }, 1000);
+
+  return () => clearInterval(timer);
+}, [gameState.status]);
+
+// You might also want to update handleSubmit to be consistent with this logic:
+const handleSubmit = async () => {
+  if (playerArgument.length < GAME_CONSTANTS.MIN_ARGUMENT_LENGTH) {
+    toast.error('Argument too short!');
+    return;
   }
 
-  // Handle submit
-  const handleSubmit = async () => {
-    if (!matchId || !currentPlayerId || isSubmitting || !isPlayerTurn()) return
+  setIsSubmitting(true);
+  try {
+    // Calculate score and submit argument here
+    const score = calculateScore(playerArgument);
 
-    if (playerArgument.length < GAME_CONSTANTS.MIN_ARGUMENT_LENGTH) {
-      toast.error('Argument is too short')
+    // Show hit animation
+    setShowHit(true);
+    setTimeout(() => setShowHit(false), GAME_CONSTANTS.HIT_ANIMATION_DURATION);
+    
+    // Get current player data to get existing score
+    if (currentPlayerId && score) {
+      const playerData = await client.models.Player.get({ id: currentPlayerId });
+      const currentScore = playerData.data?.score || 0;
+  
+      // Update score and argument
+      await client.models.Player.update({
+        id: currentPlayerId,
+        score: currentScore + score,
+        argument: playerArgument
+      })
+    }
+
+    // If Round 3 is done, end the game
+    if (gameData.roundNumber === GAME_CONSTANTS.MAX_ROUNDS && gameData.currentTurn === 2) {
+      router.push('/results?matchId=${matchId}&playerId=${currentPlayerId}')
       return
     }
 
-    try {
-      setIsSubmitting(true)
-      const score = calculateScore(playerArgument)
-
-      const updatedPlayer = await client.models.Player.update({
-        id: currentPlayerId,
-        score: gameData.player?.score
-      })
-
+    // If both players have played in this round
+    if (gameData.currentTurn === 2) {
+      // Move to next round
       setGameData(prev => ({
         ...prev,
-        player: updatedPlayer.data
-      }))
-
-      setPlayerArgument('')
-      await handleTurnEnd()
-    } catch (error) {
-      console.error('Error submitting argument:', error)
-      toast.error('Failed to submit argument')
-    } finally {
-      setIsSubmitting(false)
+        currentTurn: 1,
+        roundNumber: prev.roundNumber + 1,
+        timer: GAME_CONSTANTS.TURN_TIME
+      }));
+    } else {
+      // Switch to opponent's turn
+      setGameData(prev => ({
+        ...prev,
+        currentTurn: 2,
+        timer: GAME_CONSTANTS.TURN_TIME
+      }));
     }
+    
+    // Reset argument input
+    setPlayerArgument('');
+    
+  } catch (error) {
+    toast.error('Failed to submit argument');
+  } finally {
+    setIsSubmitting(false);
+  }
+};
+
+
+  if (gameState.status === 'loading') {
+    return <LoadingSpinner />
   }
 
-  // Handle player typing
-  const handlePlayerTyping = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    if (isPlayerTurn()) {
-      const value = e.target.value;
-      setPlayerArgument(value);
-
-    }
-  }, [isPlayerTurn, currentPlayerId]);
-
-  // Subscriptions
-  useEffect(() => {
-    if (!matchId || gameState.status !== "success") return;
-  
-    const matchSub = client.models.Match.onUpdate({ filter: { id: { eq: matchId } } }).subscribe(
-      (updatedMatch) => {
-        if (updatedMatch) {
-          setGameData((prev) => ({
-            ...prev,
-            match: updatedMatch,
-          }));
-        }
-      }
-    );
-
-    const playerSub = client.models.Player.onUpdate({
-      filter: { id: { eq: gameData.opponent?.id } },
-    }).subscribe((updatedPlayer) => {
-      if (updatedPlayer) {
-        setGameData((prev) => ({ ...prev, opponent: updatedPlayer }));
-      }
-    });
-  
-    return () => {
-      matchSub.unsubscribe();
-      playerSub.unsubscribe();
-    };
-  }, [matchId, gameState.status, gameData.opponent?.id]);
-
-  if (gameState.status === 'loading') return <LoadingSpinner />
-  if (gameState.status === 'error') return <ErrorMessage message={gameState.message || 'Unknown error'} />
-  if (!gameData.match || !gameData.player || !gameData.opponent) {
-    return <ErrorMessage message="Game data not found" />
+  if (gameState.status === 'error') {
+    return <ErrorMessage message={gameState.message || 'Unknown error'} />
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-amber-100 to-amber-200 flex flex-col items-center justify-center p-4">
-      <div className="max-w-4xl w-full bg-white/90 backdrop-blur-sm rounded-lg shadow-xl p-8 space-y-6">
-        <div className="flex justify-between items-center">
-          <div className="space-y-1">
-            <h1 className="text-2xl font-bold">Round {gameData.roundNumber}/{GAME_CONSTANTS.MAX_ROUNDS}</h1>
-            <p className="text-sm text-gray-500">Topic: {gameData.topic}</p>
-          </div>
-          <div className="text-3xl font-bold text-red-600 animate-pulse">{gameData.timer}s</div>
-        </div>
-
-        <ScoreDisplay 
-          player={gameData.player.score ?? GAME_CONSTANTS.INITIAL_SCORE} 
-          opponent={gameData.opponent.score ?? GAME_CONSTANTS.INITIAL_SCORE} 
-        />
-
-        <div className="flex justify-between items-center text-sm">
-          <div>
-            <span className="font-semibold">{gameData.player.nickname}</span>
-            {currentPlayerId && isPlayerTurn() && (
-              <span className="ml-2 text-green-500">(Your turn)</span>
-            )}
-          </div>
-          <div>
-            <span className="font-semibold">{gameData.opponent.nickname}</span>
-            {currentPlayerId && !isPlayerTurn() && (
-              <span className="ml-2 text-green-500">(Their turn)</span>
-            )}
-          </div>
-        </div>
-
-        <div className="h-40 bg-gray-100 rounded-lg relative overflow-hidden p-4">
-          <AnimatePresence>
-            {showHit && (
-              <motion.div
-                initial={{ scale: 0, rotate: 0 }}
-                animate={{ scale: 1, rotate: 360 }}
-                exit={{ scale: 0, rotate: 0 }}
-                className="absolute inset-0 bg-yellow-400 opacity-50"
-              />
-            )}
-          </AnimatePresence>
-          
-          <p className="text-lg">
-            {currentPlayerId && isPlayerTurn()
-              ? (playerArgument || "Your turn to argue!")
-              : (opponentTyping || "Waiting for opponent's argument...")}
-          </p>
-          
-          {currentPlayerId && !isPlayerTurn() && opponentTyping && (
-            <div className="mt-2 text-sm text-gray-500">
-              <motion.div
-                animate={{ opacity: [0, 1, 0] }}
-                transition={{ repeat: Infinity, duration: 1.5 }}
-              >
-                Opponent is typing...
-              </motion.div>
-            </div>
-          )}
-        </div>
-
-        <div className="space-y-4">
-          <Input
-            type="text"
-            placeholder="Type your argument here..."
-            value={playerArgument}
-            onChange={handlePlayerTyping}
-            disabled={currentPlayerId && !isPlayerTurn() || isSubmitting}
-            className="w-full p-4 text-lg"
-            aria-label="Argument input"
+    <div className="min-h-screen bg-gradient-to-b from-amber-100 to-amber-200 p-4">
+      <div className="max-w-4xl mx-auto space-y-6">
+        {/* Header Section */}
+        <div className="bg-white rounded-lg p-6 shadow-lg">
+          <h1 className="text-2xl font-bold text-gray-800 mb-4">
+            Round {gameData.roundNumber} - {gameData.topic}
+          </h1>
+          <ScoreDisplay 
+            player={GAME_CONSTANTS.INITIAL_SCORE} 
+            opponent={GAME_CONSTANTS.INITIAL_SCORE} 
           />
-          
-          <Button 
-            onClick={handleSubmit}
-            disabled={
-              currentPlayerId && !isPlayerTurn() || 
-              isSubmitting || 
-              playerArgument.length < GAME_CONSTANTS.MIN_ARGUMENT_LENGTH
-            }
-            className={`
-              w-full text-lg py-6 
-              bg-gradient-to-r from-blue-500 to-blue-700 
-              hover:from-blue-600 hover:to-blue-800 
-              transition-all duration-300
-              disabled:opacity-50 disabled:cursor-not-allowed
-            `}
-            aria-busy={isSubmitting}
-          >
-            {isSubmitting ? (
-              <span className="flex items-center gap-2">
+        </div>
+
+        {/* Game Area */}
+        <div className="bg-white rounded-lg p-6 shadow-lg">
+          <div className="mb-4 flex justify-between items-center">
+            <span className="text-lg font-medium">
+              {isPlayerTurn() ? "Your Turn" : "Opponent's Turn"}
+            </span>
+            <span className="text-lg font-medium">
+              Time: {gameData.timer}s
+            </span>
+          </div>
+
+          {/* Argument Input */}
+          <div className="space-y-4">
+            <Input
+              placeholder={isPlayerTurn() ? "Type your argument..." : "Waiting for opponent..."}
+              value={playerArgument}
+              onChange={handlePlayerTyping}
+              disabled={!isPlayerTurn() || isSubmitting}
+              className="w-full p-3"
+            />
+            
+            {/* Opponent Typing Indicator */}
+            <AnimatePresence>
+              {opponentTyping && (
                 <motion.div
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                  className="w-4 h-4 border-2 border-white rounded-full border-t-transparent"
-                />
-                Submitting...
-              </span>
-            ) : (
-              'Submit Argument'
-            )}
-          </Button>
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="text-sm text-gray-500 italic"
+                >
+                  Opponent is typing...
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* Hit Animation */}
+            <AnimatePresence>
+              {showHit && (
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  exit={{ scale: 0 }}
+                  className="absolute inset-0 bg-red-500 bg-opacity-20 flex items-center justify-center"
+                >
+                  <span className="text-4xl font-bold">HIT!</span>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* Submit Button */}
+            <Button
+              onClick={handleSubmit}
+              disabled={!isPlayerTurn() || isSubmitting || playerArgument.length < GAME_CONSTANTS.MIN_ARGUMENT_LENGTH}
+              className="w-full"
+            >
+              {isSubmitting ? "Submitting..." : "Submit Argument"}
+            </Button>
+          </div>
         </div>
       </div>
     </div>
   )
 }
 
+// Main Arena Page Component
 export default function ArenaPage() {
   return (
-    <Suspense fallback={<div>Loading match room...</div>}>
+    <Suspense fallback={<LoadingSpinner />}>
       <ArenaPageContent />
     </Suspense>
-  );
+  )
 }
