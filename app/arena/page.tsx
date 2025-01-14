@@ -330,7 +330,9 @@ const handleSubmit = async () => {
     setPlayerArgument('');
     
   } catch (error) {
-    toast.error('Failed to submit argument');
+    const message = error instanceof Error ? error.message : 'Failed to submit argument'
+    setGameState({ status: 'error', message })
+    toast.error(message)
   } finally {
     setIsSubmitting(false);
   }
