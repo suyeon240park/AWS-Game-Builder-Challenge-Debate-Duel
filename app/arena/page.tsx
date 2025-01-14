@@ -103,7 +103,17 @@ const ArenaPageContent = () => {
     );
   }, [gameData.match?.currentTurn, gameData.player?.id, gameData.match?.player1Id]);
 
+  const calculateScore = useCallback((argument: string): number => {
+    const wordCount = argument.split(' ').length
+    const uniqueWords = new Set(argument.toLowerCase().split(' ')).size
+    const avgWordLength = argument.length / wordCount
 
+    const clarity = Math.min(Math.floor(wordCount / 10), 10)
+    const evidence = Math.min(Math.floor(uniqueWords / wordCount * 10), 10)
+    const content = Math.min(Math.floor(avgWordLength), 10)
+
+    return clarity + evidence + content
+  }, [])
 
   // Initialize game
   useEffect(() => {
@@ -285,7 +295,9 @@ useEffect(() => {
             id: matchId!,
             currentTurn: matchData.currentTurn === 1 ? 2 : 1,
             roundNumber: matchData.currentTurn === 2 ? matchData.roundNumber + 1 : matchData.roundNumber,
-            timer: GAME_CONSTANTS.TURN_TIME
+            timer: GAME_CONSTANTS.TURN_TIME,
+            player1Argument: null,
+            player2Argument: null
           }).catch(console.error);
 
           return GAME_CONSTANTS.TURN_TIME;
@@ -335,13 +347,14 @@ useEffect(() => {
         handleGameEnd()
       }
 
-      // Update match with new turn/round
+      // Update match with new turn/round and reset argument
       await client.models.Match.update({
         id: matchId!,
         currentTurn: matchData.currentTurn === 1 ? 2 : 1,
         roundNumber: matchData.currentTurn === 2 ? matchData.roundNumber + 1 : matchData.roundNumber,
         timer: GAME_CONSTANTS.TURN_TIME,
-        [gameData.player?.id === matchData.player1Id ? 'player1Argument' : 'player2Argument']: playerArgument
+        player1Argument: null,
+        player2Argument: null
       });
 
       setPlayerArgument('');
