@@ -23,12 +23,6 @@ const GAME_CONSTANTS = {
   MAX_ARGUMENT_LENGTH: 200
 } as const
 
-const [timer, setTimer] = useState<TimerState>({
-  value: GAME_CONSTANTS.TURN_TIME,
-  startTime: Date.now(),
-  serverTime: Date.now()
-});
-
 // Types
 interface GameState {
   status: 'loading' | 'error' | 'success'
@@ -47,6 +41,12 @@ interface TimerState {
   startTime: number;
   serverTime: number;
 }
+
+const [timer, setTimer] = useState<TimerState>({
+  value: GAME_CONSTANTS.TURN_TIME,
+  startTime: Date.now(),
+  serverTime: Date.now()
+});
 
 
 // Components
@@ -284,7 +284,7 @@ const ArenaPageContent = () => {
         clearInterval(syncIntervalId);
       }
     };
-  }, [matchId, gameState.status, isPlayerTurn]);
+  }, [matchId, gameState.status, isPlayerTurn, handleTurnEnd]);
 
   // Handle visibility change
   useEffect(() => {
