@@ -16,7 +16,7 @@ import { Sword, Shield, Clock, MessageCircle} from 'lucide-react'
 const GAME_CONSTANTS = {
   INITIAL_SCORE: 50,
   MAX_ROUNDS: 2,
-  TURN_TIME: 20 as number,
+  TURN_TIME: 30 as number,
   TYPING_THROTTLE: 1000,
   HIT_ANIMATION_DURATION: 2000,
   MIN_ARGUMENT_LENGTH: 10,
