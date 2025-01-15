@@ -205,38 +205,6 @@ const ArenaPageContent = () => {
   }, [matchId, currentPlayerId, gameState.status, gameData.player?.id]);
 
 
-  // Handle turn end
-  const handleTurnEnd = async () => {
-    console.log('Handle turn end called', {
-      matchId,
-      isPlayerTurn: isPlayerTurn(),
-      currentTurn: gameData.match?.currentTurn
-    });
-  
-    if (!matchId || !isPlayerTurn()) return;
-  
-    try {
-      const nextTurn = gameData.match?.currentTurn === 1 ? 2 : 1;
-      const nextRound = gameData.match?.currentTurn === 2 ? 
-        (gameData.match.roundNumber + 1) : 
-        gameData.match?.roundNumber;
-  
-      await client.models.Match.update({
-        id: matchId,
-        currentTurn: nextTurn,
-        timer: GAME_CONSTANTS.TURN_TIME,
-        roundNumber: nextRound
-      });
-  
-      if (playerArgument.length >= GAME_CONSTANTS.MIN_ARGUMENT_LENGTH) {
-        await handleSubmit();
-      }
-    } catch (error) {
-      console.error('Turn end error:', error);
-      toast.error('Failed to end turn');
-    }
-  };
-
   interface TimerState {
     value: number;
     startTime: number;
@@ -249,51 +217,78 @@ const ArenaPageContent = () => {
     serverTime: Date.now()
   });
 
-  // Timer effect
   useEffect(() => {
     if (!matchId || gameState.status !== 'success') return;
-  
+
     let animationFrameId: number;
     const startTime = Date.now();
     const initialValue = timer.value;
-  
+
+
+    const handleTurnEnd = async () => {
+      if (!matchId || !isPlayerTurn()) return;
+
+      try {
+        const nextTurn = gameData.match?.currentTurn === 1 ? 2 : 1;
+        const nextRound = gameData.match?.currentTurn === 2 ? 
+          (gameData.match.roundNumber + 1) : 
+          gameData.match?.roundNumber;
+
+        console.log('Handling turn end:', { nextTurn, nextRound });
+
+        await client.models.Match.update({
+          id: matchId,
+          currentTurn: nextTurn,
+          timer: GAME_CONSTANTS.TURN_TIME,
+          roundNumber: nextRound
+        });
+
+        if (playerArgument.length >= GAME_CONSTANTS.MIN_ARGUMENT_LENGTH) {
+          await handleSubmit();
+        }
+      } catch (error) {
+        console.error('Turn end error:', error);
+        toast.error('Failed to end turn');
+      }
+    };
+
     const updateTimer = () => {
       const now = Date.now();
       const elapsed = Math.floor((now - startTime) / 1000);
       const newValue = Math.max(0, initialValue - elapsed);
-  
-      // Update timer regardless of whose turn it is
-      setTimer(prev => ({
-        ...prev,
-        value: newValue,
-        startTime: prev.startTime // Keep original startTime for consistent countdown
-      }));
-  
-      // Only handle turn end if it's the current player's turn
-      if (newValue <= 0 && isPlayerTurn()) {
-        console.log('Timer reached zero, handling turn end');
-        handleTurnEnd();
-        return;
+
+      // Only update if value changed
+      if (newValue !== timer.value) {
+        setTimer(prev => ({
+          ...prev,
+          value: newValue
+        }));
+
+        // Check for turn end
+        if (newValue <= 0 && isPlayerTurn()) {
+          handleTurnEnd();
+          return;
+        }
       }
-  
+
+      // Schedule next update
       animationFrameId = requestAnimationFrame(updateTimer);
     };
-  
-    // Start timer updates regardless of turn
+
     animationFrameId = requestAnimationFrame(updateTimer);
-  
-    // Sync with server periodically
+
     const syncIntervalId = setInterval(async () => {
       try {
         const response = await client.models.Match.get({ id: matchId });
-        console.log('Server sync response:', response.data?.timer);
         
         if (response.data?.timer !== undefined) {
-          // Only update if there's a significant difference
           const currentValue = Math.max(0, initialValue - Math.floor((Date.now() - startTime) / 1000));
-          if (response.data.timer && Math.abs(response.data.timer - currentValue) > 2) {
+
+          // Synchronize with server if difference > 2 sec
+          if (Math.abs(response.data.timer! - currentValue) > 2) {
+            console.log('Syncing timer with server:', response.data.timer);
             setTimer({
-              value: response.data.timer,
+              value: response.data.timer!,
               startTime: Date.now(),
               serverTime: Date.now()
             });
@@ -303,17 +298,15 @@ const ArenaPageContent = () => {
         console.error('Timer sync failed:', error);
       }
     }, 5000);
-  
+
     return () => {
-      if (animationFrameId) {
-        cancelAnimationFrame(animationFrameId);
-      }
-      if (syncIntervalId) {
-        clearInterval(syncIntervalId);
-      }
+      cancelAnimationFrame(animationFrameId);
+      clearInterval(syncIntervalId);
     };
-  }, [matchId, gameState.status, handleTurnEnd, isPlayerTurn, timer.value]);
-  
+  }, [
+    matchId, gameState.status, isPlayerTurn, timer.value, gameData.match, playerArgument.length
+  ]);
+
   
   // Visibility change handler
   useEffect(() => {
@@ -547,23 +540,31 @@ const ArenaPageContent = () => {
               <span>{gameData.player?.nickname}</span>
               <span>{gameData.opponent?.nickname}</span>
             </div>
+
             <div className="relative h-6 bg-gray-200 rounded-full overflow-hidden">
-              <Progress 
-                value={gameData.player?.score} 
-                className="absolute left-0 h-full bg-gradient-to-r from-blue-500 to-blue-600 transition-all duration-300"
-                style={{width: `${gameData.player?.score}%`}}
-              />
-              <Progress 
-                value={gameData.opponent?.score} 
-                className="absolute right-0 h-full bg-gradient-to-r from-red-600 to-red-500 transition-all duration-300" 
-                style={{width: `${gameData.opponent?.score}%`}}
-              />
-              <div className="absolute inset-0 flex justify-center items-center">
-                <span className="text-xs font-bold text-white drop-shadow">
-                  {gameData.player?.score} - {gameData.opponent?.score}
+              <div className="relative w-full h-full">
+                <Progress 
+                  value={gameData.player?.score} 
+                  className="absolute left-0 h-full bg-gradient-to-r from-blue-500 to-blue-600 transition-all duration-300"
+                  style={{width: `${gameData.player?.score}%`}}
+                />
+                <span className="absolute left-2 top-1/2 -translate-y-1/2 text-xs font-bold text-white drop-shadow z-10">
+                  {gameData.player?.score}
+                </span>
+              </div>
+              
+              <div className="relative w-full h-full">
+                <Progress 
+                  value={gameData.opponent?.score} 
+                  className="absolute right-0 h-full bg-gradient-to-r from-red-600 to-red-500 transition-all duration-300" 
+                  style={{width: `${gameData.opponent?.score}%`}}
+                />
+                <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs font-bold text-white drop-shadow z-10">
+                  {gameData.opponent?.score}
                 </span>
               </div>
             </div>
+
             <div className="flex justify-between">
               <span className={`text-sm font-bold ${playerScoreChange > 0 ? 'text-green-500' : 'text-red-500'}`}>
                 {playerScoreChange > 0 ? '+' : ''}{playerScoreChange}

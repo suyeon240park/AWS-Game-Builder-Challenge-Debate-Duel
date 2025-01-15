@@ -13,7 +13,7 @@ export default function Home() {
   const [showNicknameEntry, setShowNicknameEntry] = useState(false)
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-amber-100 to-amber-200 flex flex-col items-center justify-center p-4">
+    <div className="h-screen w-screen overflow-hidden bg-gradient-to-br from-purple-400 via-pink-500 to-red-500 p-4">
       <div className="max-w-2xl w-full bg-white rounded-lg shadow-xl p-8 space-y-8">
         <div className="text-center">
           <h1 className="text-4xl md:text-5xl font-serif font-bold text-gray-800 mb-2">Debate Duel</h1>
