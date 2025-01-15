@@ -9,6 +9,7 @@ import { useSearchParams, useRouter } from 'next/navigation'
 import { type Schema } from '@/amplify/data/resource'
 import { generateClient } from 'aws-amplify/api'
 import { toast } from 'sonner'
+import { calculateArgumentScore } from '../../services/bedrock';
 
 // Constants
 const GAME_CONSTANTS = {
@@ -216,8 +217,8 @@ const ArenaPageContent = () => {
 
     setIsSubmitting(true);
     try {
-      //const score = calculateScore(playerArgument);
-      const score = 10
+      // Calculate score using Amazon Bedrock
+      const score = await calculateArgumentScore(playerArgument, gameData.topic || '');
 
       // Show hit animation
       setShowHit(true);
@@ -306,25 +307,22 @@ const ArenaPageContent = () => {
     const sub = client.models.Match.observeQuery({
       filter: { id: { eq: matchId } }
     }).subscribe({
-      next: async ({ items }) => {
+      next: ({ items }) => {
         const matchData = items[0];
         if (!matchData) return;
 
-        // Check match status first before any other updates
-        if (matchData.matchStatus === 'FINISHED') {
-          if (timerInterval.current) {
-            clearInterval(timerInterval.current as NodeJS.Timeout);
-          }
-          router.push(`/result?matchId=${matchId}&playerId=${currentPlayerId}`);
-          return;
-        }
-
-        // Rest of your subscription logic...
+        // Preserve existing scores while updating other data
         setGameData(prev => ({
           ...prev,
-          player: gameData.player,
-          opponent: gameData.opponent,
-          match: matchData
+          match: matchData,
+          player: prev.player ? {
+            ...prev.player,
+            score: prev.player.score
+          } : null,
+          opponent: prev.opponent ? {
+            ...prev.opponent,
+            score: prev.opponent.score
+          } : null
         }));
 
         if (matchData.currentTurn !== prevTurnRef.current) {
@@ -347,6 +345,7 @@ const ArenaPageContent = () => {
       }
     };
   }, [matchId, gameState.status, currentPlayerId, router]);
+
 
   // Timer effect
   useEffect(() => {
