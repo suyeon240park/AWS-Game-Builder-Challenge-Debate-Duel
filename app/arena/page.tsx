@@ -224,22 +224,50 @@ const ArenaPageContent = () => {
       setTimeout(() => setShowHit(false), GAME_CONSTANTS.HIT_ANIMATION_DURATION);
 
       // Get current player data to get existing score
-      if (currentPlayerId && score) {
-        const playerData = await client.models.Player.get({ id: currentPlayerId });
-        const currentScore = playerData.data?.score || 0;
-        console.log(currentScore)
-    
-        // Update score and argument
-        await client.models.Player.update({
-          id: currentPlayerId,
-          score: currentScore + score
-        });
+      if (matchId && currentPlayerId && score) {
+        try {
+          // Await the list operation
+          const playersResponse = await client.models.Player.list({
+            filter: { currentMatchId: { eq: matchId } }
+          });
+          
+          const players = playersResponse.data;
+          if (!players || players.length !== 2) {
+            throw new Error('Players not found');
+          }
 
-        setGameData(prev => ({
-          ...prev,
-          player: gameData.player
-        }));
+          const currentPlayer = players.find(p => p.id === currentPlayerId);
+          const opponentPlayer = players.find(p => p.id !== currentPlayerId);
+
+          if (!currentPlayer || !opponentPlayer) {
+            throw new Error('Player identification failed');
+          }
+
+          const newScore = (currentPlayer.score || 50) + score;
+          console.log('New score:', newScore);
+
+          // Update score in database
+          await client.models.Player.update({
+            id: currentPlayerId,
+            score: newScore
+          });
+
+          // Update local state with new scores
+          setGameData(prev => ({
+            ...prev,
+            player: {
+              ...currentPlayer,
+              score: newScore // Make sure the displayed score is updated
+            },
+            opponent: opponentPlayer
+          }));
+
+        } catch (error) {
+          console.error('Error updating score:', error);
+          toast.error('Failed to update score');
+        }
       }
+
 
       const matchData = gameData.match;
       if (!matchData) return;
