@@ -2,14 +2,28 @@ import { a, defineData, type ClientSchema, defineFunction} from '@aws-amplify/ba
 
 export const MODEL_ID = "anthropic.claude-3-5-sonnet-20241022-v2:0";
 
-export const generateScoreFunction = defineFunction({
+export const generateTopicFunction = defineFunction({
   entry: "./generateScore.ts",
   environment: {
     MODEL_ID,
   },
 });
 
+export const generateScoreFunction = defineFunction({
+  entry: "./generateTopic.ts",
+  environment: {
+    MODEL_ID,
+  },
+});
+
 const schema = a.schema({
+  createTopic: a
+    .query()
+    .arguments({ prompt: a.string().required() })
+    .returns(a.string())
+    .authorization((allow) => [allow.publicApiKey()])
+    .handler(a.handler.function(generateTopicFunction)),
+
   evaluateDebate: a
     .query()
     .arguments({ prompt: a.string().required() })

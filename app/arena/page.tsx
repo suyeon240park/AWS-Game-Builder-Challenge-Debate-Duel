@@ -136,11 +136,26 @@ const ArenaPageContent = () => {
           throw new Error('Player identification failed')
         }
 
+        const response = await client.queries.createTopic({
+          prompt: ''
+        });
+    
+        if (response.errors) {
+          throw new Error(response.errors[0].message);
+        }
+    
+        const topic = response.data;
+        if (!topic) {
+          throw new Error('Topic not found');
+        }
+
+        console.log(topic)
+
         setGameData({
           match: { ...matchData },
           player: currentPlayer,
           opponent: opponentPlayer,
-          topic: "Should artificial intelligence be regulated?"
+          topic: topic
         })
 
         setGameState({ status: 'success' })
@@ -244,6 +259,7 @@ const ArenaPageContent = () => {
         if (!score) {
           throw new Error('Score not found');
         }
+        console.log(score)
 
         const newScore = (currentPlayer.score || 0) + score;
         
