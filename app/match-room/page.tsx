@@ -70,10 +70,6 @@ const MatchRoomContent = () => {
 
     initializeMatch();
 
-    if (player) {
-      console.log("match room current player: " + player.nickname)
-    }
-
     const subscription = client.models.Match.observeQuery({
       filter: { id: { eq: matchId } },
     }).subscribe({

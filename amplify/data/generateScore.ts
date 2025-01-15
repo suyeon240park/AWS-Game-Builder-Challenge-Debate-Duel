@@ -5,12 +5,11 @@ import {
   InvokeModelCommandInput,
 } from "@aws-sdk/client-bedrock-runtime";
 
-// initialize bedrock runtime client
 const client = new BedrockRuntimeClient();
 
 export const handler: Schema["evaluateDebate"]["functionHandler"] = async (
   event,
-  _context
+  context
 ) => {
   const { prompt } = event.arguments;
 
@@ -20,40 +19,58 @@ export const handler: Schema["evaluateDebate"]["functionHandler"] = async (
     accept: "application/json",
     body: JSON.stringify({
       anthropic_version: "bedrock-2023-05-31",
-      system: `You are an expert debate judge. Evaluate the following argument.
-                Rate the argument on a scale of 1-20 based on:
-                - Relevance to topic (1-5 points)
-                - Logical reasoning (1-5 points)
-                - Evidence/examples (1-5 points)
-                - Persuasiveness (1-5 points)
-                Return a JSON object with only a "score" field containing the total points as a number.`,
       messages: [
         {
-          role: "user",
-          content: [
-            {
-              type: "text",
-              text: prompt
-            },
-          ],
+          role: "system",
+          content: `You are an expert debate judge. Evaluate the following argument.
+Rate the argument on a scale of 1-20 based on:
+- Relevance to topic (1-5 points)
+- Logical reasoning (1-5 points)
+- Evidence/examples (1-5 points)
+- Persuasiveness (1-5 points)
+Provide consistent, fair scoring based on debate standards.
+Return only a JSON object with a single "score" field containing the total points as a number.`
         },
+        {
+          role: "user",
+          content: prompt
+        }
       ],
       max_tokens: 1000,
-      temperature: 0.8,
-      response_format: { type: "json_object" },
-    }),
+      temperature: 0.2
+    })
   } as InvokeModelCommandInput;
 
   try {
     const command = new InvokeModelCommand(input);
     const response = await client.send(command);
-    const data = JSON.parse(Buffer.from(response.body).toString());
-    const result = JSON.parse(data.content[0].text);
     
-    // Return the score as an integer
-    return Math.round(Number(result.score));
+    const responseBody = Buffer.from(response.body).toString();
+    console.log("Raw response:", responseBody);
+    
+    const data = JSON.parse(responseBody);
+    console.log("Parsed data:", data);
+    
+    // For Haiku, the response structure is slightly different
+    let result;
+    try {
+      // The response might be already in JSON format
+      result = typeof data.content === 'string' ? JSON.parse(data.content) : data.content;
+    } catch (e) {
+      console.error("Error parsing content:", e);
+      return 0;
+    }
+
+    // Ensure we return an integer
+    const score = Math.round(Number(result.score));
+    if (isNaN(score)) {
+      console.error("Invalid score:", result);
+      return 0;
+    }
+    
+    return score;
   } catch (error) {
-    console.error("Error parsing model response:", error);
+    console.error("Error in generateScore:", error);
     return 0;
   }
 };

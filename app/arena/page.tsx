@@ -254,24 +254,15 @@ const ArenaPageContent = () => {
           argument: playerArgument
         });
 
-        const response = await client.queries.evaluateDebate({
-          prompt: `Topic: ${gameData.topic} Argument: ${playerArgument}`
-        });
-    
-        if (response.errors) {
-          console.error("Evaluation errors:", response.errors);
-          throw new Error(response.errors[0].message);
-        }
-    
         const { data, errors } = await client.queries.evaluateDebate({
           prompt: `Topic: ${gameData.topic} Argument: ${playerArgument}`
         });
-  
+
         if (errors) {
           console.error("Evaluation errors:", errors);
           throw new Error(errors[0].message);
         }
-  
+
         if (!data) {
           throw new Error('No score received');
         }
@@ -282,7 +273,7 @@ const ArenaPageContent = () => {
           addedScore: data,
           newScore
         });
-        
+
         // Update score in database
         await client.models.Player.update({
           id: currentPlayerId,

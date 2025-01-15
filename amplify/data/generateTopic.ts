@@ -5,12 +5,11 @@ import {
   InvokeModelCommandInput,
 } from "@aws-sdk/client-bedrock-runtime";
 
-// initialize bedrock runtime client
 const client = new BedrockRuntimeClient();
 
 export const handler: Schema["createTopic"]["functionHandler"] = async (
-  _event,
-  _context
+  event,
+  context
 ) => {
   const input = {
     modelId: "anthropic.claude-3-haiku-20240307-v1:0",
@@ -18,46 +17,48 @@ export const handler: Schema["createTopic"]["functionHandler"] = async (
     accept: "application/json",
     body: JSON.stringify({
       anthropic_version: "bedrock-2023-05-31",
-      system: `You are a debate topic generator. Generate thought-provoking topics suitable for structured debate.`,
       messages: [
         {
-          role: "user",
-          content: [
-            {
-              type: "text",
-              text: "Create a debate topic in one line. Return a JSON object with a 'topic' field containing the topic as a string."
-            },
-          ],
+          role: "system",
+          content: `Generate an engaging debate topic. The topic should be:
+- Controversial but not offensive
+- Suitable for a 2-player debate
+- Clear and concise
+- Interesting and thought-provoking
+Return only the topic as a plain text string, without quotes or additional formatting.`
         },
+        {
+          role: "user",
+          content: "Generate a debate topic."
+        }
       ],
       max_tokens: 1000,
-      temperature: 0.8,
-      response_format: { type: "json_object" },
-    }),
+      temperature: 0.9 // Higher temperature for more creative topics
+    })
   } as InvokeModelCommandInput;
 
   try {
     const command = new InvokeModelCommand(input);
     const response = await client.send(command);
-    console.log("Raw Bedrock response:", response); // Debug log
-
+    
     const responseBody = Buffer.from(response.body).toString();
-    console.log("Response body:", responseBody); // Debug log
-
+    console.log("Raw response:", responseBody);
+    
     const data = JSON.parse(responseBody);
-    console.log("Parsed data:", data); // Debug log
-
-    const result = JSON.parse(data.content[0].text);
-    console.log("Final result:", result); // Debug log
-
-    if (!result.topic) {
-      console.error("No topic in result:", result);
-      throw new Error('No topic generated');
+    console.log("Parsed data:", data);
+    
+    // Extract the topic from the response
+    const topic = data.content[0].text.trim();
+    
+    // Basic validation
+    if (!topic || topic.length < 5) {
+      console.error("Invalid topic generated:", topic);
+      return "Should social media be banned?"; // fallback topic
     }
-
-    return result.topic;
+    
+    return topic;
   } catch (error) {
     console.error("Error generating topic:", error);
-    return "Should social media be regulated by governments?"; // Fallback topic
+    return "Should social media be banned?"; // fallback topic
   }
 };

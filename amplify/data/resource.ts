@@ -1,6 +1,6 @@
 import { a, defineData, type ClientSchema, defineFunction} from '@aws-amplify/backend';
 
-export const MODEL_ID = "anthropic.claude-3-5-sonnet-20241022-v2:0";
+export const MODEL_ID = "anthropic.claude-3-haiku-20240307-v1:0";
 
 export const generateTopicFunction = defineFunction({
   entry: "./generateScore.ts",
