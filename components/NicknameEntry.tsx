@@ -62,10 +62,23 @@ export default function NicknameEntry({ onClose }: NicknameEntryProps) {
       // If no waiting match, create a new match
       else {
         matchId = crypto.randomUUID()
+
+        // Create a debate topic
+        const { data, errors } = await client.queries.createTopic();
+        if (errors) {
+          console.error("Topic generation errors:", errors);
+          throw new Error(errors[0].message);
+        }
+        if (!data) {
+          throw new Error('No topic generated');
+        }
+        console.log("new topic: " + data)
+
         await client.models.Match.create({
           id: matchId,
           player1Id: playerId,
           matchStatus: 'WAITING',
+          topic: data,
           roundNumber: 1,
           currentTurn: 1,
           timer: 30

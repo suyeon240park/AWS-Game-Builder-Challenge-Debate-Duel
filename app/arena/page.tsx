@@ -117,27 +117,6 @@ const ArenaPageContent = () => {
         const matchData = matchResponse.data
         if (!matchData) throw new Error('Match not found')
 
-        // Create a debate topic if not exists
-        if (matchData.topic) {
-          console.log("existing topic: " + matchData.topic)
-        }
-        if (!matchData.topic) {
-          const { data, errors } = await client.queries.createTopic();
-          if (errors) {
-            console.error("Topic generation errors:", errors);
-            throw new Error(errors[0].message);
-          }
-          if (!data) {
-            throw new Error('No topic generated');
-          }
-          console.log("new topic: " + data)
-
-          await client.models.Match.update({
-            id: matchId,
-            topic: data
-          });
-        }
-
         const players = playersResponse.data
         if (!players || players.length !== 2) throw new Error('Players not found')
 
