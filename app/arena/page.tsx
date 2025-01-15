@@ -9,7 +9,6 @@ import { useSearchParams, useRouter } from 'next/navigation'
 import { type Schema } from '@/amplify/data/resource'
 import { generateClient } from 'aws-amplify/api'
 import { toast } from 'sonner'
-import { calculateArgumentScore } from '../../services/bedrock';
 
 // Constants
 const GAME_CONSTANTS = {
@@ -210,64 +209,70 @@ const ArenaPageContent = () => {
   
 
   const handleSubmit = async () => {
-    if (playerArgument.length < GAME_CONSTANTS.MIN_ARGUMENT_LENGTH) {
-      toast.error('Argument too short!');
-      return;
-    }
-
+    if (!isPlayerTurn() || isSubmitting || !matchId || !gameData.player?.id) return;
+  
     setIsSubmitting(true);
+  
     try {
-      // Calculate score using Amazon Bedrock
-      const score = await calculateArgumentScore(playerArgument, gameData.topic || '');
-
-      // Show hit animation
-      setShowHit(true);
-      setTimeout(() => setShowHit(false), GAME_CONSTANTS.HIT_ANIMATION_DURATION);
-
+      // Call the API route instead of using Bedrock directly
+      const response = await fetch('/api/calculate-score', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          argument: playerArgument,
+          topic: gameData.topic
+        })
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to calculate score');
+      }
+  
+      const { score } = await response.json();
+  
       // Get current player data to get existing score
       if (matchId && currentPlayerId && score) {
-        try {
-          // Await the list operation
-          const playersResponse = await client.models.Player.list({
-            filter: { currentMatchId: { eq: matchId } }
-          });
-          
-          const players = playersResponse.data;
-          if (!players || players.length !== 2) {
-            throw new Error('Players not found');
-          }
-
-          const currentPlayer = players.find(p => p.id === currentPlayerId);
-          const opponentPlayer = players.find(p => p.id !== currentPlayerId);
-
-          if (!currentPlayer || !opponentPlayer) {
-            throw new Error('Player identification failed');
-          }
-
-          const newScore = (currentPlayer.score || 50) + score;
-          console.log('New score:', newScore);
-
-          // Update score in database
-          await client.models.Player.update({
-            id: currentPlayerId,
-            score: newScore
-          });
-
-          // Update local state with new scores
-          setGameData(prev => ({
-            ...prev,
-            player: {
-              ...currentPlayer,
-              score: newScore // Make sure the displayed score is updated
-            },
-            opponent: opponentPlayer
-          }));
-
-        } catch (error) {
-          console.error('Error updating score:', error);
-          toast.error('Failed to update score');
+        const playersResponse = await client.models.Player.list({
+          filter: { currentMatchId: { eq: matchId } }
+        });
+        
+        const players = playersResponse.data;
+        if (!players || players.length !== 2) {
+          throw new Error('Players not found');
         }
+  
+        const currentPlayer = players.find(p => p.id === currentPlayerId);
+        const opponentPlayer = players.find(p => p.id !== currentPlayerId);
+  
+        if (!currentPlayer || !opponentPlayer) {
+          throw new Error('Player identification failed');
+        }
+  
+        const newScore = (currentPlayer.score || 0) + score;
+        
+        // Update score in database
+        await client.models.Player.update({
+          id: currentPlayerId,
+          score: newScore
+        });
+  
+        // Update local state
+        setGameData(prev => ({
+          ...prev,
+          player: {
+            ...prev.player!,
+            score: newScore
+          }
+        }));
+  
+        toast.success(`Scored ${score} points!`);
       }
+  
+      setPlayerArgument('');
+      setShowHit(true);
+      setTimeout(() => setShowHit(false), 1000);
 
 
       const matchData = gameData.match;
