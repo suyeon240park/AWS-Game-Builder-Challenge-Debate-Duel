@@ -9,24 +9,22 @@ import {
 const client = new BedrockRuntimeClient();
 
 export const handler: Schema["createTopic"]["functionHandler"] = async (
-  event,
-  context
+  _event,
+  _context
 ) => {
-  // Invoke model
   const input = {
     modelId: process.env.MODEL_ID,
     contentType: "application/json",
     accept: "application/json",
     body: JSON.stringify({
       anthropic_version: "bedrock-2023-05-31",
-      system:
-        "Generate a clear and concise debate topic.",
       messages: [
         {
           role: "user",
           content: [
             {
               type: "text",
+              text: "Generate a clear and concise debate topic that would be interesting to discuss. The topic should be controversial enough to have valid arguments on both sides.",
             },
           ],
         },
@@ -40,7 +38,6 @@ export const handler: Schema["createTopic"]["functionHandler"] = async (
 
   const response = await client.send(command);
 
-  // Parse the response and return the generated haiku
   const data = JSON.parse(Buffer.from(response.body).toString());
 
   return data.content[0].text;

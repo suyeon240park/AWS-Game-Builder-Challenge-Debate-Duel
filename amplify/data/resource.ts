@@ -3,14 +3,14 @@ import { a, defineData, type ClientSchema, defineFunction} from '@aws-amplify/ba
 export const MODEL_ID = "anthropic.claude-3-haiku-20240307-v1:0";
 
 export const generateTopicFunction = defineFunction({
-  entry: "./generateScore.ts",
+  entry: "./generateTopic.ts",
   environment: {
     MODEL_ID,
   },
 });
 
 export const generateScoreFunction = defineFunction({
-  entry: "./generateTopic.ts",
+  entry: "./generateScore.ts",
   environment: {
     MODEL_ID,
   },
