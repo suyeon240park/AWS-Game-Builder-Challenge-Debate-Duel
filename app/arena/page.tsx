@@ -136,9 +136,7 @@ const ArenaPageContent = () => {
           throw new Error('Player identification failed')
         }
 
-        const response = await client.queries.createTopic({
-          prompt: ''
-        });
+        const response = await client.queries.createTopic();
     
         if (response.errors) {
           throw new Error(response.errors[0].message);
@@ -224,10 +222,18 @@ const ArenaPageContent = () => {
   
 
   const handleSubmit = async () => {
-    if (!isPlayerTurn() || isSubmitting || !matchId || !gameData.player?.id) return;
-  
+    if (!isPlayerTurn() || isSubmitting || !matchId || !gameData.player?.id) {
+      console.log("Early return conditions:", {
+        isPlayerTurn: isPlayerTurn(),
+        isSubmitting,
+        matchId,
+        playerId: gameData.player?.id
+      });
+      return;
+    }
+
     setIsSubmitting(true);
-  
+
     try {
       // Get current player data to get existing score
       if (matchId && currentPlayerId) {
@@ -239,36 +245,49 @@ const ArenaPageContent = () => {
         if (!players || players.length !== 2) {
           throw new Error('Players not found');
         }
-  
+
         const currentPlayer = players.find(p => p.id === currentPlayerId);
         const opponentPlayer = players.find(p => p.id !== currentPlayerId);
-  
+
         if (!currentPlayer || !opponentPlayer) {
           throw new Error('Player identification failed');
         }
+
+        console.log("Evaluating debate with:", {
+          topic: gameData.topic,
+          argument: playerArgument
+        });
 
         const response = await client.queries.evaluateDebate({
           prompt: `Topic: ${gameData.topic} Argument: ${playerArgument}`
         });
     
         if (response.errors) {
+          console.error("Evaluation errors:", response.errors);
           throw new Error(response.errors[0].message);
         }
     
-        const score = Number(response.data);
+        const score = response.data;
+        console.log("Received score:", score);
+
         if (!score) {
-          throw new Error('Score not found');
+          console.error("Invalid score received:", response.data);
+          throw new Error('Invalid score received');
         }
-        console.log(score)
 
         const newScore = (currentPlayer.score || 0) + score;
+        console.log("Calculating new score:", {
+          currentScore: currentPlayer.score,
+          addedScore: score,
+          newScore
+        });
         
         // Update score in database
         await client.models.Player.update({
           id: currentPlayerId,
           score: newScore
         });
-  
+
         // Update local state
         setGameData(prev => ({
           ...prev,
@@ -277,42 +296,56 @@ const ArenaPageContent = () => {
             score: newScore
           }
         }));
-  
+
         toast.success(`Scored ${score} points!`);
+
+        // Visual feedback
+        setPlayerArgument('');
+        setShowHit(true);
+        setTimeout(() => setShowHit(false), 1000);
+
+        const matchData = gameData.match;
+        if (!matchData) {
+          throw new Error('Match data not found');
+        }
+
+        // Check if game should end
+        if (matchData.roundNumber === GAME_CONSTANTS.MAX_ROUNDS && matchData.currentTurn === 2) {
+          console.log("Game ending - max rounds reached");
+          await handleGameEnd();
+          return;
+        }
+
+        // Calculate next turn and round
+        const nextTurn = matchData.currentTurn === 1 ? 2 : 1;
+        const nextRound = matchData.currentTurn === 2 ? matchData.roundNumber + 1 : matchData.roundNumber;
+
+        console.log("Updating match state:", {
+          nextTurn,
+          nextRound,
+          currentRound: matchData.roundNumber,
+          currentTurn: matchData.currentTurn
+        });
+
+        // Update match with new turn/round and reset argument
+        await client.models.Match.update({
+          id: matchId,
+          currentTurn: nextTurn,
+          roundNumber: nextRound,
+          timer: GAME_CONSTANTS.TURN_TIME,
+          player1Argument: null,
+          player2Argument: null
+        });
       }
-  
-      setPlayerArgument('');
-      setShowHit(true);
-      setTimeout(() => setShowHit(false), 1000);
-
-
-      const matchData = gameData.match;
-      if (!matchData) return;
-
-      // If Round 3 is done, end the game
-      if (matchData.roundNumber === GAME_CONSTANTS.MAX_ROUNDS && matchData.currentTurn === 2) {
-        handleGameEnd()
-      }
-
-      // Update match with new turn/round and reset argument
-      await client.models.Match.update({
-        id: matchId!,
-        currentTurn: matchData.currentTurn === 1 ? 2 : 1,
-        roundNumber: matchData.currentTurn === 2 ? matchData.roundNumber + 1 : matchData.roundNumber,
-        timer: GAME_CONSTANTS.TURN_TIME,
-        player1Argument: null,
-        player2Argument: null
-      });
-
-      setPlayerArgument('');
-      
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Failed to submit argument'
-      toast.error(message)
+      console.error("Submit error:", error);
+      const message = error instanceof Error ? error.message : 'Failed to submit argument';
+      toast.error(message);
     } finally {
       setIsSubmitting(false);
     }
   };
+
 
   const timerInterval = useRef<NodeJS.Timeout | null>(null);
 

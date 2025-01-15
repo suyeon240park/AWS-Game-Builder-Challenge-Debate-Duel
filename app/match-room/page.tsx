@@ -6,6 +6,7 @@ import { generateClient } from 'aws-amplify/api';
 import { type Schema } from '@/amplify/data/resource';
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
+import Link from 'next/link'
 
 const client = generateClient<Schema>();
 
@@ -236,49 +237,48 @@ const MatchRoomContent = () => {
     <div className="min-h-screen bg-gradient-to-b from-amber-100 to-amber-200 flex flex-col items-center justify-center p-4">
       <div className="max-w-2xl w-full bg-white rounded-lg shadow-xl p-8 space-y-8">
         <h1 className="text-4xl font-serif font-bold text-gray-800 text-center">Match Room</h1>
-
+  
         {matchState === 'WAITING' && (
           <div className="text-center space-y-4">
             <Loader2 className="animate-spin h-12 w-12 mx-auto text-gray-600" />
             <p className="text-xl text-gray-700">Waiting for an opponent...</p>
           </div>
         )}
-
+  
         {matchState === 'MATCHED' && (
           <div className="space-y-6">
             <p className="text-xl text-gray-700 text-center">
               {opponentNickname ? `${opponentNickname} has joined! Are you ready to duel?` : 'Opponent found! Are you ready to duel?'}
             </p>
             <div className="flex justify-around items-center">
-              {renderPlayerStatuses()}
+              <PlayerStatus name="You" ready={isReady} />
+              <span className="text-2xl font-bold text-gray-600">VS</span>
+              <PlayerStatus name="Opponent" ready={opponentReady} />
             </div>
-            <Button 
-              className={`w-full text-lg py-6 ${
-                isReady 
-                  ? 'bg-yellow-400 hover:bg-yellow-500' 
-                  : 'bg-blue-500 hover:bg-blue-600 text-white'
-              }`}
-              size="lg" 
+            <Button
+              className={`w-full text-lg py-6 ${isReady ? 'bg-yellow-400 hover:bg-yellow-500' : 'bg-blue-500 hover:bg-blue-600 text-white'}`}
+              size="lg"
               onClick={isReady ? handleUndoReady : handleReady}
             >
-              {isReady ? "Unready" : "Ready"}
+              {isReady ? "Unready" : "I'm Ready!"}
             </Button>
           </div>
         )}
-
+  
         {matchState === 'READY' && (
           <div className="text-center space-y-4">
             <p className="text-2xl text-green-600 font-bold">Both players are ready!</p>
-            <div className="flex justify-around items-center">
-              {renderPlayerStatuses()}
-            </div>
             <p className="text-xl text-gray-700">Preparing the debate arena...</p>
-            <Loader2 className="animate-spin h-12 w-12 mx-auto text-gray-600" />
+            <Link href="/game">
+              <Button className="w-full text-lg py-6" size="lg">
+                Enter the Arena
+              </Button>
+            </Link>
           </div>
         )}
-
-        <Button 
-          className="mt-4 w-full text-lg py-4 bg-red-500 hover:bg-red-600 text-white" 
+  
+        <Button
+          className="mt-4 w-full text-lg py-4 bg-red-500 hover:bg-red-600 text-white"
           onClick={handleLeave}
         >
           Leave Match
@@ -286,7 +286,7 @@ const MatchRoomContent = () => {
       </div>
     </div>
   );
-}
+}  
 
 export default function MatchRoom() {
   return (

@@ -19,7 +19,6 @@ export const generateScoreFunction = defineFunction({
 const schema = a.schema({
   createTopic: a
     .query()
-    .arguments({ prompt: a.string().required() })
     .returns(a.string())
     .authorization((allow) => [allow.publicApiKey()])
     .handler(a.handler.function(generateTopicFunction)),
@@ -27,7 +26,7 @@ const schema = a.schema({
   evaluateDebate: a
     .query()
     .arguments({ prompt: a.string().required() })
-    .returns(a.string())
+    .returns(a.integer())
     .authorization((allow) => [allow.publicApiKey()])
     .handler(a.handler.function(generateScoreFunction)),
 
