@@ -447,7 +447,7 @@ const ArenaPageContent = () => {
             </div>
             <div className="relative h-6 bg-gray-200 rounded-full overflow-hidden">
               <Progress value={gameData.player?.score} className="absolute left-0 h-full bg-gradient-to-r from-blue-500 to-blue-600" />
-              <Progress value={gameData.opponent?.score} className="absolute right-0 h-full bg-gradient-to-r from-red-600 to-red-500" style={{width: `${gameData.opponent.score}%`}} />
+              <Progress value={gameData.opponent?.score} className="absolute right-0 h-full bg-gradient-to-r from-red-600 to-red-500" style={{width: `${gameData.opponent?.score}%`}} />
               <div className="absolute inset-0 flex justify-center items-center">
                 <span className="text-xs font-bold text-white">
                   {gameData.player?.score} - {gameData.opponent?.score}
