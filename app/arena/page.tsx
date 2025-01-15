@@ -42,13 +42,6 @@ interface TimerState {
   serverTime: number;
 }
 
-const [timer, setTimer] = useState<TimerState>({
-  value: GAME_CONSTANTS.TURN_TIME,
-  startTime: Date.now(),
-  serverTime: Date.now()
-});
-
-
 // Components
 const LoadingSpinner = () => (
   <div className="min-h-screen bg-gradient-to-b from-amber-100 to-amber-200 flex items-center justify-center">
@@ -216,6 +209,11 @@ const ArenaPageContent = () => {
   }, [matchId, currentPlayerId, gameState.status, gameData.player?.id]);
 
 
+  const [timer, setTimer] = useState<TimerState>({
+    value: GAME_CONSTANTS.TURN_TIME,
+    startTime: Date.now(),
+    serverTime: Date.now()
+  });  
 
   // Timer effect with server synchronization
   useEffect(() => {
