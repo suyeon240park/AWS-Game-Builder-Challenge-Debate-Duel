@@ -65,14 +65,12 @@ export default function NicknameEntry({ onClose }: NicknameEntryProps) {
 
         // Create a debate topic
         const { data, errors } = await client.queries.createTopic();
-        if (errors) {
-          console.error("Topic generation errors:", errors);
-          throw new Error(errors[0].message);
+    
+        if (!errors) {
+          console.log("new topic: ", data);
+        } else {
+          console.log(errors);
         }
-        if (!data) {
-          throw new Error('No topic generated');
-        }
-        console.log("new topic: " + data)
 
         await client.models.Match.create({
           id: matchId,

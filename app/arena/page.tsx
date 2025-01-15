@@ -239,23 +239,16 @@ const ArenaPageContent = () => {
         const { data, errors } = await client.queries.evaluateDebate({
           prompt: `Topic: ${gameData.topic} Argument: ${playerArgument}`
         });
-
+    
         if (errors) {
-          console.error("Evaluation errors:", errors);
-          throw new Error(errors[0].message);
+          console.log(errors);
         }
 
-        if (!data) {
-          throw new Error('No score received');
-        }
-
-        const newScore = (currentPlayer.score || 0) + data;
-        console.log("Calculating new score:", {
-          currentScore: currentPlayer.score,
-          addedScore: data,
-          newScore
-        });
-
+        console.log("Current score: ", currentPlayer.score)
+        console.log("Debate score: ", data);
+        const newScore = (currentPlayer.score || GAME_CONSTANTS.INITIAL_SCORE) + data!;
+        console.log("New score: ", newScore)
+        
         // Update score in database
         await client.models.Player.update({
           id: currentPlayerId,

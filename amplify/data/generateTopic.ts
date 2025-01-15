@@ -5,60 +5,43 @@ import {
   InvokeModelCommandInput,
 } from "@aws-sdk/client-bedrock-runtime";
 
+// initialize bedrock runtime client
 const client = new BedrockRuntimeClient();
 
 export const handler: Schema["createTopic"]["functionHandler"] = async (
   event,
   context
 ) => {
+  // Invoke model
   const input = {
-    modelId: "anthropic.claude-3-haiku-20240307-v1:0",
+    modelId: process.env.MODEL_ID,
     contentType: "application/json",
     accept: "application/json",
     body: JSON.stringify({
       anthropic_version: "bedrock-2023-05-31",
+      system:
+        "Generate a clear and concise debate topic.",
       messages: [
         {
-          role: "system",
-          content: `Generate an engaging debate topic. The topic should be:
-- Controversial but not offensive
-- Suitable for a 2-player debate
-- Clear and concise
-- Interesting and thought-provoking
-Return only the topic as a plain text string, without quotes or additional formatting.`
-        },
-        {
           role: "user",
-          content: "Generate a debate topic."
-        }
+          content: [
+            {
+              type: "text",
+            },
+          ],
+        },
       ],
       max_tokens: 1000,
-      temperature: 0.9 // Higher temperature for more creative topics
-    })
+      temperature: 0.5,
+    }),
   } as InvokeModelCommandInput;
 
-  try {
-    const command = new InvokeModelCommand(input);
-    const response = await client.send(command);
-    
-    const responseBody = Buffer.from(response.body).toString();
-    console.log("Raw response:", responseBody);
-    
-    const data = JSON.parse(responseBody);
-    console.log("Parsed data:", data);
-    
-    // Extract the topic from the response
-    const topic = data.content[0].text.trim();
-    
-    // Basic validation
-    if (!topic || topic.length < 5) {
-      console.error("Invalid topic generated:", topic);
-      return "Should social media be banned?"; // fallback topic
-    }
-    
-    return topic;
-  } catch (error) {
-    console.error("Error generating topic:", error);
-    return "Should social media be banned?"; // fallback topic
-  }
+  const command = new InvokeModelCommand(input);
+
+  const response = await client.send(command);
+
+  // Parse the response and return the generated haiku
+  const data = JSON.parse(Buffer.from(response.body).toString());
+
+  return data.content[0].text;
 };
