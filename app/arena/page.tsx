@@ -38,8 +38,8 @@ interface GameData {
 
 interface TimerState {
   value: number;
-  isRunning: boolean;
-  lastServerSync: number;
+  startTime: number;
+  serverTime: number;
 }
 
 // Components
@@ -75,9 +75,9 @@ const ArenaPageContent = () => {
 
   const [timer, setTimer] = useState<TimerState>({
     value: GAME_CONSTANTS.TURN_TIME,
-    isRunning: false,
-    lastServerSync: Date.now()
-  })
+    startTime: Date.now(),
+    serverTime: Date.now()
+  });
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [playerArgument, setPlayerArgument] = useState('')
   const [showHit, setShowHit] = useState(false)
@@ -229,22 +229,23 @@ const ArenaPageContent = () => {
       matchSub.unsubscribe();
       playerSub.unsubscribe();
     };
-  }, [matchId, currentPlayerId, gameState.status, gameData.player?.id]);
+  }, [matchId, currentPlayerId, gameState.status, gameData.player?.id, opponentScoreChange, gameData.match?.currentTurn]);
 
-  // Timer effect with proper synchronization
+  // Timer effect with server synchronization
   useEffect(() => {
     if (!matchId || gameState.status !== 'success') return;
 
-    let intervalId: NodeJS.Timeout;
+    let animationFrameId: number;
+    let syncIntervalId: NodeJS.Timeout;
 
-    const syncTimerWithServer = async () => {
+    const syncWithServer = async () => {
       try {
         const response = await client.models.Match.get({ id: matchId });
         if (response.data?.timer !== undefined) {
           setTimer(prev => ({
-            ...prev,
             value: response.data!.timer!,
-            lastServerSync: Date.now()
+            startTime: Date.now(),
+            serverTime: Date.now()
           }));
         }
       } catch (error) {
@@ -252,40 +253,53 @@ const ArenaPageContent = () => {
       }
     };
 
-    // Start timer when it's player's turn
-    if (isPlayerTurn()) {
-      intervalId = setInterval(() => {
-        setTimer(prev => {
-          if (prev.value <= 0) {
-            // Handle turn end when timer reaches 0
-            handleTurnEnd();
-            return prev;
-          }
+    const updateTimer = () => {
+      setTimer(prev => {
+        const now = Date.now();
+        const elapsed = Math.floor((now - prev.startTime) / 1000);
+        const newValue = Math.max(0, prev.value - elapsed);
 
+        // If timer reaches 0, handle turn end
+        if (newValue === 0 && isPlayerTurn()) {
+          handleTurnEnd();
+          return prev;
+        }
+
+        // Only update if there's a change in seconds
+        if (newValue !== prev.value) {
           return {
             ...prev,
-            value: prev.value - 1,
-            isRunning: true
+            value: newValue,
+            startTime: now
           };
-        });
-      }, 1000);
+        }
 
-      // Sync with server every 5 seconds
-      const syncInterval = setInterval(syncTimerWithServer, 5000);
+        return prev;
+      });
 
-      return () => {
-        clearInterval(intervalId);
-        clearInterval(syncInterval);
-      };
+      animationFrameId = requestAnimationFrame(updateTimer);
+    };
+
+    // Start timer updates
+    if (isPlayerTurn()) {
+      animationFrameId = requestAnimationFrame(updateTimer);
+      // Sync with server every 5 seconds to prevent drift
+      syncIntervalId = setInterval(syncWithServer, 5000);
     }
 
-    // Always sync when turn changes
-    syncTimerWithServer();
+    // Initial sync
+    syncWithServer();
 
     return () => {
-      if (intervalId) clearInterval(intervalId);
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+      }
+      if (syncIntervalId) {
+        clearInterval(syncIntervalId);
+      }
     };
   }, [matchId, gameState.status, isPlayerTurn]);
+
 
   // Handle turn end
   const handleTurnEnd = async () => {
@@ -315,16 +329,16 @@ const ArenaPageContent = () => {
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'visible') {
-        // Sync timer when tab becomes visible
+        // Immediate sync when tab becomes visible
         const syncTimer = async () => {
           try {
             const response = await client.models.Match.get({ id: matchId! });
             if (response.data?.timer !== undefined) {
-              setTimer(prev => ({
-                ...prev,
-                value: response.data!.timer!,
-                lastServerSync: Date.now()
-              }));
+              setTimer({
+                value: response.data.timer!,
+                startTime: Date.now(),
+                serverTime: Date.now()
+              });
             }
           } catch (error) {
             console.error('Timer sync failed on visibility change:', error);
@@ -333,7 +347,7 @@ const ArenaPageContent = () => {
         syncTimer();
       }
     };
-
+  
     document.addEventListener('visibilitychange', handleVisibilityChange);
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
