@@ -215,6 +215,32 @@ const ArenaPageContent = () => {
     serverTime: Date.now()
   });  
 
+
+  // Handle turn end
+  const handleTurnEnd = async () => {
+    if (!matchId || !isPlayerTurn()) return;
+
+    try {
+      await client.models.Match.update({
+        id: matchId,
+        currentTurn: gameData.match?.currentTurn === 1 ? 2 : 1,
+        timer: GAME_CONSTANTS.TURN_TIME,
+        roundNumber: gameData.match?.currentTurn === 2 ? 
+          (gameData.match.roundNumber + 1) : 
+          gameData.match?.roundNumber
+      });
+
+      // Auto-submit if argument meets minimum length
+      if (playerArgument.length >= GAME_CONSTANTS.MIN_ARGUMENT_LENGTH) {
+        await handleSubmit();
+      }
+    } catch (error) {
+      console.error('Turn end error:', error);
+      toast.error('Failed to end turn');
+    }
+  };
+
+
   // Timer effect with server synchronization
   useEffect(() => {
     if (!matchId || gameState.status !== 'success') return;
@@ -311,32 +337,7 @@ const ArenaPageContent = () => {
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
-  }, [matchId]);
-
-  // Handle turn end
-  const handleTurnEnd = async () => {
-    if (!matchId || !isPlayerTurn()) return;
-
-    try {
-      await client.models.Match.update({
-        id: matchId,
-        currentTurn: gameData.match?.currentTurn === 1 ? 2 : 1,
-        timer: GAME_CONSTANTS.TURN_TIME,
-        roundNumber: gameData.match?.currentTurn === 2 ? 
-          (gameData.match.roundNumber + 1) : 
-          gameData.match?.roundNumber
-      });
-
-      // Auto-submit if argument meets minimum length
-      if (playerArgument.length >= GAME_CONSTANTS.MIN_ARGUMENT_LENGTH) {
-        await handleSubmit();
-      }
-    } catch (error) {
-      console.error('Turn end error:', error);
-      toast.error('Failed to end turn');
-    }
-  };
-
+  }, [matchId])
 
 
   // Handle player typing with improved throttling
