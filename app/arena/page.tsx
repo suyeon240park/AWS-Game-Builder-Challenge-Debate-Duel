@@ -205,83 +205,6 @@ const ArenaPageContent = () => {
   }, [matchId, currentPlayerId, gameState.status, gameData.player?.id]);
 
 
-  interface TimerState {
-    value: number;
-    startTime: number;
-    serverTime: number;
-  }
-  
-  const [timer, setTimer] = useState<TimerState>({
-    value: GAME_CONSTANTS.TURN_TIME,
-    startTime: Date.now(),
-    serverTime: Date.now()
-  });
-
-  useEffect(() => {
-    if (!matchId || gameState.status !== 'success') return;
-  
-    let animationFrameId: number;
-    let syncIntervalId: NodeJS.Timeout;
-    const startTime = Date.now();
-    const initialValue = timer.value;
-  
-    const updateTimer = () => {
-      const now = Date.now();
-      const elapsed = Math.floor((now - startTime) / 1000);
-      const newValue = Math.max(0, initialValue - elapsed);
-  
-      // Update timer regardless of whose turn it is
-      setTimer(prev => ({
-        ...prev,
-        value: newValue,
-        startTime: prev.startTime // Keep original startTime for consistent countdown
-      }));
-  
-      // Only handle turn end if it's the current player's turn
-      if (newValue <= 0 && isPlayerTurn()) {
-        console.log('Timer reached zero, handling turn end');
-        handleTurnEnd();
-        return;
-      }
-  
-      animationFrameId = requestAnimationFrame(updateTimer);
-    };
-  
-    // Start timer updates regardless of turn
-    animationFrameId = requestAnimationFrame(updateTimer);
-  
-    // Sync with server periodically
-    syncIntervalId = setInterval(async () => {
-      try {
-        const response = await client.models.Match.get({ id: matchId });
-        console.log('Server sync response:', response.data?.timer);
-        
-        if (response.data?.timer !== undefined) {
-          // Only update if there's a significant difference
-          const currentValue = Math.max(0, initialValue - Math.floor((Date.now() - startTime) / 1000));
-          if (response.data.timer && Math.abs(response.data.timer - currentValue) > 2) {
-            setTimer({
-              value: response.data.timer,
-              startTime: Date.now(),
-              serverTime: Date.now()
-            });
-          }
-        }
-      } catch (error) {
-        console.error('Timer sync failed:', error);
-      }
-    }, 5000);
-  
-    return () => {
-      if (animationFrameId) {
-        cancelAnimationFrame(animationFrameId);
-      }
-      if (syncIntervalId) {
-        clearInterval(syncIntervalId);
-      }
-    };
-  }, [matchId, gameState.status]);
-  
   // Handle turn end
   const handleTurnEnd = async () => {
     console.log('Handle turn end called', {
@@ -313,8 +236,86 @@ const ArenaPageContent = () => {
       toast.error('Failed to end turn');
     }
   };
+
+  interface TimerState {
+    value: number;
+    startTime: number;
+    serverTime: number;
+  }
   
-  // Visibility change handler - improved to prevent timer jumps
+  const [timer, setTimer] = useState<TimerState>({
+    value: GAME_CONSTANTS.TURN_TIME,
+    startTime: Date.now(),
+    serverTime: Date.now()
+  });
+
+  // Timer effect
+  useEffect(() => {
+    if (!matchId || gameState.status !== 'success') return;
+  
+    let animationFrameId: number;
+    const startTime = Date.now();
+    const initialValue = timer.value;
+  
+    const updateTimer = () => {
+      const now = Date.now();
+      const elapsed = Math.floor((now - startTime) / 1000);
+      const newValue = Math.max(0, initialValue - elapsed);
+  
+      // Update timer regardless of whose turn it is
+      setTimer(prev => ({
+        ...prev,
+        value: newValue,
+        startTime: prev.startTime // Keep original startTime for consistent countdown
+      }));
+  
+      // Only handle turn end if it's the current player's turn
+      if (newValue <= 0 && isPlayerTurn()) {
+        console.log('Timer reached zero, handling turn end');
+        handleTurnEnd();
+        return;
+      }
+  
+      animationFrameId = requestAnimationFrame(updateTimer);
+    };
+  
+    // Start timer updates regardless of turn
+    animationFrameId = requestAnimationFrame(updateTimer);
+  
+    // Sync with server periodically
+    const syncIntervalId = setInterval(async () => {
+      try {
+        const response = await client.models.Match.get({ id: matchId });
+        console.log('Server sync response:', response.data?.timer);
+        
+        if (response.data?.timer !== undefined) {
+          // Only update if there's a significant difference
+          const currentValue = Math.max(0, initialValue - Math.floor((Date.now() - startTime) / 1000));
+          if (response.data.timer && Math.abs(response.data.timer - currentValue) > 2) {
+            setTimer({
+              value: response.data.timer,
+              startTime: Date.now(),
+              serverTime: Date.now()
+            });
+          }
+        }
+      } catch (error) {
+        console.error('Timer sync failed:', error);
+      }
+    }, 5000);
+  
+    return () => {
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+      }
+      if (syncIntervalId) {
+        clearInterval(syncIntervalId);
+      }
+    };
+  }, [matchId, gameState.status, handleTurnEnd, isPlayerTurn, timer.value]);
+  
+  
+  // Visibility change handler
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'visible') {
@@ -493,9 +494,7 @@ const ArenaPageContent = () => {
       setTimeout(() => setShowHit(false), GAME_CONSTANTS.HIT_ANIMATION_DURATION);
 
       // Check for game end condition
-      if (gameData.match?.roundNumber === GAME_CONSTANTS.MAX_ROUNDS && 
-          gameData.match.currentTurn === 2) {
-        console.log("Game ending - max rounds reached");
+      if (gameData.match?.roundNumber === GAME_CONSTANTS.MAX_ROUNDS && gameData.match.currentTurn === 2) {
         await handleGameEnd();
       }
 
