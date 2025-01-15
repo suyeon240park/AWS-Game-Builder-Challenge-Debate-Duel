@@ -79,7 +79,7 @@ export default function NicknameEntry({ onClose }: NicknameEntryProps) {
           topic: data,
           roundNumber: 1,
           currentTurn: 1,
-          timer: 10
+          timer: 20
         })
         await client.models.Player.update({
           id: playerId,
