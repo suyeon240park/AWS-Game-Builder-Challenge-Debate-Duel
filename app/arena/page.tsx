@@ -119,19 +119,19 @@ const ArenaPageContent = () => {
 
         // Create a debate topic if not exists
         if (!matchData.topic) {
-          const response = await client.queries.createTopic();
-          if (response.errors) {
-            throw new Error(response.errors[0].message);
+          const { data, errors } = await client.queries.createTopic();
+          if (errors) {
+            console.error("Topic generation errors:", errors);
+            throw new Error(errors[0].message);
           }
-          const topic = response.data;
-          if (!topic) {
-            throw new Error('Topic not found');
+          if (!data) {
+            throw new Error('No topic generated');
           }
-          console.log("topic: " + topic)
+          console.log("topic: " + data)
 
           await client.models.Match.update({
             id: matchId,
-            topic: topic
+            topic: data
           });
         }
 
@@ -263,18 +263,23 @@ const ArenaPageContent = () => {
           throw new Error(response.errors[0].message);
         }
     
-        const score = response.data;
-        console.log("Score:", score);
-
-        if (!score) {
-          console.error("Invalid score received:", response.data);
-          throw new Error('Invalid score received');
+        const { data, errors } = await client.queries.evaluateDebate({
+          prompt: `Topic: ${gameData.topic} Argument: ${playerArgument}`
+        });
+  
+        if (errors) {
+          console.error("Evaluation errors:", errors);
+          throw new Error(errors[0].message);
+        }
+  
+        if (!data) {
+          throw new Error('No score received');
         }
 
-        const newScore = (currentPlayer.score || 0) + score;
+        const newScore = (currentPlayer.score || 0) + data;
         console.log("Calculating new score:", {
           currentScore: currentPlayer.score,
-          addedScore: score,
+          addedScore: data,
           newScore
         });
         
@@ -293,7 +298,7 @@ const ArenaPageContent = () => {
           }
         }));
 
-        toast.success(`Scored ${score} points!`);
+        toast.success(`Scored ${data} points!`);
 
         // Visual feedback
         setPlayerArgument('');

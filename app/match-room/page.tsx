@@ -194,14 +194,20 @@ const MatchRoomContent = () => {
     );
   }
 
-  const PlayerStatus = ({ name, ready }: { name: string; ready: boolean }) => (
-    <div className="text-center">
-      <p className="text-lg font-semibold">{name}</p>
-      <p className={`text-sm ${ready ? 'text-green-600' : 'text-red-600'}`}>
-        {ready ? 'Ready' : 'Not Ready'}
-      </p>
-    </div>
-  );  
+
+  function PlayerStatus({ name, ready }: { name: string, ready: boolean }) {
+    return (
+      <div className="text-center space-y-2">
+        <div className={`w-16 h-16 rounded-full border-4 ${ready ? 'border-green-500 bg-green-100' : 'border-gray-300 bg-gray-100'} flex items-center justify-center mx-auto`}>
+          <span className="text-2xl">{name[0]}</span>
+        </div>
+        <p className="text-lg font-semibold text-gray-700">{name}</p>
+        <p className={`text-sm ${ready ? 'text-green-600' : 'text-gray-500'}`}>
+          {ready ? 'Ready!' : 'Not ready'}
+        </p>
+      </div>
+    )
+  }
 
   const matchState = match?.matchStatus
   const playerNickname = player?.nickname
