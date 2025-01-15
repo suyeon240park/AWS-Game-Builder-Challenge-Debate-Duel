@@ -148,7 +148,7 @@ const ArenaPageContent = () => {
         matchStatus: 'FINISHED',
         timer: 0
       });
-      router.push(`/arena?matchId=${matchId}&playerId=${currentPlayerId}`)
+      router.push(`/result?matchId=${matchId}&playerId=${currentPlayerId}`)
     } catch (error) {
       const message = error instanceof Error ? 
         error.message : 
@@ -263,17 +263,17 @@ const ArenaPageContent = () => {
 
         console.log('Handling turn end:', { nextTurn, nextRound });
 
-        // Times out, game ends
-        if (gameData.match?.roundNumber === GAME_CONSTANTS.MAX_ROUNDS && gameData.match.currentTurn === 2) {
-          handleGameEnd();
-        }
-
         await client.models.Match.update({
           id: matchId,
           currentTurn: nextTurn,
           timer: GAME_CONSTANTS.TURN_TIME,
           roundNumber: nextRound
         });
+
+        // Times out, game ends
+        if (gameData.match?.roundNumber === GAME_CONSTANTS.MAX_ROUNDS && gameData.match.currentTurn === 2) {
+          handleGameEnd();
+        }
 
         if (playerArgument.length >= GAME_CONSTANTS.MIN_ARGUMENT_LENGTH) {
           await handleSubmit();
