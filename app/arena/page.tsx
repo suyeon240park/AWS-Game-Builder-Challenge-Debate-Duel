@@ -15,7 +15,7 @@ import { Sword, Shield, Clock, MessageCircle} from 'lucide-react'
 // Constants
 const GAME_CONSTANTS = {
   INITIAL_SCORE: 50,
-  MAX_ROUNDS: 3,
+  MAX_ROUNDS: 2,
   TURN_TIME: 20 as number,
   TYPING_THROTTLE: 1000,
   HIT_ANIMATION_DURATION: 2000,
@@ -255,6 +255,7 @@ const ArenaPageContent = () => {
 
         console.log('Handling turn end:', { nextTurn, nextRound });
 
+        // Times out, game ends
         if (gameData.match?.roundNumber === GAME_CONSTANTS.MAX_ROUNDS && gameData.match.currentTurn === 2) {
           await handleGameEnd();
         }
@@ -410,15 +411,7 @@ const ArenaPageContent = () => {
 
   // Enhanced submit handler with better error handling and state management
   const handleSubmit = async () => {
-    if (!isPlayerTurn() || isSubmitting || !matchId || !gameData.player?.id) {
-      console.log("Submit blocked:", {
-        isPlayerTurn: isPlayerTurn(),
-        isSubmitting,
-        matchId,
-        playerId: gameData.player?.id
-      });
-      return;
-    }
+    if (!isPlayerTurn() || isSubmitting || !matchId || !gameData.player?.id) return;
 
     setIsSubmitting(true);
 
@@ -456,6 +449,11 @@ const ArenaPageContent = () => {
       // Calculate and update new score
       const newScore = currentPlayer.score! + scoreChange
       
+      // Check for game end condition
+      if (gameData.match?.roundNumber === GAME_CONSTANTS.MAX_ROUNDS && gameData.match.currentTurn === 2) {
+        await handleGameEnd();
+      }
+  
       // Batch updates for better consistency
       await Promise.all([
         // Update player score
@@ -491,11 +489,6 @@ const ArenaPageContent = () => {
       toast.success(`Scored ${scoreChange} points!`);
       setShowHit(true);
       setTimeout(() => setShowHit(false), GAME_CONSTANTS.HIT_ANIMATION_DURATION);
-
-      // Check for game end condition
-      if (gameData.match?.roundNumber === GAME_CONSTANTS.MAX_ROUNDS && gameData.match.currentTurn === 2) {
-        await handleGameEnd();
-      }
 
     } catch (error) {
       console.error("Submit error:", error);
@@ -558,8 +551,8 @@ const ArenaPageContent = () => {
                 style={{width: `${gameData.opponent?.score}%`}}
               />
               <div className="absolute inset-0 flex justify-center items-center">
-                <span className="text-xs font-bold text-white drop-shadow">
-                  {gameData.player?.score}    {gameData.opponent?.score}
+                <span className="text-xs font-bold text-white">
+                  {gameData.player?.score} - {gameData.opponent?.score}
                 </span>
               </div>
             </div>
