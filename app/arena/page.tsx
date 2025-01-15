@@ -157,6 +157,22 @@ const ArenaPageContent = () => {
         const matchData = items[0];
         if (!matchData) return;
 
+        // Handle opponent score change
+        if (matchData.lastScoreChange !== undefined && 
+          matchData.lastScoringPlayerId && 
+          matchData.lastScoringPlayerId !== currentPlayerId) {
+
+          // Only update if it's a new score change
+          if (matchData.lastScoreChange && opponentScoreChange !== matchData.lastScoreChange) {
+            setOpponentScoreChange(matchData.lastScoreChange);
+          }
+        }
+
+        // Reset opponent score change when turn changes
+        if (matchData.currentTurn !== gameData.match?.currentTurn) {
+          setOpponentScoreChange(0);
+        }
+
         setGameData(prev => ({
           ...prev,
           match: matchData,
@@ -432,7 +448,12 @@ const ArenaPageContent = () => {
 
       // Calculate and update new score
       const newScore = Math.max(0, Math.min(100, currentPlayer.score! + scoreChange));
-      
+
+      // Reset your score change after successful submission
+      setTimeout(() => {
+        setScoreChangeAnimation(0);
+      }, 2000); // Adjust timing as needed
+
       // Batch updates for better consistency
       await Promise.all([
         // Update player score
