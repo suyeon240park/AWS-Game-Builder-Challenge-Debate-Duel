@@ -214,7 +214,7 @@ const ArenaPageContent = () => {
     setIsSubmitting(true);
   
     try {
-      // Call the API route instead of using Bedrock directly
+      /*
       const response = await fetch('/api/calculate-score', {
         method: 'POST',
         headers: {
@@ -231,7 +231,9 @@ const ArenaPageContent = () => {
       }
   
       const { score } = await response.json();
-  
+       */
+      const score = Math.floor(Math.random() * (30 - 5 + 1)) + 5
+
       // Get current player data to get existing score
       if (matchId && currentPlayerId && score) {
         const playersResponse = await client.models.Player.list({

@@ -1,4 +1,3 @@
-// app/api/calculate-score/route.ts
 import { NextResponse } from 'next/server';
 import { BedrockRuntimeClient, InvokeModelCommand } from "@aws-sdk/client-bedrock-runtime";
 
