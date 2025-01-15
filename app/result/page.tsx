@@ -75,7 +75,7 @@ function ResultScreenContent() {
   const winner = scores.playerScore > scores.opponentScore ? 'You' : 'Opponent';
 
   return (
-    <div className="h-screen w-screen overflow-hidden bg-gradient-to-br from-purple-400 via-pink-500 to-red-500 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-purple-400 via-pink-500 to-red-500 flex flex-col items-center justify-center p-4">
       <div className="w-full max-w-2xl bg-white rounded-lg shadow-xl p-8 space-y-8 text-center">
         <h1 className="text-4xl font-serif font-bold text-gray-800">Game Over!</h1>
 
