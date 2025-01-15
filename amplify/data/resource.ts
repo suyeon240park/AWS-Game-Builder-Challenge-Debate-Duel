@@ -2,8 +2,8 @@ import { a, defineData, type ClientSchema, defineFunction} from '@aws-amplify/ba
 
 export const MODEL_ID = "anthropic.claude-3-5-sonnet-20241022-v2:0";
 
-export const generateHaikuFunction = defineFunction({
-  entry: "./generateHaiku.ts",
+export const generateScoreFunction = defineFunction({
+  entry: "./generateScore.ts",
   environment: {
     MODEL_ID,
   },
@@ -15,7 +15,7 @@ const schema = a.schema({
     .arguments({ prompt: a.string().required() })
     .returns(a.string())
     .authorization((allow) => [allow.publicApiKey()])
-    .handler(a.handler.function(generateHaikuFunction)),
+    .handler(a.handler.function(generateScoreFunction)),
 
   Match: a.model({
     player1Id: a.string().required(),
