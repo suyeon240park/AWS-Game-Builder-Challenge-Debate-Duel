@@ -1,16 +1,59 @@
 'use client'
 
 import { useSearchParams } from 'next/navigation'
+import { type Schema } from '@/amplify/data/resource'
+import { generateClient } from 'aws-amplify/api'
 import { Button } from "@/components/ui/button"
 import Link from 'next/link'
-import { Suspense } from 'react'
+import { useState, useEffect, Suspense } from 'react'
+import { toast } from 'sonner'
 
 function ResultScreenContent() {
-  const searchParams = useSearchParams()
-  const playerScore = parseInt(searchParams.get('playerScore') || '0', 10)
-  const opponentScore = parseInt(searchParams.get('opponentScore') || '0', 10)
+  const searchParams = useSearchParams();
+  const [scores, setScores] = useState({ playerScore: 0, opponentScore: 0 });
+  const playerId = searchParams.get('playerId');
+  const matchId = searchParams.get('matchId');
 
-  const winner = playerScore > opponentScore ? 'You' : 'Opponent'
+  const client = generateClient<Schema>()
+
+  useEffect(() => {
+    const fetchScores = async () => {
+      if (!playerId || !matchId) return;
+
+      try {
+        // Fetch players from the match
+        const playersResponse = await client.models.Player.list({
+          filter: { currentMatchId: { eq: matchId } }
+        });
+
+        const players = playersResponse.data;
+        if (!players || players.length !== 2) {
+          throw new Error('Players not found');
+        }
+
+        // Find current player and opponent
+        const currentPlayer = players.find(p => p.id === playerId);
+        const opponent = players.find(p => p.id !== playerId);
+
+        if (!currentPlayer || !opponent) {
+          throw new Error('Player identification failed');
+        }
+
+        setScores({
+          playerScore: currentPlayer.score || 0,
+          opponentScore: opponent.score || 0
+        });
+
+      } catch (error) {
+        console.error('Error fetching scores:', error);
+        toast.error('Failed to fetch scores');
+      }
+    };
+
+    fetchScores();
+  }, [playerId, matchId]);
+
+  const winner = scores.playerScore > scores.opponentScore ? 'You' : 'Opponent';
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-amber-100 to-amber-200 flex flex-col items-center justify-center p-4">
@@ -25,8 +68,8 @@ function ResultScreenContent() {
             Final Scores:
           </p>
           <div className="flex justify-around text-2xl font-bold">
-            <span className="text-blue-500">You: {playerScore}</span>
-            <span className="text-red-500">Opponent: {opponentScore}</span>
+            <span className="text-blue-500">You: {scores.playerScore}</span>
+            <span className="text-red-500">Opponent: {scores.opponentScore}</span>
           </div>
         </div>
 
