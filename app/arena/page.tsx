@@ -36,12 +36,6 @@ interface GameData {
   opponent: Schema['Player']['type'] | null
 }
 
-interface TimerState {
-  value: number;
-  startTime: number;
-  serverTime: number;
-}
-
 // Components
 const LoadingSpinner = () => (
   <div className="min-h-screen bg-gradient-to-b from-amber-100 to-amber-200 flex items-center justify-center">
@@ -91,6 +85,8 @@ const ArenaPageContent = () => {
       (!isPlayer1 && gameData.match.currentTurn === 2)
     );
   }, [gameData.match, gameData.player?.id]);
+
+  
 
   // Initialize game
   useEffect(() => {
@@ -209,51 +205,41 @@ const ArenaPageContent = () => {
   }, [matchId, currentPlayerId, gameState.status, gameData.player?.id]);
 
 
+  interface TimerState {
+    value: number;
+    startTime: number;
+    serverTime: number;
+  }
+  
   const [timer, setTimer] = useState<TimerState>({
     value: GAME_CONSTANTS.TURN_TIME,
     startTime: Date.now(),
     serverTime: Date.now()
-  });  
-
-
-  // Handle turn end
-  const handleTurnEnd = async () => {
-    if (!matchId || !isPlayerTurn()) return;
-
-    try {
-      await client.models.Match.update({
-        id: matchId,
-        currentTurn: gameData.match?.currentTurn === 1 ? 2 : 1,
-        timer: GAME_CONSTANTS.TURN_TIME,
-        roundNumber: gameData.match?.currentTurn === 2 ? 
-          (gameData.match.roundNumber + 1) : 
-          gameData.match?.roundNumber
-      });
-
-      // Auto-submit if argument meets minimum length
-      if (playerArgument.length >= GAME_CONSTANTS.MIN_ARGUMENT_LENGTH) {
-        await handleSubmit();
-      }
-    } catch (error) {
-      console.error('Turn end error:', error);
-      toast.error('Failed to end turn');
-    }
-  };
-
-
+  });
+  
   // Timer effect with server synchronization
   useEffect(() => {
+    console.log('Timer effect triggered:', {
+      matchId,
+      gameStatus: gameState.status,
+      isPlayerTurn: isPlayerTurn(),
+      currentTimer: timer
+    });
+  
     if (!matchId || gameState.status !== 'success') return;
-
+  
     let animationFrameId: number;
     let syncIntervalId: NodeJS.Timeout;
-
+    let lastUpdateTime = Date.now();
+  
     const syncWithServer = async () => {
       try {
         const response = await client.models.Match.get({ id: matchId });
+        console.log('Server sync response:', response.data?.timer);
+        
         if (response.data?.timer !== undefined) {
           setTimer({
-            value: response.data!.timer!,
+            value: response.data.timer!,
             startTime: Date.now(),
             serverTime: Date.now()
           });
@@ -262,45 +248,61 @@ const ArenaPageContent = () => {
         console.error('Timer sync failed:', error);
       }
     };
-
+  
     const updateTimer = () => {
-      setTimer(prev => {
-        const now = Date.now();
-        const elapsed = Math.floor((now - prev.startTime) / 1000);
-        const newValue = Math.max(0, prev.value - elapsed);
-
-        // If timer reaches 0, handle turn end
-        if (newValue === 0 && isPlayerTurn()) {
-          handleTurnEnd();
-          return prev;
+      const now = Date.now();
+      // Only update if at least 1 second has passed
+      if (now - lastUpdateTime >= 1000) {
+        const elapsed = Math.floor((now - timer.startTime) / 1000);
+        const newValue = Math.max(0, timer.value - elapsed);
+  
+        console.log('Timer update:', {
+          now,
+          elapsed,
+          newValue,
+          currentValue: timer.value,
+          startTime: timer.startTime
+        });
+  
+        if (newValue !== timer.value) {
+          lastUpdateTime = now;
+          setTimer(prev => {
+            console.log('Setting new timer value:', newValue);
+            return {
+              ...prev,
+              value: newValue,
+              startTime: now,
+            };
+          });
         }
-
-        // Only update if there's a change in seconds
-        if (newValue !== prev.value) {
-          return {
-            ...prev,
-            value: newValue,
-            startTime: now
-          };
+  
+        if (newValue <= 0) {
+          console.log('Timer reached zero, handling turn end');
+          if (isPlayerTurn()) {
+            handleTurnEnd();
+          }
+          return;
         }
-
-        return prev;
-      });
-
+      }
+  
       animationFrameId = requestAnimationFrame(updateTimer);
     };
-
-    // Start timer updates
+  
+    // Start timer updates only if it's player's turn
     if (isPlayerTurn()) {
+      console.log('Starting timer for player turn');
       animationFrameId = requestAnimationFrame(updateTimer);
-      // Sync with server every 5 seconds to prevent drift
-      syncIntervalId = setInterval(syncWithServer, 5000);
+      syncIntervalId = setInterval(() => {
+        console.log('Running periodic server sync');
+        syncWithServer();
+      }, 5000);
     }
-
+  
     // Initial sync
     syncWithServer();
-
+  
     return () => {
+      console.log('Cleaning up timer effect');
       if (animationFrameId) {
         cancelAnimationFrame(animationFrameId);
       }
@@ -308,16 +310,57 @@ const ArenaPageContent = () => {
         clearInterval(syncIntervalId);
       }
     };
-  }, [matchId, gameState.status, isPlayerTurn, handleTurnEnd]);
-
-  // Handle visibility change
+  }, [matchId, gameState.status, isPlayerTurn]);
+  
+  // Handle turn end
+  const handleTurnEnd = async () => {
+    console.log('Handle turn end called', {
+      matchId,
+      isPlayerTurn: isPlayerTurn(),
+      currentTurn: gameData.match?.currentTurn
+    });
+  
+    if (!matchId || !isPlayerTurn()) return;
+  
+    try {
+      const nextTurn = gameData.match?.currentTurn === 1 ? 2 : 1;
+      const nextRound = gameData.match?.currentTurn === 2 ? 
+        (gameData.match.roundNumber + 1) : 
+        gameData.match?.roundNumber;
+  
+      console.log('Updating match for turn end:', {
+        nextTurn,
+        nextRound,
+        newTimer: GAME_CONSTANTS.TURN_TIME
+      });
+  
+      await client.models.Match.update({
+        id: matchId,
+        currentTurn: nextTurn,
+        timer: GAME_CONSTANTS.TURN_TIME,
+        roundNumber: nextRound
+      });
+  
+      if (playerArgument.length >= GAME_CONSTANTS.MIN_ARGUMENT_LENGTH) {
+        await handleSubmit();
+      }
+    } catch (error) {
+      console.error('Turn end error:', error);
+      toast.error('Failed to end turn');
+    }
+  };
+  
+  // Visibility change handler
   useEffect(() => {
     const handleVisibilityChange = () => {
+      console.log('Visibility changed:', document.visibilityState);
+      
       if (document.visibilityState === 'visible') {
-        // Immediate sync when tab becomes visible
         const syncTimer = async () => {
           try {
             const response = await client.models.Match.get({ id: matchId! });
+            console.log('Visibility change sync response:', response.data?.timer);
+            
             if (response.data?.timer !== undefined) {
               setTimer({
                 value: response.data.timer!,
@@ -332,12 +375,13 @@ const ArenaPageContent = () => {
         syncTimer();
       }
     };
-
+  
     document.addEventListener('visibilitychange', handleVisibilityChange);
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
-  }, [matchId])
+  }, [matchId]);
+  
 
 
   // Handle player typing with improved throttling
@@ -449,7 +493,7 @@ const ArenaPageContent = () => {
       setOpponentScoreChange(scoreChange * -1);
 
       // Calculate and update new score
-      const newScore = Math.max(0, Math.min(100, currentPlayer.score! + scoreChange));
+      const newScore = currentPlayer.score! + scoreChange
       
       // Batch updates for better consistency
       await Promise.all([
@@ -459,6 +503,12 @@ const ArenaPageContent = () => {
           score: newScore
         }),
 
+        // Update opponent score
+        client.models.Player.update({
+          id: opponentPlayer.id,
+          score: opponentPlayer.score! - scoreChange
+        }),
+        
         // Update match state
         client.models.Match.update({
           id: matchId,
@@ -467,9 +517,7 @@ const ArenaPageContent = () => {
           roundNumber: gameData.match?.currentTurn === 2 ? 
             (gameData.match.roundNumber + 1) : 
             gameData.match?.roundNumber,
-          timer: GAME_CONSTANTS.TURN_TIME,
-          lastScoreChange: scoreChange,
-          lastScoringPlayerId: currentPlayerId
+          timer: GAME_CONSTANTS.TURN_TIME
         })
       ]);
 
@@ -540,12 +588,13 @@ const ArenaPageContent = () => {
             <div className="relative h-6 bg-gray-200 rounded-full overflow-hidden">
               <Progress 
                 value={gameData.player?.score} 
-                className="absolute left-0 h-full bg-gradient-to-r from-blue-500 to-blue-600 transition-all duration-300" 
+                className="absolute left-0 h-full bg-gradient-to-r from-blue-500 to-blue-600 transition-all duration-300"
+                style={{width: `${gameData.player?.score}%`}}
               />
               <Progress 
                 value={gameData.opponent?.score} 
                 className="absolute right-0 h-full bg-gradient-to-r from-red-600 to-red-500 transition-all duration-300" 
-                style={{width: `${gameData.opponent?.score}%`}} 
+                style={{width: `${gameData.opponent?.score}%`}}
               />
               <div className="absolute inset-0 flex justify-center items-center">
                 <span className="text-xs font-bold text-white drop-shadow">
