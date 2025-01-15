@@ -137,6 +137,27 @@ const ArenaPageContent = () => {
     initializeGame()
   }, [matchId, currentPlayerId, router])
 
+
+  // Handle game end
+  const handleGameEnd = useCallback(async () => {
+    if (!matchId) return;
+  
+    try {
+      await client.models.Match.update({
+        id: matchId,
+        matchStatus: 'FINISHED',
+        timer: 0
+      });
+      router.push(`/arena?matchId=${matchId}&playerId=${currentPlayerId}`)
+    } catch (error) {
+      const message = error instanceof Error ? 
+        error.message : 
+        'Failed to end game properly';
+      toast.error(message);
+      console.error('Game end error:', error);
+    }
+  }, [matchId, currentPlayerId, router]);
+
   // Consolidated subscription for game updates
   useEffect(() => {
     if (!matchId || !currentPlayerId || gameState.status !== 'success') return;
@@ -154,6 +175,11 @@ const ArenaPageContent = () => {
           match: matchData,
           topic: matchData.topic || prev.topic
         }));
+
+        // Handle game end
+        if (matchData.matchStatus === 'FINISHED') {
+          handleGameEnd();
+        }
 
         // Handle turn changes
         if (matchData.currentTurn !== prevTurnRef.current) {
@@ -202,27 +228,9 @@ const ArenaPageContent = () => {
       matchSub.unsubscribe();
       playerSub.unsubscribe();
     };
-  }, [matchId, currentPlayerId, gameState.status, gameData.player?.id]);
+  }, [matchId, currentPlayerId, gameState.status, gameData.player?.id, handleGameEnd]);
 
-  // Handle game end
-  const handleGameEnd = useCallback(async () => {
-    if (!matchId) return;
-  
-    try {
-      await client.models.Match.update({
-        id: matchId,
-        matchStatus: 'FINISHED',
-        timer: 0
-      });
-      router.push(`/arena?matchId=${matchId}&playerId=${currentPlayerId}`)
-    } catch (error) {
-      const message = error instanceof Error ? 
-        error.message : 
-        'Failed to end game properly';
-      toast.error(message);
-      console.error('Game end error:', error);
-    }
-  }, [matchId, currentPlayerId, router]);
+
 
   interface TimerState {
     value: number;
@@ -257,7 +265,7 @@ const ArenaPageContent = () => {
 
         // Times out, game ends
         if (gameData.match?.roundNumber === GAME_CONSTANTS.MAX_ROUNDS && gameData.match.currentTurn === 2) {
-          await handleGameEnd();
+          handleGameEnd();
         }
 
         await client.models.Match.update({
@@ -448,11 +456,6 @@ const ArenaPageContent = () => {
 
       // Calculate and update new score
       const newScore = currentPlayer.score! + scoreChange
-      
-      // Check for game end condition
-      if (gameData.match?.roundNumber === GAME_CONSTANTS.MAX_ROUNDS && gameData.match.currentTurn === 2) {
-        await handleGameEnd();
-      }
   
       // Batch updates for better consistency
       await Promise.all([
@@ -490,6 +493,10 @@ const ArenaPageContent = () => {
       setShowHit(true);
       setTimeout(() => setShowHit(false), GAME_CONSTANTS.HIT_ANIMATION_DURATION);
 
+      // Check for game end condition
+      if (gameData.match?.roundNumber === GAME_CONSTANTS.MAX_ROUNDS && gameData.match.currentTurn === 2) {
+        handleGameEnd();
+      }
     } catch (error) {
       console.error("Submit error:", error);
       const message = error instanceof Error ? 
