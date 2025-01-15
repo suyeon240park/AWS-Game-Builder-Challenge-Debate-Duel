@@ -233,7 +233,7 @@ const ArenaPageContent = () => {
         }
 
         const response = await client.queries.evaluateDebate({
-          prompt: playerArgument
+          prompt: `Topic: ${gameData.topic} Argument: ${playerArgument}`
         });
     
         if (response.errors) {
