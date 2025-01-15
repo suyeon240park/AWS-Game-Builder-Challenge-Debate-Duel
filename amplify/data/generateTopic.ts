@@ -24,7 +24,7 @@ export const handler: Schema["createTopic"]["functionHandler"] = async (
           content: [
             {
               type: "text",
-              text: "Generate a clear and concise debate topic that would be interesting to discuss. The topic should be controversial enough to have valid arguments on both sides.",
+              text: "Generate a single debate topic in one concise sentence only. No additional text.",
             },
           ],
         },
