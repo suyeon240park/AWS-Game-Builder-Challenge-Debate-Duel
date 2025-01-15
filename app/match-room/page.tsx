@@ -230,9 +230,9 @@ const MatchRoomContent = () => {
               {opponentNickname ? `${opponentNickname} has joined! Are you ready to duel?` : 'Opponent found! Are you ready to duel?'}
             </p>
             <div className="flex justify-around items-center">
-              <PlayerStatus name="You" ready={isReady} />
+              <PlayerStatus name={playerNickname || 'You'} ready={isReady} />
               <span className="text-2xl font-bold text-gray-600">VS</span>
-              <PlayerStatus name="Opponent" ready={opponentReady} />
+              <PlayerStatus name={opponentNickname || 'Waiting...'} ready={opponentReady} />
             </div>
             <Button
               className={`w-full text-lg py-6 ${isReady ? 'bg-yellow-400 hover:bg-yellow-500' : 'bg-blue-500 hover:bg-blue-600 text-white'}`}

@@ -51,7 +51,7 @@ function ResultScreenContent() {
     };
 
     fetchScores();
-  }, [playerId, matchId]);
+  }, [playerId, matchId, client.models.Player]);
 
   const winner = scores.playerScore > scores.opponentScore ? 'You' : 'Opponent';
 

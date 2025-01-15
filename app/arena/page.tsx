@@ -9,6 +9,7 @@ import { useSearchParams, useRouter } from 'next/navigation'
 import { type Schema } from '@/amplify/data/resource'
 import { generateClient } from 'aws-amplify/api'
 import { toast } from 'sonner'
+//import { PanelTopIcon } from 'lucide-react'
 
 // Constants
 const GAME_CONSTANTS = {
@@ -91,7 +92,7 @@ const ArenaPageContent = () => {
       (isPlayer1 && gameData.match.currentTurn === 1) ||
       (!isPlayer1 && gameData.match.currentTurn === 2)
     );
-  }, [gameData.match, gameData.match?.currentTurn, gameData.player?.id, gameData.match?.player1Id]);
+  }, [gameData.match, gameData.player?.id]);
 
 
 
@@ -116,13 +117,21 @@ const ArenaPageContent = () => {
         const matchData = matchResponse.data
         if (!matchData) throw new Error('Match not found')
 
-        // Initialize or update match with round/turn data if not exists
-        if (!matchData.roundNumber || !matchData.currentTurn) {
+        // Create a debate topic if not exists
+        if (!matchData.topic) {
+          const response = await client.queries.createTopic();
+          if (response.errors) {
+            throw new Error(response.errors[0].message);
+          }
+          const topic = response.data;
+          if (!topic) {
+            throw new Error('Topic not found');
+          }
+          console.log("topic: " + topic)
+
           await client.models.Match.update({
             id: matchId,
-            roundNumber: 1,
-            currentTurn: 1,
-            timer: GAME_CONSTANTS.TURN_TIME
+            topic: topic
           });
         }
 
@@ -136,24 +145,11 @@ const ArenaPageContent = () => {
           throw new Error('Player identification failed')
         }
 
-        const response = await client.queries.createTopic();
-    
-        if (response.errors) {
-          throw new Error(response.errors[0].message);
-        }
-    
-        const topic = response.data;
-        if (!topic) {
-          throw new Error('Topic not found');
-        }
-
-        console.log(topic)
-
         setGameData({
           match: { ...matchData },
           player: currentPlayer,
           opponent: opponentPlayer,
-          topic: topic
+          topic: matchData.topic
         })
 
         setGameState({ status: 'success' })
@@ -268,7 +264,7 @@ const ArenaPageContent = () => {
         }
     
         const score = response.data;
-        console.log("Received score:", score);
+        console.log("Score:", score);
 
         if (!score) {
           console.error("Invalid score received:", response.data);
@@ -393,7 +389,26 @@ const ArenaPageContent = () => {
         clearInterval(timerInterval.current as NodeJS.Timeout);
       }
     };
-  }, [matchId, gameState.status, currentPlayerId, router]);
+  }, [matchId, gameState.status, currentPlayerId, router, gameData.player?.id]);
+
+  const checkMatchStatus = async () => {
+    try {
+      const matchResponse = await client.models.Match.get({ id: matchId! });
+      const matchData = matchResponse.data;
+      
+      if (matchData?.matchStatus === 'FINISHED') {
+        if (timerInterval.current) {
+          clearInterval(timerInterval.current as NodeJS.Timeout);
+        }
+        router.push(`/result?matchId=${matchId}&playerId=${currentPlayerId}`);
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error('Failed to check match status:', error);
+      return false;
+    }
+  };
 
 
   // Timer effect
@@ -442,26 +457,9 @@ const ArenaPageContent = () => {
         clearInterval(timerInterval.current as NodeJS.Timeout);
       }
     };
-  }, [gameState.status, matchId, gameData.match]);
+  }, [gameState.status, matchId, gameData.match, checkMatchStatus, handleGameEnd]);
 
-  const checkMatchStatus = async () => {
-    try {
-      const matchResponse = await client.models.Match.get({ id: matchId! });
-      const matchData = matchResponse.data;
-      
-      if (matchData?.matchStatus === 'FINISHED') {
-        if (timerInterval.current) {
-          clearInterval(timerInterval.current as NodeJS.Timeout);
-        }
-        router.push(`/result?matchId=${matchId}&playerId=${currentPlayerId}`);
-        return true;
-      }
-      return false;
-    } catch (error) {
-      console.error('Failed to check match status:', error);
-      return false;
-    }
-  };
+
 
 
   if (gameState.status === 'loading') {
