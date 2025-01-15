@@ -2,23 +2,26 @@
 
 import { useState, useEffect, useCallback, useRef, Suspense } from 'react'
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { Progress } from "@/components/ui/progress"
 import { motion, AnimatePresence } from 'framer-motion'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { type Schema } from '@/amplify/data/resource'
 import { generateClient } from 'aws-amplify/api'
 import { toast } from 'sonner'
+import { Sword, Shield, Clock, MessageCircle} from 'lucide-react'
+import { Textarea } from "@/components/ui/textarea"
+
 //import { PanelTopIcon } from 'lucide-react'
 
 // Constants
 const GAME_CONSTANTS = {
   INITIAL_SCORE: 50,
   MAX_ROUNDS: 3,
-  TURN_TIME: 30 as number,
+  TURN_TIME: 10 as number,
   TYPING_THROTTLE: 1000,
   HIT_ANIMATION_DURATION: 2000,
   MIN_ARGUMENT_LENGTH: 10,
+  MAX_ARGUMENT_LENGTH: 200
 } as const
 
 // Types
@@ -84,6 +87,7 @@ const ArenaPageContent = () => {
   const [opponentTyping, setOpponentTyping] = useState('')
   const [isTyping, setIsTyping] = useState(false)
   const lastTypingUpdate = useRef<number>(0)
+  const [scoreChangeAnimation, setScoreChangeAnimation] = useState(0)
 
   const isPlayerTurn = useCallback((): boolean => {
     if (!gameData.match) return false;
@@ -244,11 +248,11 @@ const ArenaPageContent = () => {
           console.log(errors);
         }
 
-        console.log("Current score: ", currentPlayer.score)
         console.log("Debate score: ", data);
+        setScoreChangeAnimation(data || 0)
         const newScore = (currentPlayer.score || GAME_CONSTANTS.INITIAL_SCORE) + data!;
         console.log("New score: ", newScore)
-        
+
         // Update score in database
         await client.models.Player.update({
           id: currentPlayerId,
@@ -442,44 +446,71 @@ const ArenaPageContent = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-amber-100 to-amber-200 p-4">
-      <div className="max-w-4xl mx-auto space-y-6">
+    <div className="h-screen w-screen overflow-hidden bg-gradient-to-br from-purple-400 via-pink-500 to-red-500 p-4">
+      <div className="h-full w-full max-w-4xl mx-auto flex flex-col space-y-6">
         {/* Header Section */}
-        <div className="bg-white rounded-lg p-6 shadow-lg">
-          <h1 className="text-2xl font-bold text-gray-800 mb-4">
+        <div className="bg-white bg-opacity-90 rounded-lg p-6 shadow-lg backdrop-blur-sm">
+          <h1 className="text-2xl font-bold text-gray-800 mb-4 text-center">
             Round {gameData.match?.roundNumber} - {gameData.topic}
           </h1>
-          <ScoreDisplay 
-            player={gameData.player?.score || 0}
-            opponent={gameData.opponent?.score || 0}
-          />
+          <div className="space-y-2">
+            <div className="flex justify-between text-sm font-medium text-gray-700">
+              <span>{gameData.player?.nickname}</span>
+              <span>{gameData.opponent?.nickname}</span>
+            </div>
+            <div className="relative h-6 bg-gray-200 rounded-full overflow-hidden">
+              <Progress value={gameData.player?.score} className="absolute left-0 h-full bg-gradient-to-r from-blue-500 to-blue-600" />
+              <Progress value={gameData.opponent?.score} className="absolute right-0 h-full bg-gradient-to-r from-red-600 to-red-500" style={{width: `${gameData.opponent.score}%`}} />
+              <div className="absolute inset-0 flex justify-center items-center">
+                <span className="text-xs font-bold text-white">
+                  {gameData.player?.score} - {gameData.opponent?.score}
+                </span>
+              </div>
+            </div>
+            <div className="flex justify-between">
+              <span className={"text-sm font-bold text-green-500"}>
+                {'+'}{scoreChangeAnimation}
+              </span>
+              <span className={"text-sm font-bold text-green-500"}>
+                {'+0'}
+              </span>
+            </div>
+          </div>
         </div>
 
         {/* Game Area */}
-        <div className="bg-white rounded-lg p-6 shadow-lg">
-          <div className="mb-4 flex justify-between items-center">
-            <span className="text-lg font-medium">
+        <div className="bg-white bg-opacity-90 rounded-lg p-6 shadow-lg backdrop-blur-sm flex flex-col flex-grow overflow-hidden space-y-4">
+          <div className="mb-2 flex justify-between items-center">
+            <span className="text-base font-medium flex items-center">
+              {isPlayerTurn() ? <Sword className="mr-2 text-blue-500" /> : <Shield className="mr-2 text-red-500" />}
               {isPlayerTurn() ? "Your Turn" : "Opponent's Turn"}
             </span>
-            <span className="text-lg font-medium">
+            <span className="text-base font-medium flex items-center">
+              <Clock className="mr-2 text-purple-500" />
               Time: {timer}s
             </span>
           </div>
 
           {/* Argument Input */}
-          <div className="space-y-4">
-            <Input
-              placeholder={isPlayerTurn() ? "Type your argument..." : "Waiting for opponent..."}
-              value={playerArgument}
-              onChange={handlePlayerTyping}
-              disabled={!isPlayerTurn() || isSubmitting}
-              className="w-full p-3"
-            />
+          <div className="space-y-4 flex-grow flex flex-col">
+            <div className="relative flex-grow flex flex-col overflow-hidden">
+              <Textarea
+                placeholder={isPlayerTurn() ? "Type your argument..." : "Waiting for opponent..."}
+                value={playerArgument}
+                onChange={handlePlayerTyping}
+                disabled={!isPlayerTurn() || isSubmitting}
+                className="w-full p-3 pr-16 bg-opacity-75 backdrop-blur-sm resize-none flex-grow overflow-auto"
+              />
+              <span className="absolute right-2 bottom-2 text-sm text-gray-500">
+                {playerArgument.length}/{GAME_CONSTANTS.MAX_ARGUMENT_LENGTH}
+              </span>
+            </div>
             
             {/* Opponent's Argument Display */}
             {opponentTyping && !isPlayerTurn() && (
-              <div className="p-3 bg-gray-100 rounded">
-                {opponentTyping}
+              <div className="p-4 bg-red-100 rounded-lg relative animate-pulse mb-4">
+                <MessageCircle className="absolute top-2 left-2 text-red-400" />
+                <p className="pl-8">{opponentTyping}</p>
               </div>
             )}
 
@@ -487,7 +518,7 @@ const ArenaPageContent = () => {
             <Button
               onClick={handleSubmit}
               disabled={!isPlayerTurn() || isSubmitting || playerArgument.length < GAME_CONSTANTS.MIN_ARGUMENT_LENGTH}
-              className="w-full"
+              className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-bold py-2 px-4 rounded-full transition duration-300 ease-in-out transform hover:scale-105"
             >
               {isSubmitting ? "Submitting..." : "Submit Argument"}
             </Button>
