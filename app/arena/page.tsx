@@ -3,13 +3,13 @@
 import { useState, useEffect, useCallback, useRef, Suspense } from 'react'
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
+import { Textarea } from "@/components/ui/textarea"
 import { motion, AnimatePresence } from 'framer-motion'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { type Schema } from '@/amplify/data/resource'
 import { generateClient } from 'aws-amplify/api'
 import { toast } from 'sonner'
 import { Sword, Shield, Clock, MessageCircle} from 'lucide-react'
-import { Textarea } from "@/components/ui/textarea"
 
 //import { PanelTopIcon } from 'lucide-react'
 
@@ -47,19 +47,6 @@ const LoadingSpinner = () => (
 const ErrorMessage = ({ message }: { message: string }) => (
   <div className="flex items-center gap-2 text-red-600">
     <span>{message}</span>
-  </div>
-)
-
-const ScoreDisplay = ({ player, opponent }: { player: number, opponent: number }) => (
-  <div className="space-y-2">
-    <div className="relative h-8 bg-gray-200 rounded-full overflow-hidden">
-      <Progress value={player} className="absolute left-0 h-full bg-blue-500" />
-      <Progress value={opponent} className="absolute right-0 h-full bg-red-500" style={{width: `${opponent}%`}} />
-    </div>
-    <div className="flex justify-between text-sm font-medium text-gray-700">
-      <span>{player}</span>
-      <span>{opponent}</span>
-    </div>
   </div>
 )
 
@@ -150,7 +137,7 @@ const ArenaPageContent = () => {
   }, [matchId, currentPlayerId, router])
 
   // Handle player typing with throttling
-  const handlePlayerTyping = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePlayerTyping = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value;
     setPlayerArgument(value);
     
