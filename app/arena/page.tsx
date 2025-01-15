@@ -216,93 +216,63 @@ const ArenaPageContent = () => {
     startTime: Date.now(),
     serverTime: Date.now()
   });
-  
-  // Timer effect with server synchronization
+
   useEffect(() => {
-    console.log('Timer effect triggered:', {
-      matchId,
-      gameStatus: gameState.status,
-      isPlayerTurn: isPlayerTurn(),
-      currentTimer: timer
-    });
-  
     if (!matchId || gameState.status !== 'success') return;
   
     let animationFrameId: number;
     let syncIntervalId: NodeJS.Timeout;
-    let lastUpdateTime = Date.now();
+    const startTime = Date.now();
+    const initialValue = timer.value;
   
-    const syncWithServer = async () => {
+    const updateTimer = () => {
+      const now = Date.now();
+      const elapsed = Math.floor((now - startTime) / 1000);
+      const newValue = Math.max(0, initialValue - elapsed);
+  
+      // Update timer regardless of whose turn it is
+      setTimer(prev => ({
+        ...prev,
+        value: newValue,
+        startTime: prev.startTime // Keep original startTime for consistent countdown
+      }));
+  
+      // Only handle turn end if it's the current player's turn
+      if (newValue <= 0 && isPlayerTurn()) {
+        console.log('Timer reached zero, handling turn end');
+        handleTurnEnd();
+        return;
+      }
+  
+      animationFrameId = requestAnimationFrame(updateTimer);
+    };
+  
+    // Start timer updates regardless of turn
+    animationFrameId = requestAnimationFrame(updateTimer);
+  
+    // Sync with server periodically
+    syncIntervalId = setInterval(async () => {
       try {
         const response = await client.models.Match.get({ id: matchId });
         console.log('Server sync response:', response.data?.timer);
         
         if (response.data?.timer !== undefined) {
-          setTimer({
-            value: response.data.timer!,
-            startTime: Date.now(),
-            serverTime: Date.now()
-          });
+          // Only update if there's a significant difference
+          const currentValue = Math.max(0, initialValue - Math.floor((Date.now() - startTime) / 1000));
+          if (response.data.timer && Math.abs(response.data.timer - currentValue) > 2) {
+            setTimer({
+              value: response.data.timer,
+              startTime: Date.now(),
+              serverTime: Date.now()
+            });
+          }
         }
       } catch (error) {
         console.error('Timer sync failed:', error);
       }
-    };
-  
-    const updateTimer = () => {
-      const now = Date.now();
-      // Only update if at least 1 second has passed
-      if (now - lastUpdateTime >= 1000) {
-        const elapsed = Math.floor((now - timer.startTime) / 1000);
-        const newValue = Math.max(0, timer.value - elapsed);
-  
-        console.log('Timer update:', {
-          now,
-          elapsed,
-          newValue,
-          currentValue: timer.value,
-          startTime: timer.startTime
-        });
-  
-        if (newValue !== timer.value) {
-          lastUpdateTime = now;
-          setTimer(prev => {
-            console.log('Setting new timer value:', newValue);
-            return {
-              ...prev,
-              value: newValue,
-              startTime: now,
-            };
-          });
-        }
-  
-        if (newValue <= 0) {
-          console.log('Timer reached zero, handling turn end');
-          if (isPlayerTurn()) {
-            handleTurnEnd();
-          }
-          return;
-        }
-      }
-  
-      animationFrameId = requestAnimationFrame(updateTimer);
-    };
-  
-    // Start timer updates only if it's player's turn
-    if (isPlayerTurn()) {
-      console.log('Starting timer for player turn');
-      animationFrameId = requestAnimationFrame(updateTimer);
-      syncIntervalId = setInterval(() => {
-        console.log('Running periodic server sync');
-        syncWithServer();
-      }, 5000);
-    }
-  
-    // Initial sync
-    syncWithServer();
+    }, 5000);
   
     return () => {
-      console.log('Cleaning up timer effect');
       if (animationFrameId) {
         cancelAnimationFrame(animationFrameId);
       }
@@ -310,7 +280,7 @@ const ArenaPageContent = () => {
         clearInterval(syncIntervalId);
       }
     };
-  }, [matchId, gameState.status, isPlayerTurn]);
+  }, [matchId, gameState.status]);
   
   // Handle turn end
   const handleTurnEnd = async () => {
@@ -328,12 +298,6 @@ const ArenaPageContent = () => {
         (gameData.match.roundNumber + 1) : 
         gameData.match?.roundNumber;
   
-      console.log('Updating match for turn end:', {
-        nextTurn,
-        nextRound,
-        newTimer: GAME_CONSTANTS.TURN_TIME
-      });
-  
       await client.models.Match.update({
         id: matchId,
         currentTurn: nextTurn,
@@ -350,23 +314,22 @@ const ArenaPageContent = () => {
     }
   };
   
-  // Visibility change handler
+  // Visibility change handler - improved to prevent timer jumps
   useEffect(() => {
     const handleVisibilityChange = () => {
-      console.log('Visibility changed:', document.visibilityState);
-      
       if (document.visibilityState === 'visible') {
         const syncTimer = async () => {
           try {
             const response = await client.models.Match.get({ id: matchId! });
-            console.log('Visibility change sync response:', response.data?.timer);
-            
             if (response.data?.timer !== undefined) {
-              setTimer({
-                value: response.data.timer!,
-                startTime: Date.now(),
-                serverTime: Date.now()
-              });
+              // Only update if there's a significant difference
+              if (response.data.timer && Math.abs(response.data.timer - timer.value) > 2) {
+                setTimer({
+                  value: response.data.timer,
+                  startTime: Date.now(),
+                  serverTime: Date.now()
+                });
+              }
             }
           } catch (error) {
             console.error('Timer sync failed on visibility change:', error);
@@ -380,7 +343,7 @@ const ArenaPageContent = () => {
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
-  }, [matchId]);
+  }, [matchId, timer.value]);
   
 
 
