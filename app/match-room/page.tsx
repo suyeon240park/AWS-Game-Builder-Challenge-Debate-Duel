@@ -215,7 +215,7 @@ const MatchRoomContent = () => {
   const isReady = isPlayer1 ? !!match?.player1Ready : !!match?.player2Ready
 
   return (
-    <div className="h-screen w-screen overflow-hidden bg-gradient-to-br from-purple-400 via-pink-500 to-red-500 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-purple-400 via-pink-500 to-red-500 flex flex-col items-center justify-center p-4">
       <div className="max-w-2xl w-full bg-white rounded-lg shadow-xl p-8 space-y-8">
         <h1 className="text-4xl font-serif font-bold text-gray-800 text-center">Match Room</h1>
   

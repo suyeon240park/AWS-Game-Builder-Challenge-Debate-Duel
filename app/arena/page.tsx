@@ -204,6 +204,25 @@ const ArenaPageContent = () => {
     };
   }, [matchId, currentPlayerId, gameState.status, gameData.player?.id]);
 
+  // Handle game end
+  const handleGameEnd = useCallback(async () => {
+    if (!matchId) return;
+  
+    try {
+      await client.models.Match.update({
+        id: matchId,
+        matchStatus: 'FINISHED',
+        timer: 0
+      });
+      router.push(`/arena?matchId=${matchId}&playerId=${currentPlayerId}`)
+    } catch (error) {
+      const message = error instanceof Error ? 
+        error.message : 
+        'Failed to end game properly';
+      toast.error(message);
+      console.error('Game end error:', error);
+    }
+  }, [matchId, currentPlayerId, router]);
 
   interface TimerState {
     value: number;
@@ -235,6 +254,10 @@ const ArenaPageContent = () => {
           gameData.match?.roundNumber;
 
         console.log('Handling turn end:', { nextTurn, nextRound });
+
+        if (gameData.match?.roundNumber === GAME_CONSTANTS.MAX_ROUNDS && gameData.match.currentTurn === 2) {
+          await handleGameEnd();
+        }
 
         await client.models.Match.update({
           id: matchId,
@@ -304,7 +327,7 @@ const ArenaPageContent = () => {
       clearInterval(syncIntervalId);
     };
   }, [
-    matchId, gameState.status, isPlayerTurn, timer.value, gameData.match, playerArgument.length
+    matchId, gameState.status, isPlayerTurn, timer.value, gameData.match, playerArgument.length, handleGameEnd
   ]);
 
   
@@ -385,25 +408,6 @@ const ArenaPageContent = () => {
   }, [isTyping, currentPlayerId, matchId, gameData.player?.id, gameData.match?.player1Id]);
 
 
-  // Handle game end
-  const handleGameEnd = useCallback(async () => {
-    if (!matchId) return;
-  
-    try {
-      await client.models.Match.update({
-        id: matchId,
-        matchStatus: 'FINISHED',
-        timer: 0
-      });
-    } catch (error) {
-      const message = error instanceof Error ? 
-        error.message : 
-        'Failed to end game properly';
-      toast.error(message);
-      console.error('Game end error:', error);
-    }
-  }, [matchId]);
-
   // Enhanced submit handler with better error handling and state management
   const handleSubmit = async () => {
     if (!isPlayerTurn() || isSubmitting || !matchId || !gameData.player?.id) {
@@ -474,7 +478,9 @@ const ArenaPageContent = () => {
           roundNumber: gameData.match?.currentTurn === 2 ? 
             (gameData.match.roundNumber + 1) : 
             gameData.match?.roundNumber,
-          timer: GAME_CONSTANTS.TURN_TIME
+          timer: GAME_CONSTANTS.TURN_TIME,
+          lastScoreChange: scoreChange,
+          lastScoringPlayerId: currentPlayerId
         })
       ]);
 
@@ -540,31 +546,23 @@ const ArenaPageContent = () => {
               <span>{gameData.player?.nickname}</span>
               <span>{gameData.opponent?.nickname}</span>
             </div>
-
             <div className="relative h-6 bg-gray-200 rounded-full overflow-hidden">
-              <div className="relative w-full h-full">
-                <Progress 
-                  value={gameData.player?.score} 
-                  className="absolute left-0 h-full bg-gradient-to-r from-blue-500 to-blue-600 transition-all duration-300"
-                  style={{width: `${gameData.player?.score}%`}}
-                />
-                <span className="absolute left-2 top-1/2 -translate-y-1/2 text-xs font-bold text-white drop-shadow z-10">
-                  {gameData.player?.score}
-                </span>
-              </div>
-              
-              <div className="relative w-full h-full">
-                <Progress 
-                  value={gameData.opponent?.score} 
-                  className="absolute right-0 h-full bg-gradient-to-r from-red-600 to-red-500 transition-all duration-300" 
-                  style={{width: `${gameData.opponent?.score}%`}}
-                />
-                <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs font-bold text-white drop-shadow z-10">
-                  {gameData.opponent?.score}
+              <Progress 
+                value={gameData.player?.score} 
+                className="absolute left-0 h-full bg-gradient-to-r from-blue-500 to-blue-600 transition-all duration-300"
+                style={{width: `${gameData.player?.score}%`}}
+              />
+              <Progress 
+                value={gameData.opponent?.score} 
+                className="absolute right-0 h-full bg-gradient-to-r from-red-600 to-red-500 transition-all duration-300" 
+                style={{width: `${gameData.opponent?.score}%`}}
+              />
+              <div className="absolute inset-0 flex justify-center items-center">
+                <span className="text-xs font-bold text-white drop-shadow">
+                  {gameData.player?.score}    {gameData.opponent?.score}
                 </span>
               </div>
             </div>
-
             <div className="flex justify-between">
               <span className={`text-sm font-bold ${playerScoreChange > 0 ? 'text-green-500' : 'text-red-500'}`}>
                 {playerScoreChange > 0 ? '+' : ''}{playerScoreChange}
