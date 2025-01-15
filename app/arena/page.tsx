@@ -214,28 +214,8 @@ const ArenaPageContent = () => {
     setIsSubmitting(true);
   
     try {
-      /*
-      const response = await fetch('/api/calculate-score', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          argument: playerArgument,
-          topic: gameData.topic
-        })
-      });
-  
-      if (!response.ok) {
-        throw new Error('Failed to calculate score');
-      }
-  
-      const { score } = await response.json();
-       */
-      const score = Math.floor(Math.random() * (30 - 5 + 1)) + 5
-
       // Get current player data to get existing score
-      if (matchId && currentPlayerId && score) {
+      if (matchId && currentPlayerId) {
         const playersResponse = await client.models.Player.list({
           filter: { currentMatchId: { eq: matchId } }
         });
@@ -251,7 +231,19 @@ const ArenaPageContent = () => {
         if (!currentPlayer || !opponentPlayer) {
           throw new Error('Player identification failed');
         }
-  
+
+        const response = await client.queries.evaluateDebate({
+          prompt: playerArgument
+        });
+    
+        if (response.errors) {
+          throw new Error(response.errors[0].message);
+        }
+    
+        const score = response.data;
+        if (!score) {
+          throw new Error('Score not found');
+        }
         const newScore = (currentPlayer.score || 0) + score;
         
         // Update score in database
