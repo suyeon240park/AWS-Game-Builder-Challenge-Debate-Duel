@@ -17,6 +17,7 @@ function ResultScreenContent() {
   const [playerNickname, setPlayerNickname] = useState('You');
   const [opponentNickname, setOpponentNickname] = useState('Opponent');
   const [scores, setScores] = useState({ playerScore: 0, opponentScore: 0 });
+  const [confettiTriggered, setConfettiTriggered] = useState(false); // State to ensure one-time confetti
 
   const client = generateClient<Schema>();
 
@@ -53,15 +54,14 @@ function ResultScreenContent() {
           opponentScore,
         });
 
-        // Trigger confetti if the player wins
-        if (playerScore > opponentScore) {
-          setTimeout(() => {
-            confetti({
-              particleCount: 150,
-              spread: 70,
-              origin: { x: 0.5, y: 0.5 }, // Center of the screen
-            });
-          }, 500); // Add a slight delay for better visual timing
+        // Trigger confetti if player wins and it hasn't been triggered yet
+        if (playerScore > opponentScore && !confettiTriggered) {
+          setConfettiTriggered(true); // Prevent re-triggering
+          confetti({
+            particleCount: 150,
+            spread: 70,
+            origin: { x: 0.5, y: 0.5 }, // Center of the screen
+          });
         }
       } catch (error) {
         console.error('Error fetching scores:', error);
@@ -70,7 +70,7 @@ function ResultScreenContent() {
     };
 
     fetchScores();
-  }, [playerId, matchId, client.models.Player]);
+  }, [playerId, matchId, client.models.Player, confettiTriggered]);
 
   const winner = scores.playerScore > scores.opponentScore ? 'You' : 'Opponent';
 
