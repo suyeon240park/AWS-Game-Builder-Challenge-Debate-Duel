@@ -23,6 +23,12 @@ const GAME_CONSTANTS = {
   MAX_ARGUMENT_LENGTH: 200
 } as const
 
+const [timer, setTimer] = useState<TimerState>({
+  value: GAME_CONSTANTS.TURN_TIME,
+  startTime: Date.now(),
+  serverTime: Date.now()
+});
+
 // Types
 interface GameState {
   status: 'loading' | 'error' | 'success'
@@ -41,6 +47,7 @@ interface TimerState {
   startTime: number;
   serverTime: number;
 }
+
 
 // Components
 const LoadingSpinner = () => (
@@ -73,18 +80,13 @@ const ArenaPageContent = () => {
     opponent: null
   })
 
-  const [timer, setTimer] = useState<TimerState>({
-    value: GAME_CONSTANTS.TURN_TIME,
-    startTime: Date.now(),
-    serverTime: Date.now()
-  });
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [playerArgument, setPlayerArgument] = useState('')
   const [showHit, setShowHit] = useState(false)
   const [opponentTyping, setOpponentTyping] = useState('')
   const [isTyping, setIsTyping] = useState(false)
   const lastTypingUpdate = useRef<number>(0)
-  const [scoreChangeAnimation, setScoreChangeAnimation] = useState(0)
+  const [playerScoreChange, setPlayerScoreChange] = useState(0)
   const [opponentScoreChange, setOpponentScoreChange] = useState(0);
 
   // Utility functions
@@ -157,22 +159,7 @@ const ArenaPageContent = () => {
         const matchData = items[0];
         if (!matchData) return;
 
-        // Handle opponent score change
-        if (matchData.lastScoreChange !== undefined && 
-          matchData.lastScoringPlayerId && 
-          matchData.lastScoringPlayerId !== currentPlayerId) {
-
-          // Only update if it's a new score change
-          if (matchData.lastScoreChange && opponentScoreChange !== matchData.lastScoreChange) {
-            setOpponentScoreChange(matchData.lastScoreChange);
-          }
-        }
-
-        // Reset opponent score change when turn changes
-        if (matchData.currentTurn !== gameData.match?.currentTurn) {
-          setOpponentScoreChange(0);
-        }
-
+        
         setGameData(prev => ({
           ...prev,
           match: matchData,
@@ -192,11 +179,8 @@ const ArenaPageContent = () => {
 
         // Handle opponent score change
         if (matchData.lastScoreChange && matchData.lastScoringPlayerId !== currentPlayerId) {
+          setPlayerScoreChange(matchData.lastScoreChange * -1)
           setOpponentScoreChange(matchData.lastScoreChange);
-          // Reset after animation
-          setTimeout(() => {
-            setOpponentScoreChange(0);
-          }, 2000);
         }
 
         // Update opponent typing status
@@ -229,7 +213,9 @@ const ArenaPageContent = () => {
       matchSub.unsubscribe();
       playerSub.unsubscribe();
     };
-  }, [matchId, currentPlayerId, gameState.status, gameData.player?.id, opponentScoreChange, gameData.match?.currentTurn]);
+  }, [matchId, currentPlayerId, gameState.status, gameData.player?.id]);
+
+
 
   // Timer effect with server synchronization
   useEffect(() => {
@@ -242,11 +228,11 @@ const ArenaPageContent = () => {
       try {
         const response = await client.models.Match.get({ id: matchId });
         if (response.data?.timer !== undefined) {
-          setTimer(prev => ({
+          setTimer({
             value: response.data!.timer!,
             startTime: Date.now(),
             serverTime: Date.now()
-          }));
+          });
         }
       } catch (error) {
         console.error('Timer sync failed:', error);
@@ -300,32 +286,7 @@ const ArenaPageContent = () => {
     };
   }, [matchId, gameState.status, isPlayerTurn]);
 
-
-  // Handle turn end
-  const handleTurnEnd = async () => {
-    if (!matchId || !isPlayerTurn()) return;
-
-    try {
-      await client.models.Match.update({
-        id: matchId,
-        currentTurn: gameData.match?.currentTurn === 1 ? 2 : 1,
-        timer: GAME_CONSTANTS.TURN_TIME,
-        roundNumber: gameData.match?.currentTurn === 2 ? 
-          (gameData.match.roundNumber + 1) : 
-          gameData.match?.roundNumber
-      });
-
-      // Auto-submit current argument if any
-      if (playerArgument.length >= GAME_CONSTANTS.MIN_ARGUMENT_LENGTH) {
-        await handleSubmit();
-      }
-    } catch (error) {
-      console.error('Turn end error:', error);
-      toast.error('Failed to end turn');
-    }
-  };
-
-  // Add visibility change handler
+  // Handle visibility change
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'visible') {
@@ -347,12 +308,38 @@ const ArenaPageContent = () => {
         syncTimer();
       }
     };
-  
+
     document.addEventListener('visibilitychange', handleVisibilityChange);
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   }, [matchId]);
+
+  // Handle turn end
+  const handleTurnEnd = async () => {
+    if (!matchId || !isPlayerTurn()) return;
+
+    try {
+      await client.models.Match.update({
+        id: matchId,
+        currentTurn: gameData.match?.currentTurn === 1 ? 2 : 1,
+        timer: GAME_CONSTANTS.TURN_TIME,
+        roundNumber: gameData.match?.currentTurn === 2 ? 
+          (gameData.match.roundNumber + 1) : 
+          gameData.match?.roundNumber
+      });
+
+      // Auto-submit if argument meets minimum length
+      if (playerArgument.length >= GAME_CONSTANTS.MIN_ARGUMENT_LENGTH) {
+        await handleSubmit();
+      }
+    } catch (error) {
+      console.error('Turn end error:', error);
+      toast.error('Failed to end turn');
+    }
+  };
+
+
 
   // Handle player typing with improved throttling
   const handlePlayerTyping = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -396,6 +383,7 @@ const ArenaPageContent = () => {
       return () => clearTimeout(typingTimeout);
     }
   }, [isTyping, currentPlayerId, matchId, gameData.player?.id, gameData.match?.player1Id]);
+
 
   // Handle game end
   const handleGameEnd = useCallback(async () => {
@@ -458,16 +446,12 @@ const ArenaPageContent = () => {
       }
 
       const scoreChange = evaluationResponse.data || 0;
-      setScoreChangeAnimation(scoreChange);
+      setPlayerScoreChange(scoreChange);
+      setOpponentScoreChange(scoreChange * -1);
 
       // Calculate and update new score
       const newScore = Math.max(0, Math.min(100, currentPlayer.score! + scoreChange));
-
-      // Reset your score change after successful submission
-      setTimeout(() => {
-        setScoreChangeAnimation(0);
-      }, 2000); // Adjust timing as needed
-
+      
       // Batch updates for better consistency
       await Promise.all([
         // Update player score
@@ -571,14 +555,10 @@ const ArenaPageContent = () => {
               </div>
             </div>
             <div className="flex justify-between">
-              <span className={`text-sm font-bold transition-all duration-300 ${
-                scoreChangeAnimation > 0 ? 'text-green-500' : 'text-red-500'
-              }`}>
-                {scoreChangeAnimation > 0 ? '+' : ''}{scoreChangeAnimation}
+              <span className={`text-sm font-bold ${playerScoreChange > 0 ? 'text-green-500' : 'text-red-500'}`}>
+                {playerScoreChange > 0 ? '+' : ''}{playerScoreChange}
               </span>
-              <span className={`text-sm font-bold transition-all duration-300 ${
-                opponentScoreChange > 0 ? 'text-green-500' : 'text-red-500'
-              }`}>
+              <span className={`text-sm font-bold ${opponentScoreChange > 0 ? 'text-green-500' : 'text-red-500'}`}>
                 {opponentScoreChange > 0 ? '+' : ''}{opponentScoreChange}
               </span>
             </div>
