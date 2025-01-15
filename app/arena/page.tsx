@@ -37,9 +37,9 @@ interface GameData {
 }
 
 interface TimerState {
-  value: number
-  lastSync: number
-  lastUpdate: number
+  value: number;
+  isRunning: boolean;
+  lastServerSync: number;
 }
 
 // Components
@@ -75,8 +75,8 @@ const ArenaPageContent = () => {
 
   const [timer, setTimer] = useState<TimerState>({
     value: GAME_CONSTANTS.TURN_TIME,
-    lastSync: Date.now(),
-    lastUpdate: Date.now()
+    isRunning: false,
+    lastServerSync: Date.now()
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [playerArgument, setPlayerArgument] = useState('')
@@ -85,6 +85,7 @@ const ArenaPageContent = () => {
   const [isTyping, setIsTyping] = useState(false)
   const lastTypingUpdate = useRef<number>(0)
   const [scoreChangeAnimation, setScoreChangeAnimation] = useState(0)
+  const [opponentScoreChange, setOpponentScoreChange] = useState(0);
 
   // Utility functions
   const isPlayerTurn = useCallback((): boolean => {
@@ -173,6 +174,15 @@ const ArenaPageContent = () => {
           prevTurnRef.current = matchData.currentTurn;
         }
 
+        // Handle opponent score change
+        if (matchData.lastScoreChange && matchData.lastScoringPlayerId !== currentPlayerId) {
+          setOpponentScoreChange(matchData.lastScoreChange);
+          // Reset after animation
+          setTimeout(() => {
+            setOpponentScoreChange(0);
+          }, 2000);
+        }
+
         // Update opponent typing status
         const isPlayer1 = gameData.player?.id === matchData.player1Id;
         const opponentArgument = isPlayer1 ? matchData.player2Argument : matchData.player1Argument;
@@ -205,9 +215,11 @@ const ArenaPageContent = () => {
     };
   }, [matchId, currentPlayerId, gameState.status, gameData.player?.id]);
 
-  // Improved timer implementation with sync mechanism
+  // Timer effect with proper synchronization
   useEffect(() => {
     if (!matchId || gameState.status !== 'success') return;
+
+    let intervalId: NodeJS.Timeout;
 
     const syncTimerWithServer = async () => {
       try {
@@ -216,7 +228,7 @@ const ArenaPageContent = () => {
           setTimer(prev => ({
             ...prev,
             value: response.data!.timer!,
-            lastSync: Date.now()
+            lastServerSync: Date.now()
           }));
         }
       } catch (error) {
@@ -224,33 +236,93 @@ const ArenaPageContent = () => {
       }
     };
 
-    const timerInterval = setInterval(() => {
-      const now = Date.now();
-      const timeSinceLastUpdate = now - timer.lastUpdate;
-      
-      // Handle normal tick
-      if (timeSinceLastUpdate >= 900 && timeSinceLastUpdate <= 1100) {
+    // Start timer when it's player's turn
+    if (isPlayerTurn()) {
+      intervalId = setInterval(() => {
         setTimer(prev => {
-          const newValue = Math.max(0, prev.value - 1);
+          if (prev.value <= 0) {
+            // Handle turn end when timer reaches 0
+            handleTurnEnd();
+            return prev;
+          }
+
           return {
             ...prev,
-            value: newValue,
-            lastUpdate: now
+            value: prev.value - 1,
+            isRunning: true
           };
         });
-      } else {
-        // Sync with server if significant drift detected
-        syncTimerWithServer();
-      }
+      }, 1000);
 
-      // Sync with server periodically or when timer is low
-      if (timer.value <= 5 || now - timer.lastSync > 3000) {
-        syncTimerWithServer();
-      }
-    }, 1000);
+      // Sync with server every 5 seconds
+      const syncInterval = setInterval(syncTimerWithServer, 5000);
 
-    return () => clearInterval(timerInterval);
-  }, [matchId, gameState.status, timer.value, timer.lastSync]);
+      return () => {
+        clearInterval(intervalId);
+        clearInterval(syncInterval);
+      };
+    }
+
+    // Always sync when turn changes
+    syncTimerWithServer();
+
+    return () => {
+      if (intervalId) clearInterval(intervalId);
+    };
+  }, [matchId, gameState.status, isPlayerTurn]);
+
+  // Handle turn end
+  const handleTurnEnd = async () => {
+    if (!matchId || !isPlayerTurn()) return;
+
+    try {
+      await client.models.Match.update({
+        id: matchId,
+        currentTurn: gameData.match?.currentTurn === 1 ? 2 : 1,
+        timer: GAME_CONSTANTS.TURN_TIME,
+        roundNumber: gameData.match?.currentTurn === 2 ? 
+          (gameData.match.roundNumber + 1) : 
+          gameData.match?.roundNumber
+      });
+
+      // Auto-submit current argument if any
+      if (playerArgument.length >= GAME_CONSTANTS.MIN_ARGUMENT_LENGTH) {
+        await handleSubmit();
+      }
+    } catch (error) {
+      console.error('Turn end error:', error);
+      toast.error('Failed to end turn');
+    }
+  };
+
+  // Add visibility change handler
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        // Sync timer when tab becomes visible
+        const syncTimer = async () => {
+          try {
+            const response = await client.models.Match.get({ id: matchId! });
+            if (response.data?.timer !== undefined) {
+              setTimer(prev => ({
+                ...prev,
+                value: response.data!.timer!,
+                lastServerSync: Date.now()
+              }));
+            }
+          } catch (error) {
+            console.error('Timer sync failed on visibility change:', error);
+          }
+        };
+        syncTimer();
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, [matchId]);
 
   // Handle player typing with improved throttling
   const handlePlayerTyping = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -377,7 +449,9 @@ const ArenaPageContent = () => {
           roundNumber: gameData.match?.currentTurn === 2 ? 
             (gameData.match.roundNumber + 1) : 
             gameData.match?.roundNumber,
-          timer: GAME_CONSTANTS.TURN_TIME
+          timer: GAME_CONSTANTS.TURN_TIME,
+          lastScoreChange: scoreChange,
+          lastScoringPlayerId: currentPlayerId
         })
       ]);
 
@@ -467,9 +541,10 @@ const ArenaPageContent = () => {
               }`}>
                 {scoreChangeAnimation > 0 ? '+' : ''}{scoreChangeAnimation}
               </span>
-              <span className="text-sm font-bold text-transparent">
-                {/* Placeholder for layout balance */}
-                +0
+              <span className={`text-sm font-bold transition-all duration-300 ${
+                opponentScoreChange > 0 ? 'text-green-500' : 'text-red-500'
+              }`}>
+                {opponentScoreChange > 0 ? '+' : ''}{opponentScoreChange}
               </span>
             </div>
           </div>

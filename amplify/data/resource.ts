@@ -43,7 +43,9 @@ const schema = a.schema({
     player1Argument: a.string(),
     player2Argument: a.string(),
     typingPlayerId: a.string(),
-    isTyping: a.boolean()
+    isTyping: a.boolean(),
+    lastScoreChange: a.integer(),
+    lastScoringPlayerId: a.string()
   })
   .authorization(allow => [allow.publicApiKey()]),
 
