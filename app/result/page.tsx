@@ -7,12 +7,17 @@ import { Button } from "@/components/ui/button"
 import Link from 'next/link'
 import { useState, useEffect, Suspense } from 'react'
 import { toast } from 'sonner'
+import confetti from 'canvas-confetti'
 
 function ResultScreenContent() {
   const searchParams = useSearchParams();
-  const [scores, setScores] = useState({ playerScore: 0, opponentScore: 0 });
   const playerId = searchParams.get('playerId');
   const matchId = searchParams.get('matchId');
+
+  const [playerNickname, setPlayerNickname] = useState('');
+  const [opponentNickname, setOpponentNickname] = useState('');
+  const [scores, setScores] = useState({ playerScore: 0, opponentScore: 0 });
+  const [isConfettiVisible, setIsConfettiVisible] = useState(false);
 
   const client = generateClient<Schema>()
 
@@ -21,7 +26,6 @@ function ResultScreenContent() {
       if (!playerId || !matchId) return;
 
       try {
-        // Fetch players from the match
         const playersResponse = await client.models.Player.list({
           filter: { currentMatchId: { eq: matchId } }
         });
@@ -31,7 +35,6 @@ function ResultScreenContent() {
           throw new Error('Players not found');
         }
 
-        // Find current player and opponent
         const currentPlayer = players.find(p => p.id === playerId);
         const opponent = players.find(p => p.id !== playerId);
 
@@ -39,10 +42,43 @@ function ResultScreenContent() {
           throw new Error('Player identification failed');
         }
 
+        setPlayerNickname(currentPlayer.nickname || 'You');
+        setOpponentNickname(opponent.nickname || 'Opponent'); 
+
+        const playerScore = currentPlayer.score || 0;
+        const opponentScore = opponent.score || 0;
+
         setScores({
-          playerScore: currentPlayer.score || 0,
-          opponentScore: opponent.score || 0
+          playerScore,
+          opponentScore
         });
+
+        // Trigger confetti if player won
+        if (playerScore > opponentScore) {
+          // Basic confetti burst
+          confetti({
+            particleCount: 100,
+            spread: 70,
+            origin: { y: 0.6 }
+          });
+
+          // Add side shots
+          setTimeout(() => {
+            confetti({
+              particleCount: 50,
+              angle: 60,
+              spread: 55,
+              origin: { x: 0 }
+            });
+
+            confetti({
+              particleCount: 50,
+              angle: 120,
+              spread: 55,
+              origin: { x: 1 }
+            });
+          }, 250);
+        }
 
       } catch (error) {
         console.error('Error fetching scores:', error);
@@ -68,8 +104,8 @@ function ResultScreenContent() {
             Final Scores:
           </p>
           <div className="flex justify-around text-2xl font-bold">
-            <span className="text-blue-500">You: {scores.playerScore}</span>
-            <span className="text-red-500">Opponent: {scores.opponentScore}</span>
+            <span className="text-blue-500">{playerNickname}: {scores.playerScore}</span>
+            <span className="text-red-500">{opponentNickname}: {scores.opponentScore}</span>
           </div>
         </div>
 
