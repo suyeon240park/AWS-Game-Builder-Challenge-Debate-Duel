@@ -118,6 +118,9 @@ const ArenaPageContent = () => {
         if (!matchData) throw new Error('Match not found')
 
         // Create a debate topic if not exists
+        if (matchData.topic) {
+          console.log("existing topic: " + matchData.topic)
+        }
         if (!matchData.topic) {
           const { data, errors } = await client.queries.createTopic();
           if (errors) {
@@ -127,7 +130,7 @@ const ArenaPageContent = () => {
           if (!data) {
             throw new Error('No topic generated');
           }
-          console.log("topic: " + data)
+          console.log("new topic: " + data)
 
           await client.models.Match.update({
             id: matchId,
