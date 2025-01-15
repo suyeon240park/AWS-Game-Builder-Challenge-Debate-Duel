@@ -211,27 +211,6 @@ const MatchRoomContent = () => {
     : players.find(p => p.id === match?.player1Id)?.nickname
   const opponentReady = isPlayer1 ? !!match?.player2Ready : !!match?.player1Ready
   const isReady = isPlayer1 ? !!match?.player1Ready : !!match?.player2Ready
-  
-  const renderPlayerStatuses = () => {
-    if (isPlayer1) {
-      return (
-        <>
-          <PlayerStatus name={playerNickname || 'You'} ready={isReady} />
-          <span className="text-2xl font-bold text-gray-600">VS</span>
-          <PlayerStatus name={opponentNickname || 'Waiting...'} ready={opponentReady} />
-        </>
-      );
-    } else {
-      return (
-        <>
-          <PlayerStatus name={opponentNickname || 'Waiting...'} ready={opponentReady} />
-          <span className="text-2xl font-bold text-gray-600">VS</span>
-          <PlayerStatus name={playerNickname || 'You'} ready={isReady} />
-        </>
-      );
-    }
-  };
-  
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-amber-100 to-amber-200 flex flex-col items-center justify-center p-4">
