@@ -240,10 +240,11 @@ const ArenaPageContent = () => {
           throw new Error(response.errors[0].message);
         }
     
-        const score = response.data;
+        const score = Number(response.data);
         if (!score) {
           throw new Error('Score not found');
         }
+
         const newScore = (currentPlayer.score || 0) + score;
         
         // Update score in database
